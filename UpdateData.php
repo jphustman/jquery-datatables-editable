@@ -1,0 +1,2 @@
+Update page is not implemented. In this off-line demo update page always returns this error message. 
+In the real example implement server side page that accepts parameters and return value that has beign edited.
