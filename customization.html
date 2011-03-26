@@ -5,11 +5,11 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
 		
-		<title>Editable DataTable Example - Adding new record</title>
+		<title>Editable DataTable Example - UI Customization</title>
 		<style type="text/css" title="currentStyle">
 			@import "media/css/demo_page.css";
 			@import "media/css/demo_table.css";
-			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/demo_table_jui.css";
 			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
 		</style>
 
@@ -22,11 +22,16 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
-				var oTable = $('#example').dataTable().makeEditable({
+				var oTable = $('#example').dataTable({
+                    							"bJQueryUI": true,
+									"bProcessing": true,
+                    							"sPaginationType": "full_numbers"
+                						}).makeEditable({
 									sUpdateURL: "UpdateData.php",
                     							sAddURL: "AddData.php",
 									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
-                    							sDeleteURL: "DeleteData.php"
+                    							sDeleteURL: "DeleteData.php",
+									sAddDeleteToolbarSelector: ".dataTables_length"
 										});
 				
 			} );
@@ -40,20 +45,21 @@
 		<div id="container">
 			<div class="full_width big">
 
-				Editable DataTable example - Adding new record
+				Editable DataTable Example - Customizing plugin
 			</div>
 			
 			<h1>Preamble</h1>
 			<p>
-				DataTable Editable plugin enhances standard DataTables plugin by adding functionalities that allow user to perform inline editing by 					double-clicking on a cell, to delete rows or add new recors. Plugin encapsulates all required processing, and you'll need to create a blank form that will be used for adding records and server-side code that accepts Add AJAX requests. 			
+				This example shows how you can customize look&feel.
 			</p>
-			<p>To enable adding new record you will need to create a custom HTML form with an id "formAddNewRow", where user can enter information
-			about new record. When Editable plugin detects Add new record form, it will generate add button in "add_delete_toolbar".</p>
-
-			<p>On the server-side you will need to create a <b>page that handles add AJAX requests</b> (AddData.php in this example). Parameters that are accepted by this page need to match input elements you place in Add new record form.
-<br />
-Page should return id of the new record if row was successfully added. This value will be added as an id of the new row in the table. If page returns error status, response text will be shown as an error message.
-</p>
+			<p>Following DataTables settings are applied:
+			<ul>
+				<li>bJQueryUI - used to apply JQuery UI classes</li>
+				<li>bProcessing - used to show processing message while AJAX calls are being executed</li>
+				<li>sPaginationType - used to change pagination type</li>				
+			</ul>
+			Parameter sAddDeleteToolbarSelector is used to define where "add" and "delete" buttons should be placed and sAddDeleteToolbarSelector is used to inject "add" and "delete" buttons into the data table heading.
+			</p>
 			
 			
 			
@@ -64,7 +70,7 @@ Page should return id of the new record if row was successfully added. This valu
 
 
  <form id="formAddNewRow" action="#" title="Add new record">
-        <label for="engine">Rendering engine</label><br />
+        <label for="engine">Engine</label><br />
 	<input type="text" name="engine" id="name" class="required" rel="0" />
         <br />
         <label for="browser">Browser</label><br />
@@ -73,7 +79,7 @@ Page should return id of the new record if row was successfully added. This valu
         <label for="platforms">Platform(s)</label><br />
 	<textarea name="platforms" id="platforms" rel="2"></textarea>
         <br />
-        <label for="version">Engine version</label><br />
+        <label for="version">Version</label><br />
 	<select name="version" id="version" rel="3">
                 <option>1.5</option>
                 <option>1.7</option>
@@ -93,11 +99,11 @@ Page should return id of the new record if row was successfully added. This valu
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
 	<thead>
 		<tr>
-			<th>Rendering engine</th>
+			<th>Engine</th>
 			<th>Browser</th>
 
 			<th>Platform(s)</th>
-			<th>Engine version</th>
+			<th>Version</th>
 			<th>CSS grade</th>
 		</tr>
 	</thead>
@@ -571,7 +577,7 @@ Page should return id of the new record if row was successfully added. This valu
 		</tr>
 	</tbody>
 </table>
-<div class="add_delete_toolbar" />
+
 			</div>
 			<div class="spacer"></div>
 
@@ -579,45 +585,21 @@ Page should return id of the new record if row was successfully added. This valu
 
 			
 			
-			<h1>Initialisation code</h1>
+			<h1>Initialization code</h1>
 			<pre>$(document).ready( function () {
-		$('#example').dataTable().makeEditable({
+		$('#example').dataTable({
+                    				"bJQueryUI": true,
+						"bProcessing": true,
+                    				"sPaginationType": "full_numbers"
+                						}).makeEditable({
 							sUpdateURL: "UpdateData.php",
 							sAddURL: "AddData.php",
-                    					sDeleteURL: "DeleteData.php"
+                    					sDeleteURL: "DeleteData.php",
+							sAddDeleteToolbarSelector: ".dataTables_length"
 							});
 }
 	</pre>
-			<h1>Additional HTML code</h1>
-			<pre>
-&lt;!-- Place holder where add and delete buttons will be generated --&gt;
-&lt;div class=&quot;add_delete_toolbar&quot; /&gt;
-
-&lt;!-- Custom form for adding new records --&gt
- &lt;form id=&quot;formAddNewRow&quot; action=&quot;#&quot; title=&quot;Add new record&quot;&gt;
-        &lt;label for=&quot;engine&quot;&gt;Rendering engine&lt;/label&gt;&lt;br /&gt;
-	&lt;input type=&quot;text&quot; name=&quot;engine&quot; id=&quot;name&quot; class=&quot;required&quot; rel=&quot;0&quot; /&gt;
-        &lt;br /&gt;
-        &lt;label for=&quot;browser&quot;&gt;Browser&lt;/label&gt;&lt;br /&gt;
-	&lt;input type=&quot;text&quot; name=&quot;browser&quot; id=&quot;browser&quot; rel=&quot;1&quot; /&gt;
-        &lt;br /&gt;
-        &lt;label for=&quot;platforms&quot;&gt;Platform(s)&lt;/label&gt;&lt;br /&gt;
-	&lt;textarea name=&quot;platforms&quot; id=&quot;platforms&quot; rel=&quot;2&quot;&gt;&lt;/textarea&gt;
-        &lt;br /&gt;
-        &lt;label for=&quot;version&quot;&gt;Engine version&lt;/label&gt;&lt;br /&gt;
-	&lt;select name=&quot;version&quot; id=&quot;version&quot; rel=&quot;3&quot;&gt;
-                &lt;option&gt;1.5&lt;/option&gt;
-                &lt;option&gt;1.7&lt;/option&gt;
-                &lt;option&gt;1.8&lt;/option&gt;
-        &lt;/select&gt;
-        &lt;br /&gt;
-        &lt;label for=&quot;grade&quot;&gt;CSS grade&lt;/label&gt;&lt;br /&gt;
-		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;A&quot; rel=&quot;4&quot;&gt; First&lt;br&gt;
-		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;B&quot; rel=&quot;4&quot;&gt; Second&lt;br&gt;
-		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;C&quot; checked rel=&quot;4&quot;&gt; Third
-        &lt;br /&gt;
-&lt;/form&gt;
-	</pre>	
+			
 
 			
 			<h1>Other examples</h1>

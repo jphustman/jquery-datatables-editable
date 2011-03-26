@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.editable.js
-* Version:     1.0.0
+* Version:     1.1.0.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -28,8 +28,23 @@
 * @fnStartProcessingMode        Function    function(){...} called when AJAX call is started. Use this function to add "Please wait..." message  when some button is pressed.
 * @fnEndProcessingMode          Function    function(){...} called when AJAX call is ended. Use this function to close "Please wait..." message.
 * @aoColumns                    Array       Array of the JEditable settings that will be applied on the columns
+* @sAddHttpMethod               String      Method used for the Add AJAX request (defauSSlt 'POST')
+* @fnOnDeleting                 Function    function(tr, id){...} Function called before row is deleted.
+                                            tr isJQuery object encapsulating row that will be deleted
+                                            id is an id of the record that will be deleted.
+                                            returns true if plugin should continue with deleting row, false will abort delete.
+* @fnOnDeleted                  Function    function(status){...} Function called after delete action. Status can be "success" or "failure"
+* @fnOnAdding                   Function    function(){...} Function called before row is added.
+                                            returns true if plugin should continue with adding row, false will abort add.
+* @fnOnAdded                    Function    function(status){...} Function called after delete action. Status can be "success" or "failure"
+* @fnOnEditing                  Function    function(input){...} Function called before cell is updated.
+                                            input JQuery object wrapping the inut element used for editing value in the cell.
+                                            returns true if plugin should continue with sending AJAX request, false will abort update.
+* @fnOnEdited                   Function    function(status){...} Function called after edit action. Status can be "success" or "failure"
 */
 (function ($) {
+
+    var iDisplayStart = 0;
 
     ///Utility function used to determine id of the cell
     //By default it is assumed that id is placed as an id attribute of <tr> that that surround the cell (<td> tag). E.g.:
@@ -89,29 +104,27 @@
     /// Utility function that shows an error message
     ///@param errorText - text that should be shown
     ///@param action - action that was executed when error occured e.g. "update", "delete", or "add"
-    function _fnShowError(errorText, action) {
+    function fnShowError(errorText, action) {
         alert(errorText);
     }
 
     //Utility function that put the table into the "Processing" state
-    function _fnStartProcessingMode() {
+    function fnStartProcessingMode() {
         if (oTable.fnSettings().oFeatures.bProcessing) {
             $(".dataTables_processing").css('visibility', 'visible');
-            //$(".dataTables_processing").show();
         }
     }
 
     //Utility function that put the table in the normal state
-    function _fnEndProcessingMode() {
+    function fnEndProcessingMode() {
         if (oTable.fnSettings().oFeatures.bProcessing) {
             $(".dataTables_processing").css('visibility', 'hidden');
-            //$(".dataTables_processing").hide();
         }
     }
 
     var sOldValue, sNewCellValue;
     //Utility function used to apply editable plugin on table cells
-    function fnApplyEditable(aoNodes) {
+    function _fnApplyEditable(aoNodes) {
         var oDefaultEditableSettings = {
             event: 'dblclick',
             "callback": function (sValue, settings) {
@@ -119,14 +132,31 @@
                 if (sNewCellValue == sValue) {
                     var aPos = oTable.fnGetPosition(this);
                     oTable.fnUpdate(sValue, aPos[0], aPos[2]);
+                    properties.fnOnEdited("success");
                 } else {
                     var aPos = oTable.fnGetPosition(this);
                     oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
                     properties.fnShowError(sValue, "update");
+                    properties.fnOnEdited("failure");
                 }
+                _fnSetDisplayStart();
 
             },
+            "onsubmit": function (settings, original) {
+                var input = $("input,select,textarea", this);
+                if (!properties.fnOnEditing(input))
+                    return false;
+                var x = settings;
+                if (settings.cssclass != null) {
+                    input.addClass(settings.cssclass);
+                    if (!input.valid() || 0 == input.valid())
+                        return false;
+                    else
+                        return true;
+                }
+            },
             "submitdata": function (value, settings) {
+                iDisplayStart = _fnGetDisplayStart();
                 properties.fnStartProcessingMode();
                 sOldValue = value;
                 sNewCellValue = $("input,select", $(this)).val();
@@ -148,6 +178,7 @@
             "onerror": function () {
                 properties.fnEndProcessingMode();
                 properties.fnShowError("Cell cannot be updated(Server error)", "update");
+                properties.fnOnEdited("failure");
             },
             "height": properties.height
         };
@@ -160,9 +191,9 @@
                     var oColumnSettings = oDefaultEditableSettings;
                     oColumnSettings = $.extend({}, properties.aoColumns[i], oDefaultEditableSettings);
                     cells.editable(properties.sUpdateURL, oColumnSettings);
-                 }
-                
-                
+                }
+
+
             }
         } else {
             cells = $('td:not(.' + properties.sReadOnlyCellClass + ')', aoNodes);
@@ -173,26 +204,30 @@
     }
 
     //Called when user confirm that he want to add new record
-    function fnOnRowAdding(event) {
-        if (oAddNewRowForm.valid()) {
-            properties.fnStartProcessingMode();
-            var params = oAddNewRowForm.serialize();
-            $.ajax({ 'url': properties.sAddURL,
-                'data': params,
-                'type': 'POST',
-                success: fnOnRowAdded,
-                error: function (response) {
-                    properties.fnEndProcessingMode();
-                    properties.fnShowError(response.responseText, "add");
-                }
-            });
+    function _fnOnRowAdding(event) {
+        if (properties.fnOnAdding()) {
+            if (oAddNewRowForm.valid()) {
+                iDisplayStart = _fnGetDisplayStart();
+                properties.fnStartProcessingMode();
+                var params = oAddNewRowForm.serialize();
+                $.ajax({ 'url': properties.sAddURL,
+                    'data': params,
+                    'type': properties.sAddHttpMethod,
+                    success: _fnOnRowAdded,
+                    error: function (response) {
+                        properties.fnEndProcessingMode();
+                        properties.fnShowError(response.responseText, "add");
+                        properties.fnOnAdded("failure");
+                    }
+                });
+            }
         }
         event.stopPropagation();
         event.preventDefault();
     }
 
     ///Event handler called when a new row is added and response is returned from server
-    function fnOnRowAdded(data) {
+    function _fnOnRowAdded(data) {
         properties.fnEndProcessingMode();
 
         var iColumnCount = oTable.dataTableSettings[0].aoColumns.length;
@@ -210,17 +245,20 @@
         var rtn = oTable.fnAddData(values);
         var oTRAdded = oTable.fnGetNodes(rtn);
         //Apply editable plugin on the cells of the table
-        fnApplyEditable(oTRAdded);
+        _fnApplyEditable(oTRAdded);
         //add id returned by server page as an TR id attribute
         properties.fnSetRowID($(oTRAdded), data);
         //Close the dialog
         oAddNewRowForm.dialog('close');
         $(oAddNewRowForm)[0].reset();
         $(".error", $(oAddNewRowForm)).html("");
+
+        _fnSetDisplayStart();
+        properties.fnOnAdded("success")
     }
 
-    //Called when user cancels ading new record in popup
-    function fnOnCancelRowAdd(event) {
+    //Called when user cancels adding new record in the popup dialog
+    function _fnOnCancelRowAdding(event) {
         //Close the dialog
         oAddNewRowForm.dialog('close');
         $(oAddNewRowForm)[0].reset();
@@ -231,28 +269,25 @@
 
 
 
-    //Called before row is deleted
-    //Returning false will abort delete
-    function fnOnRowDeleting(tr, id) {
-        return true;
-    }
+
 
     //Called when user deletes a row
-    function fnOnRowDelete(event) {
-
+    function _fnOnRowDelete(event) {
+        iDisplayStart = _fnGetDisplayStart();
         if ($('tr.' + properties.sSelectedRowClass + ' td', oTable).length == 0) {
             oDeleteRowButton.attr("disabled", "true");
             return;
         }
         var id = fnGetCellID($('tr.' + properties.sSelectedRowClass + ' td', oTable)[0]);
-        if (fnOnRowDeleting($('tr.' + properties.sSelectedRowClass, oTable), id)) {
+        if (properties.fnOnDeleting($('tr.' + properties.sSelectedRowClass, oTable), id)) {
             properties.fnStartProcessingMode();
             $.ajax({ 'url': properties.sDeleteURL,
                 'data': 'id=' + id,
-                "success": fnOnRowDeleted,
+                "success": _fnOnRowDeleted,
                 "error": function (response) {
                     properties.fnEndProcessingMode();
                     properties.fnShowError(response.responseText, "delete");
+                    properties.fnOnDeleted("failure");
 
                 }
             });
@@ -260,15 +295,58 @@
     }
 
     //Called when record is deleted on the server
-    function fnOnRowDeleted(response) {
+    function _fnOnRowDeleted(response) {
         properties.fnEndProcessingMode();
         var oTRSelected = $('tr.' + properties.sSelectedRowClass, oTable)[0];
         if (response == "ok" || response == "") {
             oTable.fnDeleteRow(oTRSelected);
             oDeleteRowButton.attr("disabled", "true");
+            _fnSetDisplayStart();
+            properties.fnOnDeleted("success");
         }
         else {
             properties.fnShowError(response, "delete");
+            properties.fnOnDeleted("failure");
+        }
+    }
+
+    //Called before row is deleted
+    //Returning false will abort delete
+    /*
+    * Function called before row is deleted
+    * @param    tr  JQuery wrapped around the TR tag that will be deleted
+    * @param    id  id of the record that wil be deleted
+    * @return   true if plugin should continue with deleting row, false will abort delete.
+    */
+    function fnOnDeleting(tr, id) {
+        return confirm("Are you sure that you want to delete this record?"); ;
+    }
+
+    /* Function called after delete action
+    * @param    result  string 
+    *           "success" if row is actually deleted 
+    *           "failure" if delete failed
+    * @return   void
+    */
+    function fnOnDeleted(result) { }
+
+    function fnOnEditing(input) { return true; }
+    function fnOnEdited(result) { }
+
+    function fnOnAdding() { return true; }
+    function fnOnAdded(result) { }
+
+    var oSettings;
+    function _fnGetDisplayStart() {
+        return oSettings._iDisplayStart;
+    }
+
+    function _fnSetDisplayStart() {
+        if (oSettings.oFeatures.bServerSide === false) {
+            oSettings._iDisplayStart = iDisplayStart;
+            oSettings.oApi._fnCalculateEnd(oSettings);
+            //draw the 'current' page
+            oSettings.oApi._fnDraw(oSettings);
         }
     }
 
@@ -277,8 +355,7 @@
         oTable = this;
 
         var defaults = {
-            fnGetRowID: _fnGetRowIDFromAttribute,
-            fnSetRowID: _fnSetRowIDInAttribute,
+            
             sUpdateURL: "UpdateData",
             sAddURL: "AddData",
             sDeleteURL: "DeleteData",
@@ -291,13 +368,24 @@
             sSelectedRowClass: "row_selected",
             sReadOnlyCellClass: "read_only",
             sAddDeleteToolbarSelector: ".add_delete_toolbar",
-            fnShowError: _fnShowError,
-            fnStartProcessingMode: _fnStartProcessingMode,
-            fnEndProcessingMode: _fnEndProcessingMode,
-            aoColumns: null
+            fnShowError: fnShowError,
+            fnStartProcessingMode: fnStartProcessingMode,
+            fnEndProcessingMode: fnEndProcessingMode,
+            aoColumns: null,
+            fnOnDeleting: fnOnDeleting,
+            fnOnDeleted: fnOnDeleted,
+            fnOnAdding: fnOnAdding,
+            fnOnAdded: fnOnAdded,
+            fnOnEditing: fnOnEditing,
+            fnOnEdited: fnOnEdited,
+            sAddHttpMethod: 'POST',
+            fnGetRowID: _fnGetRowIDFromAttribute,
+            fnSetRowID: _fnSetRowIDInAttribute
+
         };
 
         properties = $.extend(defaults, options);
+        oSettings = oTable.fnSettings();
 
         return this.each(function () {
 
@@ -305,7 +393,7 @@
                 oTable.fnSettings().aoDrawCallback.push({
                     "fn": function () {
                         //Apply jEditable plugin on the table cells
-                        fnApplyEditable(oTable.fnGetNodes());
+                        _fnApplyEditable(oTable.fnGetNodes());
                         $(oTable.fnGetNodes()).each(function () {
                             var position = oTable.fnGetPosition(this);
                             var id = oTable.fnGetData(position)[0];
@@ -318,7 +406,7 @@
 
             } else {
                 //Apply jEditable plugin on the table cells
-                fnApplyEditable(oTable.fnGetNodes());
+                _fnApplyEditable(oTable.fnGetNodes());
             }
 
             //Setup form to open in dialog
@@ -344,7 +432,7 @@
                 }
 
                 //Add button click handler on the "Ok" button in the add new row dialog
-                oConfirmRowAddingButton.click(fnOnRowAdding);
+                oConfirmRowAddingButton.click(_fnOnRowAdding);
 
                 oCancelRowAddingButton = $("#" + properties.sAddNewRowCancelButtonId);
                 if (oCancelRowAddingButton.length == 0) {
@@ -352,7 +440,7 @@
                     oCancelRowAddingButton = $("#" + properties.sAddNewRowCancelButtonId);
                 }
 
-                oCancelRowAddingButton.click(fnOnCancelRowAdd);
+                oCancelRowAddingButton.click(_fnOnCancelRowAdding);
             } else {
                 oAddNewRowForm = null;
             }
@@ -360,7 +448,7 @@
             //Set the click handler on the "Delete selected row" button
             oDeleteRowButton = $('#' + properties.sDeleteRowButtonId);
             if (oDeleteRowButton.length != 0)
-                oDeleteRowButton.click(fnOnRowDelete);
+                oDeleteRowButton.click(_fnOnRowDelete);
             else {
                 oDeleteRowButton = null;
             }
@@ -378,7 +466,7 @@
                 if (oDeleteRowButton == null && properties.sDeleteRowButtonId != "") {
                     oAddDeleteToolbar.append("<button id='" + properties.sDeleteRowButtonId + "' class='delete_row'>Delete</button>");
                     oDeleteRowButton = $("#" + properties.sDeleteRowButtonId);
-                    oDeleteRowButton.click(fnOnRowDelete);
+                    oDeleteRowButton.click(_fnOnRowDelete);
                 }
             }
 

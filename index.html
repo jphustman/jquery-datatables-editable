@@ -43,25 +43,29 @@
 			
 			<h1>Preamble</h1>
 			<p>
-				DataTable Editable plugin enchances standard DataTables plugin by adding functionalities that enables a user 
-				to edit cells inline, select and delete rows. All required processing is encaplulated within the plugin,
-				and only required thing is a server-side code that accepts add, update and delete requests.
+				DataTable Editable plugin enhances standard DataTables plugin by adding functionalities that allow user to perform inline editing by 					double-clicking on a cell, to select rows and delete them. Plugin encapsulates all required processing, and it is up to you to take 					care of implementing server-side code that accepts update and delete AJAX requests sent by the plugin. 
+
 			</p>
-			<p>In the basic usage of DataTables Editable plugin, user can select and delete record in table and edit cells inline by double-clicking on the cell</p>
 
-			<p>On the server-side you will need to create one page that handles delete AJAX requests (called DeleteData.php in this example). This page should accept one parameter id. This parameter is id of the record that that should be deleted (id is placed in <tr> tag that surrounds the cell user edited). Server-side page should return string "ok" if a record is successfully deleted or error message if delete failed. 
-</p>
-<p>Also you will need to create one page that handles update AJAX requests (I called it UpdateData.php). This page should accept following parameters:
+			<p>You will need <b>page that handles delete AJAX requests</b> (DeleteData.php in this example) and accepts single parameter: 
 
-<ol>
-<li>value - that contains text used entered in the table cell while editing</li>
-<li>id - id of the record that is deleted (id is placed in <tr> tag that surrounds the cell that has been edited)</li>
-<li>columnId - position of the column of the cell that has been edited (hidden columns are counted also)</li>
-<li>columnPosition - position of the column of the cell that has been edited (hidden columns are not counted)</li>
-<li>rowId - id of the row containing cell the cell that has been edited</li>
-</ol>
-Server-side page should return value that is updated if cell is successfully or error message.
-</p>
+			<ol>
+			<li>id - id of the record that user wants to delete (id is placed in the tag that surrounds the cell). </li>
+			</ol>
+			If operation was successfully completed server-side page should return "ok" string. Otherwise, it should return error message. 
+			</p>
+
+			<p>You will also need <b>page that handles update AJAX requests</b> (UpdateData.php in this example) and accepts following parameters: 
+
+			<ol>
+			<li>value - contains new text value of the cell that user edited</li>
+			<li>id - id of the updated record (id is placed in the tag that surrounds the cell)</li>
+			<li>columnId - position of the column of the cell that has been edited (hidden columns are counted also)</li>
+			<li>columnPosition - position of the column of the cell that has been edited (hidden columns are not counted)</li>
+			<li>rowId - id of the row containing the cell that has been edited</li>
+			</ol>
+			If operation was successfully completed server-side page should return value that user entered during editing. Otherwise, it should return error message. 
+			</p>
 	
 			
 			
@@ -563,8 +567,8 @@ Server-side page should return value that is updated if cell is successfully or 
 			
 
 			
-			<h1>Initialisation code</h1>
-			<p>In the initialization code you will need to pass URL of the pages that accept delete and update requests on the server side.</p>
+			<h1>Initialization code</h1>
+			<p>Initialization code is very simple. You just need to specify URL of the pages that accept delete and update requests on the server side.</p>
 			<pre>$(document).ready( function () {
 		$('#example').dataTable().makeEditable({
 							sUpdateURL: "UpdateData.php",
@@ -573,44 +577,51 @@ Server-side page should return value that is updated if cell is successfully or 
 }
 	</pre>
 			<h1>Additional HTML code</h1>
-	<p>One delete button should be placed in the HTML source. This button will be enabled each time user selects a row in the table and disabled each time user deselect row. Id of the button must be "btnDeleteRow".</p>
+	<p>One delete button needs to be placed in your HTML source. This button will be enabled each time user selects a row in the table, and disabled each time user deselects row. Id of the button has to be "btnDeleteRow".</p>
 			<pre>
- &lt;!-- Delete button can be placed anywhere in the page --&gt;
+&lt;!-- Delete button can be placed anywhere in the page --&gt;
 &lt;button id=&quot;btnDeleteRow&quot;&gt;Delete&lt;/button&gt;
 	</pre>	
-	<p>This plugin tries to find id of the row in the id attribute of the &lt;tr&gt; tag. Therefore, rows in the table must be in the following format:</p>
+	<p>Plugin tries to find id of the row in the id attribute of the <tr> tag. Therefore, following row format is required:</p>
 <pre>
-		&lt;tr id=&quot;2&quot;&gt;
-			&lt;td&gt;Misc&lt;/td&gt;
-			&lt;td&gt;Links&lt;/td&gt;
-			&lt;td&gt;Text only&lt;/td&gt;
-			&lt;td class=&quot;center&quot;&gt;-&lt;/td&gt;
-			&lt;td class=&quot;center&quot;&gt;X&lt;/td&gt;
-		&lt;/tr&gt
+&lt;tr id=&quot;2&quot;&gt;
+	&lt;td&gt;Misc&lt;/td&gt;
+	&lt;td&gt;Links&lt;/td&gt;
+	&lt;td&gt;Text only&lt;/td&gt;
+	&lt;td class=&quot;center&quot;&gt;-&lt;/td&gt;
+	&lt;td class=&quot;center&quot;&gt;X&lt;/td&gt;
+&lt;/tr&gt
 </pre>
-			<h1>Server-side code for delete request (PHP)</h1>
-			<p>Server-side page that accepts delete request should return "ok" value is row is deleted on the server-side, or an error message if delete fails. In this example server-side page always returns "ok" value:</p>
+			
+
+	<h1>Server-side code for delete request (PHP)</h1>
+			<p>Server-side page that accepts delete request should return "ok" if row was successfully deleted, or an error message if operation failed. In this example, server page always returns "ok" value:</p>
 			<pre>
 &lt;?php
 	//Always accepts delete
 	echo "ok"
 ?&gt;
-	</pre>	
+</pre>	
 
 			<h1>Server-side code for update request (PHP)</h1>
-<p>Server-side page that accepts update request should return the same value that plugin sent in the value request parameter if record is updated on the server-side, or an error message if update fails. In this example server-side page always returns posted value:</p>
+<p>Server-side page that accepts update request should return the same value that plugin sent in the value parameter if record was successfully updated, or an error message if operation failed. In this example, server page always returns posted value:</p>
 			<pre>
 &lt;?php
 	$editedValue = $_GET['value']
 	//Always accepts update(return posted value)
 	echo $editedValue
 ?&gt;
-	</pre>	
-
-			<h1>Examples</h1>
+</pre>	
+<p>In the live example "php" page returns hardcoded text, so the "server error" message is shown on each update.</p>
+			<h1>Other examples</h1>
 			<ul>
 				<li><a href="index.html">Basic usage</a></li>
 				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="custom-editors.html">Custom editors</a></li>
+				<li><a href="inline-validation.html">Validation of inline cells</a></li>
+				<li><a href="events.html">Pre-processing and post-processing events</a></li>
+				<li><a href="customization.html">User interface customizations</a></li>
+				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
 			</ul>
 			
 			<div id="footer" style="text-align:center;">
