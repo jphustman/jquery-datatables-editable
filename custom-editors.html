@@ -24,7 +24,10 @@
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
 				$('#example').dataTable().makeEditable({
-									sUpdateURL: "UpdateData.php",
+									sUpdateURL: function(value, settings)
+									{
+                             return(value); //Simulation of server-side response using a callback function
+									}",
                     							"aoColumns": [
                     									null,
                     									{
