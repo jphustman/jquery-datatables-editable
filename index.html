@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
@@ -21,9 +21,13 @@
         <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
 
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready( function () {
+			$(document).ready( 
 				$('#example').dataTable().makeEditable({
-									sUpdateURL: "UpdateData.php",
+                    							//sUpdateURL: "UpdateData.php", //On the code.google.com POST request is not supported so this line is commeted out
+                    							sUpdateURL:function () {function(value, settings)
+                                                                        {
+                             return(value); //Simulation of server-side response using a callback function
+                                                                        },//Remove this line in your code
                     							sDeleteURL: "DeleteData.php"
 										});
 				
@@ -612,7 +616,7 @@
 	echo $editedValue
 ?&gt;
 </pre>	
-<p>In the live example "php" page returns hardcoded text, so the "server error" message is shown on each update.</p>
+
 			<h1>Other examples</h1>
 			<ul>
 				<li><a href="index.html">Basic usage</a></li>
