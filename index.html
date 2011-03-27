@@ -21,10 +21,10 @@
         <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
 
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready( 
+			$(document).ready( function () {
 				$('#example').dataTable().makeEditable({
                     							//sUpdateURL: "UpdateData.php", //On the code.google.com POST request is not supported so this line is commeted out
-                    							sUpdateURL:function () {function(value, settings)
+                    							sUpdateURL:function(value, settings)
                                                                         {
                              return(value); //Simulation of server-side response using a callback function
                                                                         },//Remove this line in your code
