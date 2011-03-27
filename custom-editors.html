@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
@@ -32,7 +32,8 @@
                     									{
                 									        indicator: 'Saving platforms...',
                                                             					tooltip: 'Click to edit platforms',
-												type: 'textarea'
+												type: 'textarea',
+                                                 submit:'Save changes'
                     									},
                     									{
                                                             					indicator: 'Saving Engine Version...',
@@ -67,15 +68,15 @@
 		<div id="container">
 			<div class="full_width big">
 
-				Editable DataTable example - inline validation
+				Editable DataTable example - custom editors
 			</div>
 			
 			<h1>Preamble</h1>
 			<p>
 				DataTable Editable plugin supports inline editing of varous input types (text box, textarea, select list etc). Editing is implemented 				using <a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a>. To initialize the editors that
-			wll be applied on the columns, parameter aoColumns needs to be set in the plugin initialization call.
+			will be applied on the columns, parameter aoColumns needs to be set in the plugin initialization call.
 			This is an array of settings that will be
-				applied on table columns. This array should have the same number of columns as original table.
+				applied on table columns. This array should have the same number of columns as an original table.
 				Editor properties that are set in this array are identical to the properties of  
 				<a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a>. DataTables Editable plugin delegates
 				cell editing functionalities to the JEditable plugin and just passes properties in the aoColumns to the editors for the 
