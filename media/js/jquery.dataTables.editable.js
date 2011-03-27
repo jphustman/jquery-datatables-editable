@@ -1,6 +1,6 @@
-﻿/*
+ /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.1.0.
+* Version:     1.1.1.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -144,6 +144,8 @@
             },
             "onsubmit": function (settings, original) {
                 var input = $("input,select,textarea", this);
+                sOldValue = original.revert;
+                sNewCellValue = $("input,select,textarea", $(this)).val();
                 if (!properties.fnOnEditing(input))
                     return false;
                 var x = settings;
@@ -158,8 +160,6 @@
             "submitdata": function (value, settings) {
                 iDisplayStart = _fnGetDisplayStart();
                 properties.fnStartProcessingMode();
-                sOldValue = value;
-                sNewCellValue = $("input,select", $(this)).val();
                 var id = fnGetCellID(this);
                 var rowId = oTable.fnGetPosition(this)[0];
                 var columnPosition = oTable.fnGetPosition(this)[1];
