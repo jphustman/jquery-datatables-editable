@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
@@ -27,7 +27,13 @@
 									"bProcessing": true,
                     							"sPaginationType": "full_numbers"
                 						}).makeEditable({
-									sUpdateURL: "UpdateData.php",
+									sUpdateURL: function(value, settings)
+
+                                                                        {
+
+                             return(value); //Simulation of server-side response using a callback function
+
+                                                                        },
                     							sAddURL: "AddData.php",
 									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
                     							sDeleteURL: "DeleteData.php",
@@ -59,6 +65,7 @@
 				<li>sPaginationType - used to change pagination type</li>				
 			</ul>
 			Parameter sAddDeleteToolbarSelector is used to define where "add" and "delete" buttons should be placed and sAddDeleteToolbarSelector is used to inject "add" and "delete" buttons into the data table heading.
+           <br />Also, instead of the server-side URL update request is posted to the inline JavaScript function. In the real project you will add soem custom AJAXrequest into the body of this function.
 			</p>
 			
 			
@@ -592,7 +599,10 @@
 						"bProcessing": true,
                     				"sPaginationType": "full_numbers"
                 						}).makeEditable({
-							sUpdateURL: "UpdateData.php",
+							sUpdateURL: function(value, settings)
+                                 {
+                                       return(value); //Simulation of server-side response using a callback function
+                                 },
 							sAddURL: "AddData.php",
                     					sDeleteURL: "DeleteData.php",
 							sAddDeleteToolbarSelector: ".dataTables_length"
