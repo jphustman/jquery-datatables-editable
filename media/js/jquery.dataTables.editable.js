@@ -237,8 +237,12 @@
             var rel = $(this).attr("rel");
             if (rel >= iColumnCount)
                 properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
-            else
-                values[rel] = this.value;
+           else{
+                if(this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
+                  values[rel] = $("option:selected", this).text();
+                else
+                  values[rel] = this.value;
+           }
         });
 
         //Add values from the form into the table
