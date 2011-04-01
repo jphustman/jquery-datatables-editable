@@ -145,13 +145,13 @@
                 } else {
                     if (settings.width != 'none') {
                         settings.width = 
-                            settings.autowidth ? savedwidth  : settings.width
-                            //settings.autowidth ? $(self).width()  : settings.width;
+                            //settings.autowidth ? savedwidth  : settings.width
+                            settings.autowidth ? $(self).width()  : settings.width;
                     }
                     if (settings.height != 'none') {
                         settings.height = 
-                            settings.autoheight ? savedheight : settings.height;
-                            //settings.autoheight ? $(self).height() : settings.height;
+                            //settings.autoheight ? savedheight : settings.height;
+                            settings.autoheight ? $(self).height() : settings.height;
                     }
                 }
                 //$(this).css('visibility', '');
