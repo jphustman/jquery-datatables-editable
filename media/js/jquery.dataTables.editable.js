@@ -1,6 +1,6 @@
  /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.1.2.
+* Version:     1.1.3.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -43,6 +43,8 @@
 * @fnOnEdited                   Function    function(status){...} Function called after edit action. Status can be "success" or "failure"
 */
 (function ($) {
+
+    $.fn.makeEditable = function (options) {
 
     var iDisplayStart = 0;
 
@@ -354,7 +356,6 @@
         }
     }
 
-    $.fn.makeEditable = function (options) {
 
         oTable = this;
 
