@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
@@ -82,10 +82,26 @@
 			</div>
 			
 			<h1>Preamble</h1>
-			<p>This example shows how DataTables Editable can be customized to work with the two tables
-			on the same page. First table that is placed in the first tab in configured as standard table,
-			while for the second separate add form, add, button and delete button are placed. The second table
-			is configured to find additional elements by id.
+			<div class="full_width big">
+
+                DataTables Editable DOM Configuration - customize more than one table in the page
+            </div>
+            
+            <h1>Preamble</h1>
+            <p>This example shows how DataTables Editable can be customized to work with the two tables
+            on the same page. First table that is placed in the first tab in configured as a standard table.
+            For the second is added separate add form, add and delete buttons. The second table
+            is configured to find additional elements by id. If DataTables Editable plugin finds elements that
+            have the same ids as specified in the configuration, it will not auto-generate these elements - only 
+            event handlers will be attached to the existing buttons.
+            </p>
+            <p>To configure elements for the second table, the following tasks need to be done:
+            <ul>
+                <li>Add and delete buttons should be added to a page, these buttons must have the unique id attributes.</li>
+                <li>Custom add new row form should be added to a page, this form must have the unique id attribute.</li>
+                <li>Custom Ok and Cancel buttons should be added to the form. These buttons must have the unique id attributes.</li>
+                <li>Ids of the attributes added in the three previous items should be set in the JQuery DataTables Editable plugin call.</li>
+            </ul
 </p>
 			
 			<h1>Live example</h1>
@@ -448,7 +464,6 @@ $('#example2').dataTable( {
 				}).makeEditable({
 									sUpdateURL: "UpdateData.php",
                     							sAddURL: "AddData.php",
-									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
                     							sDeleteURL: "DeleteData.php",
 
                     							sAddNewRowFormId: "formAddNewRow2",
