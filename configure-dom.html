@@ -78,12 +78,6 @@
 		<div id="container">
 			<div class="full_width big">
 
-				DataTables scrolling and jQuery UI tabs
-			</div>
-			
-			<h1>Preamble</h1>
-			<div class="full_width big">
-
                 DataTables Editable DOM Configuration - customize more than one table in the page
             </div>
             
@@ -445,10 +439,28 @@
 				</div>
 			</div>
 			<div class="spacer"></div>
-			
-			
-			<h1>Initialisation code (for the second table in the second tab)</h1>
+     <h1>Custom DOM elements - add/delete buttons</h1>
+     <p>Add and delete buttons should be added in HTML code of the page so DataTables Editable plugin can attach add/delete event handlers to these buttons instead of the auto-generated ones.</p>
+     <pre>
+     &lt;button id=&quot;btnDeleteRow2&quot;&gt;Delete Selected Gecko Browser&lt;/button&gt; &lt;button id=&quot;btnAddNewRow2&quot;&gt;Add New Gecko Browser&lt;/button&gt;
+     
+     </pre>
+			     <h1>Custom DOM elements - add new row form</h1>
+              <p>Custom add new row form should be added to the page with ok and cancel buttons. When DataTables Editable plugin get ids of the ok and cancel buttons,
+               detects that buttons exist, it will attach ok and cancel event handlers to these buttons.
+     <pre>
+       &lt;form id=&quot;formAddNewRow2&quot; action=&quot;#&quot; title=&quot;Add New Gecko Browser&quot;&gt;
+          &lt;button id=&quot;btnAddNewRowCancel2&quot; value=&quot;cancel&quot;&gt;Cancel&lt;/button&gt;
+          &lt;button id=&quot;btnAddNewRowOk2&quot; value=&quot;Ok&quot;&gt;Add Gecko Browser&lt;/button&gt;
+ 
+          &lt;!-- INPUT elements of the form --&gt;
 
+      &lt;/form&gt;    
+     </pre>
+			<h1>Initialization code (for the second table in the second tab)</h1>
+          <p>In the DataTable Editable initialization call should be passed ids of the elements listed in previous examples. When the DataTables Editable plugin detects that
+          elements with these ids exist in the page, it will not autogenerate the new ones with default ids - it will attach event handlers to the
+          existing buttons instead.
 			<pre>
 
 
@@ -473,14 +485,6 @@ $('#example2').dataTable( {
                     							sDeleteRowButtonId: "btnDeleteRow2"
 										});
 			} );
-
-
-
-
-
-
-
-
 </pre>
 			
 			<h1>Other examples</h1>
