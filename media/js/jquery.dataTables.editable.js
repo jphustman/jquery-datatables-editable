@@ -1,6 +1,6 @@
  /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.1.3.
+* Version:     1.1.4.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -124,7 +124,7 @@
         }
     }
 
-    var sOldValue, sNewCellValue;
+    var sOldValue, sNewCellValue, sNewCellDislayValue;
     //Utility function used to apply editable plugin on table cells
     function _fnApplyEditable(aoNodes) {
         var oDefaultEditableSettings = {
@@ -133,7 +133,7 @@
                 properties.fnEndProcessingMode();
                 if (sNewCellValue == sValue) {
                     var aPos = oTable.fnGetPosition(this);
-                    oTable.fnUpdate(sValue, aPos[0], aPos[2]);
+                    oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
                     properties.fnOnEdited("success");
                 } else {
                     var aPos = oTable.fnGetPosition(this);
@@ -148,6 +148,14 @@
                 var input = $("input,select,textarea", this);
                 sOldValue = original.revert;
                 sNewCellValue = $("input,select,textarea", $(this)).val();
+                if (input.length == 1) {
+                    var oEditElement = input[0];
+                    if (oEditElement.nodeName.toLowerCase() == "select" || oEditElement.tagName.toLowerCase() == "select")
+                        sNewCellDisplayValue = $("option:selected", oEditElement).text(); //For select list use selected text instead of value for displaying in table
+                    else
+                        sNewCellDisplayValue = sNewCellValue;
+                }
+
                 if (!properties.fnOnEditing(input))
                     return false;
                 var x = settings;
