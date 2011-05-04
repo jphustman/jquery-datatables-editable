@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
 		
-		<title>Using DataTable with Editable plugin - Custom Column Editors</title>
+		<title>Using DataTable with Editable plugin - Server-side processing</title>
 		<style type="text/css" title="currentStyle">
 			@import "media/css/demo_page.css";
 			@import "media/css/demo_table.css";
@@ -26,7 +26,8 @@
            $('#example').dataTable({
                                       "bProcessing": true,
                                       "bServerSide": true,
-                                      "sAjaxSource": "server_processing.js",
+                                      "sAjaxSource": "http://datatables.net/examples/examples_support/server_processing.php",
+             //"sAjaxSource": "server_processing.js",
                                       "aoColumns":[
                                          {
                                             "bVisible" : false
@@ -205,8 +206,6 @@
 				</span>
 			</div>
 		</div>
-     </div>
-	</div>
  </body>
 
 
