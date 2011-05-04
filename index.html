@@ -1,4 +1,4 @@
- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
@@ -26,9 +26,11 @@
                     							//sUpdateURL: "UpdateData.php", //On the code.google.com POST request is not supported so this line is commeted out
                     							sUpdateURL:function(value, settings)
                                                                         {
-                             return(value); //Simulation of server-side response using a callback function
+                                                                            return (value); //Simulation of server-side response using a callback function
                                                                         },//Remove this line in your code
-                    							sDeleteURL: "DeleteData.php"
+                    							sDeleteURL: "DeleteData.php",
+                                                sDeleteHttpMethod: "GET" //Default post method is not allowed on the google code
+
 										});
 				
 			} );
