@@ -405,7 +405,7 @@
 
         return this.each(function () {
 
-            if (oTable.fnSettings().oFeatures.sAjaxSource != null) {
+            if (oTable.fnSettings().bAjaxDataGet) {
                 oTable.fnSettings().aoDrawCallback.push({
                     "fn": function () {
                         //Apply jEditable plugin on the table cells
