@@ -1,0 +1,194 @@
+!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Using DataTable with Editable plugin - Custom Column Editors</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/demo_validation.css";
+			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+
+        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.jeditable.js" type="text/javascript"></script>
+        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
+        <script src="media/js/jquery.validate.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready( function () {
+				$('#example').dataTable("bProcessing": true,
+		                              "bServerSide": true,
+		                               "sAjaxSource": "server_processing.js").makeEditable({
+									sUpdateURL: function(value, settings)
+									{
+                             return(value); //Simulation of server-side response using a callback function
+									},
+                    							"aoColumns": [
+                    									null,
+                    									{
+                    									},
+                    									{
+                									        indicator: 'Saving platforms...',
+                                                            					tooltip: 'Click to edit platforms',
+												type: 'textarea',
+                                    cssclass: 'required',
+                                                 submit:'Save changes'
+                    									},
+                    									{
+                                                            					indicator: 'Saving Engine Version...',
+                                                            					tooltip: 'Click to select engine version',
+                                                            					loadtext: 'loading...',
+                           					                                type: 'select',
+                               						            		onblur: 'cancel',
+												submit: 'Ok',
+                                                            					loadurl: 'EngineVersionList.php',
+												loadtype: 'GET'
+                    									},
+                    									{
+                                                            					indicator: 'Saving CSS Grade...',
+                                                            					tooltip: 'Click to select CSS Grade',
+                                                            					loadtext: 'loading...',
+                           					                                type: 'select',
+                               						            		onblur: 'submit',
+                                                            					data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}"
+                                                        				}
+											]									
+
+										});
+				
+			} );
+		</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+		<div id="container">
+			<div class="full_width big">
+
+				Editable DataTable example - custom editors
+			</div>
+			
+			<h1>Preamble</h1>
+			<p>
+				DataTable Editable plugin supports inline editing of varous input types (text box, textarea, select list etc). Editing is implemented 				using <a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a>. To initialize the editors that
+			will be applied on the columns, parameter aoColumns needs to be set in the plugin initialization call.
+			This is an array of settings that will be
+				applied on table columns. This array should have the same number of columns as an original table.
+				Editor properties that are set in this array are identical to the properties of  
+				<a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a>. DataTables Editable plugin delegates
+				cell editing functionalities to the JEditable plugin and just passes properties in the aoColumns to the editors for the 
+				praticular columns.
+			</p>
+			<p>In this example, first column is read only (passed null as aoColumns parameter), the second one uses standard settings,
+			 third column uses text area, fourth uses select list with php page as a source for the list of items and OK button for submiting
+			values, and fifth column uses select list with locally defined items that will be added in the list.</p>
+
+
+	
+		
+			
+			<h1>Live example</h1>
+
+			<div id="demo">
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+	<thead>
+		<tr>
+			<th>Rendering engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+
+			<th>Rendering engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+
+	</tfoot>
+	<tbody>
+
+	</tbody>
+</table>
+
+			</div>
+			<div class="spacer"></div>
+
+			
+			
+
+			
+			<h1>Initialization code</h1>
+			<p>In the initialization code you will need to pass definitions of the columns according to the <a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a> rules.</p>
+			<pre>$(document).ready( function () {
+		$('#example').dataTable().makeEditable({
+			                        sUpdateURL: "UpdateData.php",
+                       	                	"aoColumns": [
+                    			                null,
+                    			                {
+                    			                },
+                    			                {
+                					        indicator: 'Saving platforms...',
+                                                        	tooltip: 'Click to edit platforms',
+						                type: 'textarea'
+                    			                },
+                    			                {
+                                                        	indicator: 'Saving Engine Version...',
+                                                        	tooltip: 'Click to select the engine version',
+                                                        	loadtext: 'loading...',
+                        					type: 'select',
+                               					onblur: 'cancel',
+								submit: 'Ok',
+                                                        	loadurl: 'EngineVersionList.php',
+						                loadtype: 'GET'
+                    			                },
+                    			                {
+                                                        	indicator: 'Saving CSS Grade...',
+                                                        	tooltip: 'Click to select CSS Grade',
+                                                        	loadtext: 'loading...',
+                           					type: 'select',
+                               					onblur: 'submit',
+                                                        	data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}"
+                                                	}
+						]									
+
+				});
+		})
+	</pre>
+
+			<h1>Other examples</h1>
+			<ul>
+				<li><a href="index.html">Basic usage</a></li>
+				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="custom-editors.html">Custom editors</a></li>
+				<li><a href="inline-validation.html">Validation of inline cells</a></li>
+				<li><a href="events.html">Pre-processing and post-processing events</a></li>
+				<li><a href="customization.html">User interface customizations</a></li>
+				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
+			</ul>
+			
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					DataTables Editable &copy; Jovan Popovic 2010-2011.<br>
+				</span>
+			</div>
+		</div>
+	</body>
+
+
+</html>
