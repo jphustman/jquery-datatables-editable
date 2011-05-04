@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Using DataTable with Editable plugin - Server-side processing</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/demo_validation.css";
+			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+
+        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.jeditable.js" type="text/javascript"></script>
+        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
+        <script src="media/js/jquery.validate.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready( function () {
+           $('#example').dataTable({
+                                      "bProcessing": true,
+                                      "bServerSide": true,
+                                      "sAjaxSource": "server_processing.js",
+                                      "aoColumns":[
+                                         {
+                                            "bVisible" : false
+                                         },
+                                         {},
+                                         {},
+                                         {},
+                                         {}
+                                       ]
+                                    }
+                                    ).makeEditable({
+		                                	sUpdateURL: function(value, settings)
+		                                	{
+		                                         return(value); //Simulation of server-side response using a callback function
+		                                	},
+                    							"aoColumns": [
+                    									{
+                                                   cssclass: 'required'
+                    									},
+                    									{
+                									        indicator: 'Saving platforms...',
+                                                   tooltip: 'Click to edit platforms',
+                                                   type: 'textarea',
+                                                   submit:'Save changes'
+                    									},
+                    									{
+                                                   indicator: 'Saving Engine Version...',
+                                                   tooltip: 'Click to select engine version',
+                                                   loadtext: 'loading...',
+                           					         type: 'select',
+                               						  onblur: 'cancel',
+                                                   submit: 'Ok',
+                                                   loadurl: 'EngineVersionList.php',
+                                                   loadtype: 'GET'
+                    									},
+                    									{
+                                                   indicator: 'Saving CSS Grade...',
+                                                   tooltip: 'Click to select CSS Grade',
+                                                   loadtext: 'loading...',
+                           					         type: 'select',
+                               						  onblur: 'submit',
+                                                   data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}"
+                                                }
+											]									
+										});
+			} );
+		</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+		<div id="container">
+			<div class="full_width big">
+
+				Editable DataTable example - server-side processing
+			</div>
+			
+			<h1>Preamble</h1>
+			<p>
+           DataTable  Editable plugin works with DataTables in the server-side processing  mode. In this example, cells are not placed in the source
+           of the page - it is loaded from the server-side via JSON.</p>
+           <p>There  is just one important thing you need to notice. If you set aoColumns  definitions in dataTable and editable number of columns should not  match. 
+           In  the dataTable plugin number of aoColumns elements should be same as the  number of columns in the table. However, in the dataTables editable  plugin
+             number of aoColumns is equal to the number of <strong>visible</strong> columns. If you have five columns in the dataTable and first is not visible,
+             in  the dataTables editable aoColumns array you will have four elements  because each of the elements is applied to the visible cells.</p>
+
+
+	
+		
+			
+			<h1>Live example</h1>
+
+			<div id="demo">
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+	<thead>
+		<tr>
+			<th>Rendering engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+
+			<th>Rendering engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+
+	</tfoot>
+	<tbody>
+
+	</tbody>
+</table>
+
+			</div>
+			<div class="spacer"></div>
+
+			<h1>Initialization code</h1>
+			<p>In  the initialization code you will need to pass definitions of the  columns according to the <a  href="http://www.datatables.net/examples/data_sources/server_side.html">JQuery  DataTables server-side processing</a> rules. Note that this is a "fake" server-side processing becuse the same .js file is called each time. Gogle code do not host php server page therefore on the demo page is used just a simulation.</p>
+			<pre>
+			$(document).ready( function () {
+           $('#example').dataTable({
+                                      "bProcessing": true,
+                                      "bServerSide": true,
+                                      "sAjaxSource": "server_processing.js",
+                                      "aoColumns":[
+                                         {
+                                            "bVisible" : false
+                                         },
+                                         {},
+                                         {},
+                                         {},
+                                         {}
+                                       ]
+                                    }
+                                    ).makeEditable({
+		                                	sUpdateURL: function(value, settings)
+		                                	{
+		                                         return(value); //Simulation of server-side response using a callback function
+		                                	},
+                    							"aoColumns": [
+                    									{
+                    									},
+                    									{
+                									        indicator: 'Saving platforms...',
+                                                   tooltip: 'Click to edit platforms',
+                                                   type: 'textarea',
+                                                   cssclass: 'required',
+                                                   submit:'Save changes'
+                    									},
+                    									{
+                                                   indicator: 'Saving Engine Version...',
+                                                   tooltip: 'Click to select engine version',
+                                                   loadtext: 'loading...',
+                           					         type: 'select',
+                               						  onblur: 'cancel',
+                                                   submit: 'Ok',
+                                                   loadurl: 'EngineVersionList.php',
+                                                   loadtype: 'GET'
+                    									},
+                    									{
+                                                   indicator: 'Saving CSS Grade...',
+                                                   tooltip: 'Click to select CSS Grade',
+                                                   loadtext: 'loading...',
+                           					         type: 'select',
+                               						  onblur: 'submit',
+                                                   data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}"
+                                                }
+											]									
+										});
+			} );
+	</pre>
+
+			<h1>Other examples</h1>
+			<ul>
+				<li><a href="index.html">Basic usage</a></li>
+				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="custom-editors.html">Custom editors</a></li>
+				<li><a href="inline-validation.html">Validation of inline cells</a></li>
+				<li><a href="events.html">Pre-processing and post-processing events</a></li>
+				<li><a href="customization.html">User interface customizations</a></li>
+				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
+            <li><a href="ajax.html">Using Ajax source</a></li>
+			</ul>
+			
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					DataTables Editable &copy; Jovan Popovic 2010-2011.<br>
+				</span>
+			</div>
+		</div>
+ </body>
+
+
+</html>
