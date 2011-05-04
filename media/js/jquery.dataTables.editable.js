@@ -1,6 +1,6 @@
  /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.1.4.
+* Version:     1.1.5.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -28,7 +28,8 @@
 * @fnStartProcessingMode        Function    function(){...} called when AJAX call is started. Use this function to add "Please wait..." message  when some button is pressed.
 * @fnEndProcessingMode          Function    function(){...} called when AJAX call is ended. Use this function to close "Please wait..." message.
 * @aoColumns                    Array       Array of the JEditable settings that will be applied on the columns
-* @sAddHttpMethod               String      Method used for the Add AJAX request (defauSSlt 'POST')
+* @sAddHttpMethod               String      Method used for the Add AJAX request (default is 'POST')
+* @sDeleteHttpMethod            String      Method used for the Delete AJAX request (default is 'POST')
 * @fnOnDeleting                 Function    function(tr, id){...} Function called before row is deleted.
                                             tr isJQuery object encapsulating row that will be deleted
                                             id is an id of the record that will be deleted.
@@ -296,6 +297,7 @@
         if (properties.fnOnDeleting($('tr.' + properties.sSelectedRowClass, oTable), id)) {
             properties.fnStartProcessingMode();
             $.ajax({ 'url': properties.sDeleteURL,
+                'type': properties.sDeleteHttpMethod,
                 'data': 'id=' + id,
                 "success": _fnOnRowDeleted,
                 "error": function (response) {
@@ -392,6 +394,7 @@
             fnOnEditing: fnOnEditing,
             fnOnEdited: fnOnEdited,
             sAddHttpMethod: 'POST',
+            sDeleteHttpMethod: 'POST',
             fnGetRowID: _fnGetRowIDFromAttribute,
             fnSetRowID: _fnSetRowIDInAttribute
 
@@ -402,7 +405,7 @@
 
         return this.each(function () {
 
-            if (oTable.fnSettings().oFeatures.bServerSide) {
+            if (oTable.fnSettings().oFeatures.sAjaxSource != null) {
                 oTable.fnSettings().aoDrawCallback.push({
                     "fn": function () {
                         //Apply jEditable plugin on the table cells
