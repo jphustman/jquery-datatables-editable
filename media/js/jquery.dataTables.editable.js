@@ -1,6 +1,6 @@
  /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.1.5.
+* Version:     1.1.6.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
