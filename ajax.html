@@ -44,8 +44,8 @@
 			
 			<h1>Preamble</h1>
 			<p>
-           DataTable Editable plugin works with DataTables that do not dinamically read cells that shoudl be displayed in via ajax call. In this example, cells are not placed in the source
-           of the page - they is loaded from the server-side via JSON. Once cells are loaded from the source via AJAX call they are processed on the client side.</p>
+           DataTable Editable plugin works with DataTables that dinamically read cells that should be displayed via ajax call. In this example, cells are not placed in the source
+           of the page - they is loaded from the server-side via JSON request. Once cells are loaded from the source via AJAX call, they are processed on the client side.</p>
 
 
 	
@@ -85,7 +85,7 @@
 			<div class="spacer"></div>
 
 			<h1>Initialization code</h1>
-			<p>In the initialization code you will need to pass URL of the data source that contains data that will be loaded.</p>
+			<p>In the initialization code you will need to pass URL of the data source that contains data that will be loaded. Processing option is placed just to show "Processing" dialog while the action is performing.</p>
 			<pre>
 			$(document).ready( function () {
            $('#example').dataTable({
