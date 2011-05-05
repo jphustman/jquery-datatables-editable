@@ -88,15 +88,11 @@
 			<h1>Preamble</h1>
 			<p>
            DataTable  Editable plugin works with DataTables in the server-side processing  mode. In this example, cells are not placed in the source
-           of the page - it is loaded from the server-side via JSON.</p>
-           <p>There  is just one important thing you need to notice. If you set aoColumns  definitions in dataTable and editable number of columns should not  match. 
+           of the page - they are loaded from the server-side via JSON. This mode is similar with the <a href="ajax.html">ajax mode</a> because in both cases rows are loaded via ajax call. However in the <a href="ajax.html">ajax mode</a>, once data is loaded sorting, filtering and pagination is done on the client side, and in this mode each time user makes any action new ajax request is sent to the server.</p>
+           <p>There  is just one important thing you need to notice. If you set aoColumns  definitions in dataTable and editable number of columns should not match. 
            In  the dataTable plugin number of aoColumns elements should be same as the  number of columns in the table. However, in the dataTables editable  plugin
-             number of aoColumns is equal to the number of <strong>visible</strong> columns. If you have five columns in the dataTable and first is not visible,
+             number of aoColumns is equal to the number of <strong>visible</strong> columns. If you have five columns in the dataTable and first one is not visible,
              in  the dataTables editable aoColumns array you will have four elements  because each of the elements is applied to the visible cells.</p>
-
-
-	
-		
 			
 			<h1>Live example</h1>
 
@@ -132,9 +128,9 @@
 			<div class="spacer"></div>
 
 			<h1>Initialization code</h1>
-			<p>In  the initialization code you will need to pass definitions of the  columns according to the <a  href="http://www.datatables.net/examples/data_sources/server_side.html">JQuery  DataTables server-side processing</a> rules. Note that this is a "fake" server-side processing becuse the same .js file is called each time. Gogle code do not host php server page therefore on the demo page is used just a simulation.</p>
+			<p>In  the initialization code you will need to pass definitions of the  columns according to the <a  href="http://www.datatables.net/examples/data_sources/server_side.html">JQuery  DataTables server-side processing</a> rules. Note that this is a "fake" server-side processing becuse the same .js file is called each time. Google code do not host php server page therefore on the demo page is used just a simulation.</p>
 			<pre>
-			$(document).ready( function () {
+$(document).ready( function () {
            $('#example').dataTable({
                                       "bServerSide": true,
                                       "sAjaxSource": "server_processing.js",
@@ -151,37 +147,38 @@
                                     ).makeEditable({
 		                                	sUpdateURL: function(value, settings)
 		                                	{
-		                                         return(value); //Simulation of server-side response using a callback function
+		                                	      //Simulation of server-side response using a callback function
+		                                	      return(value); 
 		                                	},
-                    							"aoColumns": [
+		                                	"aoColumns": [
                     									{
                     									},
                     									{
-                									        indicator: 'Saving platforms...',
+                                                   indicator: 'Saving platforms...',
                                                    tooltip: 'Click to edit platforms',
                                                    type: 'textarea',
                                                    cssclass: 'required',
                                                    submit:'Save changes'
-                    									},
-                    									{
+                                               },
+                                               {
                                                    indicator: 'Saving Engine Version...',
                                                    tooltip: 'Click to select engine version',
                                                    loadtext: 'loading...',
-                           					         type: 'select',
-                               						  onblur: 'cancel',
+                                                   type: 'select',
+                                                   onblur: 'cancel',
                                                    submit: 'Ok',
                                                    loadurl: 'EngineVersionList.php',
                                                    loadtype: 'GET'
-                    									},
-                    									{
+                                               },
+                                               {
                                                    indicator: 'Saving CSS Grade...',
                                                    tooltip: 'Click to select CSS Grade',
                                                    loadtext: 'loading...',
-                           					         type: 'select',
-                               						  onblur: 'submit',
+                                                   type: 'select',
+                                                   onblur: 'submit',
                                                    data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}"
                                                 }
-											]									
+                                  ]									
 										});
 			} );
 	</pre>
