@@ -42,6 +42,8 @@
                                             input JQuery object wrapping the inut element used for editing value in the cell.
                                             returns true if plugin should continue with sending AJAX request, false will abort update.
 * @fnOnEdited                   Function    function(status){...} Function called after edit action. Status can be "success" or "failure"
+* @sEditorHeight                String      Default height of the cell editors
+* @sEditorWidth                 String      Default width of the cell editors
 */
 (function ($) {
 
@@ -191,7 +193,8 @@
                 properties.fnShowError("Cell cannot be updated(Server error)", "update");
                 properties.fnOnEdited("failure");
             },
-            "height": properties.height
+            "height": properties.sEditorHeight,
+            "width": properties.sEditorWidth
         };
 
         var cells = null;
@@ -374,7 +377,6 @@
             sUpdateURL: "UpdateData",
             sAddURL: "AddData",
             sDeleteURL: "DeleteData",
-            height: "14px",
             sAddNewRowFormId: "formAddNewRow",
             sAddNewRowButtonId: "btnAddNewRow",
             sAddNewRowOkButtonId: "btnAddNewRowOk",
@@ -396,7 +398,9 @@
             sAddHttpMethod: 'POST',
             sDeleteHttpMethod: 'POST',
             fnGetRowID: _fnGetRowIDFromAttribute,
-            fnSetRowID: _fnSetRowIDInAttribute
+            fnSetRowID: _fnSetRowIDInAttribute,
+            sEditorHeight: "100%",
+            sEditorWidth: "100%"
 
         };
 
