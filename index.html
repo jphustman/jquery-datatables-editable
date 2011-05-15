@@ -1,90 +1,199 @@
-﻿ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-
-	
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+		<title>DataTables (table plug-in for jQuery) Column Filter Add-on</title>
 		
-		<title>Using DataTable with Editable plugin - Basic Example</title>
-		<style type="text/css" title="currentStyle">
+		<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/media/images/favicon.ico">
+		<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.datatables.net/rss.xml">
+		
+		<style type="text/css" media="screen">
 			@import "media/css/demo_page.css";
 			@import "media/css/demo_table.css";
+			@import "http://www.datatables.net/media/css/site_jui.ccss";
+			@import "media/css/demo_table_jui.css";
 			@import "media/css/themes/base/jquery-ui.css";
 			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+			/*
+			 * Override styles needed due to the mix of three different CSS sources! For proper examples
+			 * please see the themes example in the 'Examples' section of this site
+			 */
+			.dataTables_info { padding-top: 0; }
+			.dataTables_paginate { padding-top: 0; }
+			.css_right { float: right; }
+			#example_wrapper .fg-toolbar { font-size: 0.8em }
+			#theme_links span { float: left; padding: 2px 10px; }
 		</style>
 
-        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
-        <script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
-        <script src="media/js/jquery.jeditable.js" type="text/javascript"></script>
-        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
-        <script src="media/js/jquery.validate.js" type="text/javascript"></script>
-        <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" src="media/js/complete.js"></script>
+		<script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        	<script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="media/js/jquery.datatables.editable.js"></script>
+		<script src="media/js/jquery.jeditable.js" type="text/javascript"></script>
+        	<script src="media/js/jquery-ui.js" type="text/javascript"></script>
+        	<script src="media/js/jquery.validate.js" type="text/javascript"></script>
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
-				$('#example').dataTable().makeEditable({
-                    							//sUpdateURL: "UpdateData.php", //On the code.google.com POST request is not supported so this line is commeted out
-                    							sUpdateURL:function(value, settings)
-                                                                        {
-                                                                            return (value); //Simulation of server-side response using a callback function
-                                                                        },//Remove this line in your code
-                    							sDeleteURL: "DeleteData.php",
-                                                sDeleteHttpMethod: "GET" //Default post method is not allowed on the google code
+				var id = -1;//simulation of id
+				$('#example').dataTable({ bJQueryUI: true,
+
+							"sPaginationType": "full_numbers"
+}).makeEditable({
+									sUpdateURL: function(value, settings)
+									{
+                             							return(value); //Simulation of server-side response using a callback function
+									},
+									sAddURL: "AddData.php",
+									sDeleteURL: "DeleteData.php",
+                    							"aoColumns": [
+                    									{ 	cssclass: "required" },
+                    									{
+                    									},
+                    									{
+                									        indicator: 'Saving platforms...',
+                                                            					tooltip: 'Click to edit platforms',
+												type: 'textarea',
+                                                 						submit:'Save changes'
+                    									},
+                    									{
+                                                            					indicator: 'Saving Engine Version...',
+                                                            					tooltip: 'Click to select engine version',
+                                                            					loadtext: 'loading...',
+                           					                                type: 'select',
+                               						            		onblur: 'cancel',
+												submit: 'Ok',
+                                                            					loadurl: 'EngineVersionList.php',
+												loadtype: 'GET'
+                    									},
+                    									{
+                                                            					indicator: 'Saving CSS Grade...',
+                                                            					tooltip: 'Click to select CSS Grade',
+                                                            					loadtext: 'loading...',
+                           					                                type: 'select',
+                               						            		onblur: 'submit',
+                                                            					data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}"
+                                                        				}
+											],
+									oAddNewRowButtonOptions: {	label: "Add...",
+													icons: {primary:'ui-icon-plus'} 
+									},
+									oDeleteRowButtonOptions: {	label: "Remove", 
+													icons: {primary:'ui-icon-trash'}
+									},
+									
+									oAddNewRowFormOptions: { 	title: 'Add a new browser',
+													show: "blind",
+													hide: "explode"
+									}	,
+sAddDeleteToolbarSelector: ".dataTables_length"								
 
 										});
 				
 			} );
 		</script>
+
+        <script type="text/javascript">
+
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-17838786-2']);
+            _gaq.push(['_trackPageview']);
+
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+</script>
 	</head>
+	
 
+<body id="index" class="grid_2_3">
+		<div id="fw_container">
+			
+						<div id="fw_header">
+				<h1>
+					
 
-
-
-<body id="dt_example">
-		<div id="container">
-			<div class="full_width big">
-
-				Editable DataTable example
+						<img src="media/images/DataTables.jpg" alt="DataTables logo">
+						DataTables Editable (CRUD) Add-on
+					
+				</h1>
+				<ul>
+					<li><a  href="http://code.google.com/p/jquery-datatables-editable/">Project Home</a></li>
+					<li><a  href="inline-edit.html">Examples</a></li>
+					<li><a  href="http://code.google.com/p/jquery-datatables-editable/wiki/Overview">Documentation</a></li>
+					<li><a  href="http://code.google.com/p/jquery-datatables-editable/issues/list">Issues/Changes</a></li>
+					<li><a  href="http://www.datatables.net/">DataTables plugin</a></li>
+</li>
+									</ul>
+				<div class="css_clear"></div>
+								
+								
+				
 			</div>
 			
-			<h1>Preamble</h1>
-			<p>
-				DataTable Editable plugin enhances standard DataTables plugin by adding functionalities that allow user to perform inline editing by 					double-clicking on a cell, to select rows and delete them. Plugin encapsulates all required processing, and it is up to you to take 					care of implementing server-side code that accepts update and delete AJAX requests sent by the plugin. 
+						
+			<div id="fw_content">
+				<div class="grid_column_1">
+					<p><a  href="http://www.datatables.net/">DataTables</a> is a plug-in for the <a href="http://www.jquery.com/">jQuery</a> Javascript library. It is a highly flexible tool, based upon the foundations of progressive enhancement, which will add advanced interaction controls to any HTML table. DataTables Editable plugin is an add-on for the DataTables where are provided out of box data management (CRUD) functionalities. Key features:</p>
+					<ul class="limit_length">
+						<li>Inline cell editing</li>
+						<li>Select/delete rows in the table</li>
+						<li>Adding new records</li>
+						<li>
+							Various customizations
+							<ul>
+								<li>Customize DOM</li>
+								<li>Different types of inline editors text boxes, select lists)</li>
+							</ul>
+						</li>
 
-			</p>
+						<li>It's free!</li>
+						<li>Full integration with the DataTables plugin</li>
 
-			<p>You will need <b>page that handles delete AJAX requests</b> (DeleteData.php in this example) and accepts single parameter: 
-
-			<ol>
-			<li>id - id of the record that user wants to delete (id is placed in the tag that surrounds the cell). </li>
-			</ol>
-			If operation was successfully completed server-side page should return "ok" string. Otherwise, it should return error message. 
-			</p>
-
-			<p>You will also need <b>page that handles update AJAX requests</b> (UpdateData.php in this example) and accepts following parameters: 
-
-			<ol>
-			<li>value - contains new text value of the cell that user edited</li>
-			<li>id - id of the updated record (id is placed in the tag that surrounds the cell)</li>
-			<li>columnId - position of the column of the cell that has been edited (hidden columns are counted also)</li>
-			<li>columnPosition - position of the column of the cell that has been edited (hidden columns are not counted)</li>
-			<li>rowId - id of the row containing the cell that has been edited</li>
-			</ol>
-			If operation was successfully completed server-side page should return value that user entered during editing. Otherwise, it should return error message. 
-			</p>
-	
-			
-			
-			<h1>Live example</h1>
-
-
-
-
+					</ul>
+				</div>
+				
+				<div class="grid_column_2">
+					<p>So how easy it is to use apply column filters on the DataTables? Take a peek at the code below, a single function call to initialise the table is all it takes:</p>
+					<pre class="brush: js; font-size: 75%">/* 
+ * Example init
+ */
+$(document).ready(function(){
+     $('#example').dataTable()
+		  .makeEditable();
+});</pre>
 
 
+				</div>
+				<div class="css_clear css_spacing"></div>
+				
+				<h3>Example</h3>
+				<div class="full_width">
+<form id="formAddNewRow" action="#" title="Add a new browser" style="width:600px;min-width:600px">
+        <label for="engine">Rendering engine</label><br />
+	<input type="text" name="engine" id="name" class="required" rel="0" />
+        <br />
+        <label for="browser">Browser</label><br />
+	<input type="text" name="browser" id="browser" rel="1" />
+        <input type="hidden" name="platform" rel="2" />
+        <br />
+        <label for="version">Engine version</label><br />
+	<select name="version" id="version" rel="3">
+                <option>1.5</option>
+                <option>1.7</option>
+                <option>1.8</option>
+        </select>
+        <br />
+        <label for="grade">CSS grade</label><br />
+		<input type="radio" name="grade" value="A" rel="4"> First<br>
+		<input type="radio" name="grade" value="B" rel="4"> Second<br>
+		<input type="radio" name="grade" value="C" checked rel="4"> Third
+        <br />
+</form>
 
-			<div id="demo">
-<button id="btnDeleteRow">Delete</button>
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
 	<thead>
 		<tr>
@@ -565,84 +674,57 @@
 		</tr>
 	</tbody>
 </table>
+				</div>
+			</div>
+			<div class="css_clear"></div>
+			
+			<div class="css_spacing"></div>
+<!--
+			<div class="grid_column_1r">
+				<h3>Used by</h3>
+
+				<div class="column_1_3 news_link css_center"><a href="http://openlibrary.org/"><img src="/media/images/used_by/open_library.png"></a></div><div class="column_1_3 news_link css_center"><a href="http://www.st-andrews.ac.uk/"><img src="/media/images/used_by/stAndrews.png"></a></div><div class="column_1_3 news_link css_center"><a href="http://usatoday.com"><img src="/media/images/used_by/usatoday.png"></a></div>				<p class="css_center css_small" style="padding-top: 20px">
+					Are you using DataTables as well?<br>Please <a href="/contact">get in touch</a>!
+				</p>
 
 			</div>
-			<div class="spacer"></div>
-
 			
-			
+			<div class="grid_column_2r">
+				<h3>DataTables around the web</h3>
 
-			
-			<h1>Initialization code</h1>
-			<p>Initialization code is very simple. You just need to specify URL of the pages that accept delete and update requests on the server side.</p>
-			<pre>$(document).ready( function () {
-		$('#example').dataTable().makeEditable({
-							sUpdateURL: "UpdateData.php",
-                    					sDeleteURL: "DeleteData.php"
-							});
-}
-	</pre>
-			<h1>Additional HTML code</h1>
-	<p>One delete button needs to be placed in your HTML source. This button will be enabled each time user selects a row in the table, and disabled each time user deselects row. Id of the button has to be "btnDeleteRow".</p>
-			<pre>
-&lt;!-- Delete button can be placed anywhere in the page --&gt;
-&lt;button id=&quot;btnDeleteRow&quot;&gt;Delete&lt;/button&gt;
-	</pre>	
-	<p>Plugin tries to find id of the row in the id attribute of the <tr> tag. Therefore, following row format is required:</p>
-<pre>
-&lt;tr id=&quot;2&quot;&gt;
-	&lt;td&gt;Misc&lt;/td&gt;
-	&lt;td&gt;Links&lt;/td&gt;
-	&lt;td&gt;Text only&lt;/td&gt;
-	&lt;td class=&quot;center&quot;&gt;-&lt;/td&gt;
-	&lt;td class=&quot;center&quot;&gt;X&lt;/td&gt;
-&lt;/tr&gt
-</pre>
-			
+				<div class="column_1_3 news_link">	<a href="http://julien.maupetit.alwaysdata.net/Blog/2011/05/05/serving-csv-data-cgi-mode-populate-jquery-datatabl/
+">Server-side processing with CSV source</a><br>	Julien Maupetit shows us how to use Python to consume CSV data to perform server-side processing for DataTables.</div><div class="column_1_3r news_link">	<a href="https://github.com/cyberhobo/ColumnFilterWidgets
+">Column filtering widgets</a><br>	This is a very cool extra for DataTables which provides advanced filtering options for your tables, adding a drop down for each column, with cascading selection options.</div><div class="column_1_3 news_link">	<a href="http://www.codeproject.com/KB/java/JQuery-DataTables-Java.aspx
+">Server-side processing and Java</a><br>	Jovan Popovic turns his hand this time to showing us how server-side processing for DataTables can be implemented in Java, in this thorough tutorial.</div><div class="column_1_3r news_link">	<a href="http://www.codeproject.com/KB/aspnet/Expandabe-DataTable-MVC.aspx
+">Details view with ASP.NET MVC</a><br>	Jovan Popovic continues his excellent series of articles about DataTables, this time showing how to integrate fnOpen with an Ajax request to an ASP.NET MVC backend to show details about a row.</div><div class="column_1_3 news_link">	<a href="https://github.com/IgnitedDatatables/Ignited-Datatables/
+">Ignited-Datatables</a><br>	Work has been continuing at a fine pace with Ignited-Datatables - a server-side processing backend for CodeIgniter. Now with support for joins.</div>				<div class="column_1_3r news_link css_center">
 
-	<h1>Server-side code for delete request (PHP)</h1>
-			<p>Server-side page that accepts delete request should return "ok" if row was successfully deleted, or an error message if operation failed. In this example, server page always returns "ok" value:</p>
-			<pre>
-&lt;?php
-	//Always accepts delete
-	echo "ok"
-?&gt;
-</pre>	
+					<p><a href="news.php">More...</a></p>
+					<p class="css_small">Please <a href="/contact">let me know</a> if you have any DataTables related news, which I can add here!</p>
+					<p>
+						<a href="/rss_news.xml"><img src="/media/images/rss.png"> DataTables news feed</a><br>
+						<a href="/rss.xml"><img src="/media/images/rss.png"> DataTables releases feed</a>
 
-			<h1>Server-side code for update request (PHP)</h1>
-<p>Server-side page that accepts update request should return the same value that plugin sent in the value parameter if record was successfully updated, or an error message if operation failed. In this example, server page always returns posted value:</p>
-			<pre>
-&lt;?php
-	$editedValue = $_GET['value']
-	//Always accepts update(return posted value)
-	echo $editedValue
-?&gt;
-</pre>	
-
-			<h1>Other examples</h1>
-			<ul>
-				<li><a href="index.html">Basic usage</a></li>
-				<li><a href="addingrecords.html">Adding a new record</a></li>
-				<li><a href="custom-editors.html">Custom editors</a></li>
-				<li><a href="inline-validation.html">Validation of inline cells</a></li>
-				<li><a href="events.html">Pre-processing and post-processing events</a></li>
-				<li><a href="customization.html">User interface customizations</a></li>
-				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
-				<li><a href="customize-buttons.html">Customization of buttons and form</a></li>
-				<li><a href="configure-dom.html">Two different tables on the same page</a></li>
-				<li><a href="ajax.html">Using Ajax source</a></li>
-			</ul>
-			
-			<div id="footer" style="text-align:center;">
-				<span style="font-size:10px;">
-					DataTables Editable &copy; Jovan Popovic 2010-2011.<br>
-				</span>
+					</p>
+				</div>
+				<div class="css_clear"></div>
 			</div>
+-->
+			<div class="css_clear"></div>
+			
+						<div id="fw_footer">
+				<div class="css_center">
+					DataTables Column Filter Add-on created by Jovan Popovic &copy; 2011<br>
+					DataTables designed and created by <a href="http://www.sprymedia.co.uk">Allan Jardine</a> &copy; 2007-2011<br>
+
+				</div>
+			</div>
+
+
+
 		</div>
+
+		
 	</body>
-
-
-
-
 
 </html>

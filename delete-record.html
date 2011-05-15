@@ -1,11 +1,11 @@
- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
 		
-		<title>Editable DataTable Example - Customize buttons/form using JQuery UI</title>
+		<title>Using DataTable with Editable plugin - Delete Rows</title>
 		<style type="text/css" title="currentStyle">
 			@import "media/css/demo_page.css";
 			@import "media/css/demo_table.css";
@@ -22,32 +22,10 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
-				var oTable = $('#example').dataTable().makeEditable({
-									sUpdateURL: "UpdateData.php",
-                    							sAddURL: "AddData.php",
-									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+				$('#example').dataTable().makeEditable({
                     							sDeleteURL: "DeleteData.php",
-									oAddNewRowButtonOptions: {	label: "Add...",
-													icons: {primary:'ui-icon-plus'} 
-									},
-									oDeleteRowButtonOptions: {	label: "Remove", 
-													icons: {primary:'ui-icon-trash'}
-									},
-									oAddNewRowOkButtonOptions: {	label: "Confirm",
-													icons: {primary:'ui-icon-check'},
-													name:"action",
-													value:"add-new"
-									},
-									oAddNewRowCancelButtonOptions: { label: "Close",
-													 class: "back-class",
-													 name:"action",
-													 value:"cancel-add",
-													 icons: {primary:'ui-icon-close'}
-									},
-									oAddNewRowFormOptions: { 	title: 'Add a new browser - form',
-													show: "blind",
-													hide: "explode"
-									}
+                                                			sDeleteHttpMethod: "GET" //Default post method is not allowed on the google code
+
 										});
 				
 			} );
@@ -74,65 +52,42 @@
 		<div id="container">
 			<div class="full_width big">
 
-				Editable DataTable example - Customize buttons/form using JQuery UI
+				Editable DataTable example - Delete records
 			</div>
 			
 			<h1>Preamble</h1>
 			<p>
-				DataTable Editable plugin enables you to apply standard JQuery-ui components in the form. You can define options for
-				each button in the page (add new, delete, confirm add, cancel add) and configure button properties. Also, as form 
-				for adding new records is a JQuery-ui dialog you can configure that form too. In the following example is shown how
-				the buttons and form can be customized.	Following options can be applied:
-				<ul>
-					<li>On the add and delete buttons can be set label and icons (see example on the <a href="http://jqueryui.com/demos/button/">JQuery UI Buttons</a>). Plugin properties are oAddNewRowButtonOptions and oDeleteRowButtonOptions.</li>		
-					<li>On the ok and cancel buttons in the add new record form can be added label and icons, and any other custom properties (e.g. class, name, rel attributes etc).Plugin properties are oAddNewRowOkButtonOptions and oAddNewRowCancelButtonOptions</li>
-					<li>On the add new record popup dialog you can apply all standard dialog properties as shown in the <a href="http://jqueryui.com/demos/dialog/">JQuery UI Dialog</a>. Plugin property that will be applied is oAddNewRowFormOptions.</li>
+			DataTable Editable plugin enhances standard DataTables plugin by adding functionalities that allow user to to select rows and 					delete them. Plugin encapsulates all required processing, and it is up to you to take 					
+			care of implementing server-side code that accepts delete AJAX requests sent by the plugin. 
 
-				</ul>
 			</p>
 
+			<p>You will need <b>page that handles delete AJAX requests</b> (DeleteData.php in this example) and accepts single parameter: 
+
+			<ol>
+			<li>id - id of the record that user wants to delete (id is placed in the tag that surrounds the cell). </li>
+			</ol>
+			If operation was successfully completed server-side page should return "ok" string. Otherwise, it should return error message. 
+			</p>
+
+	
+			
+			
 			<h1>Live example</h1>
 
 
 
 
 
- <form id="formAddNewRow" action="#" title="Add new record">
-        <label for="engine">Rendering engine</label><br />
-	<input type="text" name="engine" id="name" class="required" rel="0" />
-        <br />
-        <label for="browser">Browser</label><br />
-	<input type="text" name="browser" id="browser" rel="1" />
-        <br />
-        <label for="platforms">Platform(s)</label><br />
-	<textarea name="platforms" id="platforms" rel="2"></textarea>
-        <br />
-        <label for="version">Engine version</label><br />
-	<select name="version" id="version" rel="3">
-                <option>1.5</option>
-                <option>1.7</option>
-                <option>1.8</option>
-        </select>
-        <br />
-        <label for="grade">CSS grade</label><br />
-		<input type="radio" name="grade" value="A" rel="4"> First<br>
-		<input type="radio" name="grade" value="B" rel="4"> Second<br>
-		<input type="radio" name="grade" value="C" checked rel="4"> Third
-        <br />
-</form>
-
 
 
 			<div id="demo">
-
-<div class="add_delete_toolbar"></div>
-<br />
+<button id="btnDeleteRow">Delete</button>
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
 	<thead>
 		<tr>
 			<th>Rendering engine</th>
 			<th>Browser</th>
-
 			<th>Platform(s)</th>
 			<th>Engine version</th>
 			<th>CSS grade</th>
@@ -151,460 +106,460 @@
 	</tfoot>
 	<tbody>
 		<tr class="odd_gradeX" id="2">
-			<td>Trident</td>
+			<td class="read_only"> A Trident(read only cell)</td>
 			<td>Internet Explorer 4.0</td>
-			<td>Win 95+ (Entity: &amp;)</td>
-			<td>4</td>
+			<td>Win 95+</td>
+			<td class="center">4</td>
 
-			<td>X</td>
+			<td class="center">X</td>
 		</tr>
 		<tr class="even_gradeC" id="4">
 			<td>Trident</td>
 			<td>Internet Explorer 5.0</td>
 			<td>Win 95+</td>
-			<td>5</td>
+			<td class="center">5</td>
 
-			<td>C</td>
+			<td class="center">C</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Trident</td>
 			<td>Internet Explorer 5.5</td>
 			<td>Win 95+</td>
-			<td>5.5</td>
+			<td class="center">5.5</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Trident</td>
-			<td>Internet Explorer 6</td>
+			<td class="read_only">Internet Explorer 6(read only cell)</td>
 			<td>Win 98+</td>
-			<td>6</td>
+			<td class="center">6</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Trident</td>
 			<td>Internet Explorer 7</td>
-			<td>Win XP SP2+</td>
-			<td>7</td>
+			<td class="read_only">Win XP SP2+(read only cell)</td>
+			<td class="center">7</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Trident</td>
 			<td>AOL browser (AOL desktop)</td>
 			<td>Win XP</td>
-			<td>6</td>
+			<td class="center">6</td>
 
-			<td>A</td>
+			<td class="center read_only">A(read only cell)</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko (UTF-8: $¢€)</td>
 			<td>Firefox 1.0</td>
 			<td>Win 98+ / OSX.2+</td>
-			<td>1.7</td>
+			<td class="center">1.7</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Firefox 1.5</td>
 			<td>Win 98+ / OSX.2+</td>
-			<td>1.8</td>
+			<td class="center">1.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Firefox 2.0</td>
 			<td>Win 98+ / OSX.2+</td>
-			<td>1.8</td>
+			<td class="center">1.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Firefox 3.0</td>
 			<td>Win 2k+ / OSX.3+</td>
-			<td>1.9</td>
+			<td class="center">1.9</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Camino 1.0</td>
 			<td>OSX.2+</td>
-			<td>1.8</td>
+			<td class="center">1.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Camino 1.5</td>
 			<td>OSX.3+</td>
-			<td>1.8</td>
+			<td class="center">1.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Netscape 7.2</td>
 			<td>Win 95+ / Mac OS 8.6-9.2</td>
-			<td>1.7</td>
+			<td class="center">1.7</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Netscape Browser 8</td>
 			<td>Win 98SE+</td>
-			<td>1.7</td>
+			<td class="center">1.7</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Netscape Navigator 9</td>
 			<td>Win 98+ / OSX.2+</td>
-			<td>1.8</td>
+			<td class="center">1.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Mozilla 1.0</td>
 			<td>Win 95+ / OSX.1+</td>
-			<td>1</td>
+			<td class="center">1</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Mozilla 1.1</td>
 			<td>Win 95+ / OSX.1+</td>
-			<td>1.1</td>
+			<td class="center">1.1</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Mozilla 1.2</td>
 			<td>Win 95+ / OSX.1+</td>
-			<td>1.2</td>
+			<td class="center">1.2</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Mozilla 1.3</td>
 			<td>Win 95+ / OSX.1+</td>
-			<td>1.3</td>
+			<td class="center">1.3</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Mozilla 1.4</td>
 			<td>Win 95+ / OSX.1+</td>
-			<td>1.4</td>
+			<td class="center">1.4</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Mozilla 1.5</td>
 			<td>Win 95+ / OSX.1+</td>
-			<td>1.5</td>
+			<td class="center">1.5</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Mozilla 1.6</td>
 			<td>Win 95+ / OSX.1+</td>
-			<td>1.6</td>
+			<td class="center">1.6</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Mozilla 1.7</td>
 			<td>Win 98+ / OSX.1+</td>
-			<td>1.7</td>
+			<td class="center">1.7</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Mozilla 1.8</td>
 			<td>Win 98+ / OSX.1+</td>
-			<td>1.8</td>
+			<td class="center">1.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Gecko</td>
 			<td>Seamonkey 1.1</td>
 			<td>Win 98+ / OSX.2+</td>
-			<td>1.8</td>
+			<td class="center">1.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Gecko</td>
 			<td>Epiphany 2.20</td>
 			<td>Gnome</td>
-			<td>1.8</td>
+			<td class="center">1.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Webkit</td>
 			<td>Safari 1.2</td>
 			<td>OSX.3</td>
-			<td>125.5</td>
+			<td class="center">125.5</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Webkit</td>
 			<td>Safari 1.3</td>
 			<td>OSX.3</td>
-			<td>312.8</td>
+			<td class="center">312.8</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Webkit</td>
 			<td>Safari 2.0</td>
 			<td>OSX.4+</td>
-			<td>419.3</td>
+			<td class="center">419.3</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Webkit</td>
 			<td>Safari 3.0</td>
 			<td>OSX.4+</td>
-			<td>522.1</td>
+			<td class="center">522.1</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Webkit</td>
 			<td>OmniWeb 5.5</td>
 			<td>OSX.4+</td>
-			<td>420</td>
+			<td class="center">420</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Webkit</td>
 			<td>iPod Touch / iPhone</td>
 			<td>iPod</td>
-			<td>420.1</td>
+			<td class="center">420.1</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Webkit</td>
 			<td>S60</td>
 			<td>S60</td>
-			<td>413</td>
+			<td class="center">413</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Presto</td>
 			<td>Opera 7.0</td>
 			<td>Win 95+ / OSX.1+</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Presto</td>
 			<td>Opera 7.5</td>
 			<td>Win 95+ / OSX.2+</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Presto</td>
 			<td>Opera 8.0</td>
 			<td>Win 95+ / OSX.2+</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Presto</td>
 			<td>Opera 8.5</td>
 			<td>Win 95+ / OSX.2+</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Presto</td>
 			<td>Opera 9.0</td>
 			<td>Win 95+ / OSX.3+</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Presto</td>
 			<td>Opera 9.2</td>
 			<td>Win 88+ / OSX.3+</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Presto</td>
 			<td>Opera 9.5</td>
 			<td>Win 88+ / OSX.3+</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Presto</td>
 			<td>Opera for Wii</td>
 			<td>Wii</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Presto</td>
 			<td>Nokia N800</td>
 			<td>N800</td>
-			<td>-</td>
+			<td class="center">-</td>
 
-			<td>A</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Presto</td>
 			<td>Nintendo DS browser</td>
 			<td>Nintendo DS</td>
-			<td>8.5</td>
+			<td class="center">8.5</td>
 
-			<td>C/A<sup>1</sup></td>
+			<td class="center">C/A<sup>1</sup></td>
 		</tr>
 		<tr class="even_gradeC" id="4">
 			<td>KHTML</td>
 			<td>Konqureror 3.1</td>
 			<td>KDE 3.1</td>
 
-			<td>3.1</td>
-			<td>C</td>
+			<td class="center">3.1</td>
+			<td class="center">C</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>KHTML</td>
 			<td>Konqureror 3.3</td>
 			<td>KDE 3.3</td>
 
-			<td>3.3</td>
-			<td>A</td>
+			<td class="center">3.3</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>KHTML</td>
 			<td>Konqureror 3.5</td>
 			<td>KDE 3.5</td>
 
-			<td>3.5</td>
-			<td>A</td>
+			<td class="center">3.5</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="odd_gradeX" id="2">
 			<td>Tasman</td>
 			<td>Internet Explorer 4.5</td>
 			<td>Mac OS 8-9</td>
 
-			<td>-</td>
-			<td>X</td>
+			<td class="center">-</td>
+			<td class="center">X</td>
 		</tr>
 		<tr class="even_gradeC" id="4">
 			<td>Tasman</td>
 			<td>Internet Explorer 5.1</td>
 			<td>Mac OS 7.6-9</td>
 
-			<td>1</td>
-			<td>C</td>
+			<td class="center">1</td>
+			<td class="center">C</td>
 		</tr>
 		<tr class="odd_gradeC" id="3">
 			<td>Tasman</td>
 			<td>Internet Explorer 5.2</td>
 			<td>Mac OS 8-X</td>
 
-			<td>1</td>
-			<td>C</td>
+			<td class="center">1</td>
+			<td class="center">C</td>
 		</tr>
 		<tr class="even_gradeA" id="1">
 			<td>Misc</td>
 			<td>NetFront 3.1</td>
 			<td>Embedded devices</td>
 
-			<td>-</td>
-			<td>C</td>
+			<td class="center">-</td>
+			<td class="center">C</td>
 		</tr>
 		<tr class="odd_gradeA" id="5">
 			<td>Misc</td>
 			<td>NetFront 3.4</td>
 			<td>Embedded devices</td>
 
-			<td>-</td>
-			<td>A</td>
+			<td class="center">-</td>
+			<td class="center">A</td>
 		</tr>
 		<tr class="even_gradeX" id="11">
 			<td>Misc</td>
 			<td>Dillo 0.8</td>
 			<td>Embedded devices</td>
 
-			<td>-</td>
-			<td>X</td>
+			<td class="center">-</td>
+			<td class="center">X</td>
 		</tr>
 		<tr class="odd_gradeX" id="2">
 			<td>Misc</td>
 			<td>Links</td>
 			<td>Text only</td>
 
-			<td>-</td>
-			<td>X</td>
+			<td class="center">-</td>
+			<td class="center">X</td>
 		</tr>
 		<tr class="even_gradeX" id="11">
 			<td>Misc</td>
 			<td>Lynx</td>
 			<td>Text only</td>
 
-			<td>-</td>
-			<td>X</td>
+			<td class="center">-</td>
+			<td class="center">X</td>
 		</tr>
 		<tr class="odd_gradeC" id="3">
 			<td>Misc</td>
 			<td>IE Mobile</td>
 			<td>Windows Mobile 6</td>
 
-			<td>-</td>
-			<td>C</td>
+			<td class="center">-</td>
+			<td class="center">C</td>
 		</tr>
 		<tr class="even_gradeC" id="4">
 			<td>Misc</td>
 			<td>PSP browser</td>
 			<td>PSP</td>
 
-			<td>-</td>
-			<td>C</td>
+			<td class="center">-</td>
+			<td class="center">C</td>
 		</tr>
 		<tr class="odd_gradeU" id="10">
 			<td>Other browsers</td>
 			<td>All others</td>
 			<td>-</td>
 
-			<td>-</td>
-			<td>U</td>
+			<td class="center">-</td>
+			<td class="center">U</td>
 		</tr>
 	</tbody>
 </table>
@@ -613,60 +568,65 @@
 			<div class="spacer"></div>
 
 			
+			
 
 			
-			
-			<h1>Initialisation code</h1>
-			<pre>
-    $(document).ready(function () {
-        var oTable = $('#example').dataTable().makeEditable({
-                            sUpdateURL: "UpdateData.php",
-                            sAddURL: "AddData.php",
-                            sDeleteURL: "DeleteData.php",
-                            oAddNewRowButtonOptions: { 
-				label: "Add...",
-                                icons: { primary: 'ui-icon-plus' }
-                            },
-                            oDeleteRowButtonOptions: {
-				label: "Remove",
-                                icons: { primary: 'ui-icon-trash' }
-                            },
-                            oAddNewRowOkButtonOptions: {
-				label: "Confirm",
-                                icons: { primary: 'ui-icon-check' },
-                                name: "action",
-                                value: "add-new"
-                            },
-                            oAddNewRowCancelButtonOptions: { 
-				label: "Close",
-                                class: "back-class",
-                                name: "action",
-                                value: "cancel-add",
-                                icons: { primary: 'ui-icon-close' }
-                            },
-                            oAddNewRowFormOptions: {
-				title: 'Add a new browser - form',
-                                show: "blind",
-                                hide: "explode"
-                            }
-        });
-
-    });
+			<h1>Initialization code</h1>
+			<p>Initialization code is very simple. You just need to specify URL of the pages that accept delete requests on the server side.</p>
+			<pre>$(document).ready( function () {
+		$('#example').dataTable().makeEditable({
+                    					sDeleteURL: "DeleteData.php"
+							});
+}
 	</pre>
-						
+			<h1>Additional HTML code</h1>
+	<p>One delete button needs to be placed in your HTML source. This button will be enabled each time user selects a row in the table, and disabled each time user deselects row. Id of the button has to be "btnDeleteRow".</p>
+			<pre>
+&lt;!-- Delete button can be placed anywhere in the page --&gt;
+&lt;button id=&quot;btnDeleteRow&quot;&gt;Delete&lt;/button&gt;
+	</pre>	
+	<p>Plugin tries to find id of the row in the id attribute of the <tr> tag. Therefore, following row format is required:</p>
+<pre>
+&lt;tr id=&quot;2&quot;&gt;
+	&lt;td&gt;Misc&lt;/td&gt;
+	&lt;td&gt;Links&lt;/td&gt;
+	&lt;td&gt;Text only&lt;/td&gt;
+	&lt;td class=&quot;center&quot;&gt;-&lt;/td&gt;
+	&lt;td class=&quot;center&quot;&gt;X&lt;/td&gt;
+&lt;/tr&gt
+</pre>
+			
+
+	<h1>Server-side code for delete request (PHP)</h1>
+			<p>Server-side page that accepts delete request should return "ok" if row was successfully deleted, or an error message if operation failed. In this example, server page always returns "ok" value:</p>
+			<pre>
+&lt;?php
+	//Always accepts delete
+	echo "ok"
+?&gt;
+</pre>	
+
+
+
 			<h1>Other examples</h1>
 			<ul>
-				<li><a href="index.html">Basic usage</a></li>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Edit cells inline</a></li>
+				<li><a href="delete-record.html">Select/Delete rows</a></li>
 				<li><a href="addingrecords.html">Adding a new record</a></li>
 				<li><a href="custom-editors.html">Custom editors</a></li>
 				<li><a href="inline-validation.html">Validation of inline cells</a></li>
 				<li><a href="events.html">Pre-processing and post-processing events</a></li>
 				<li><a href="customization.html">User interface customizations</a></li>
 				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
+				<li><a href="customize-buttons.html">Customization of buttons and form</a></li>
+				<li><a href="configure-dom.html">Two different tables on the same page</a></li>
+				<li><a href="ajax.html">Using Ajax source</a></li>
 			</ul>
+			
 			<div id="footer" style="text-align:center;">
 				<span style="font-size:10px;">
-					Editable and DataTables &copy; Jovan Popovic 2011.<br>
+					DataTables Editable &copy; Jovan Popovic 2010-2011.<br>
 				</span>
 			</div>
 		</div>
