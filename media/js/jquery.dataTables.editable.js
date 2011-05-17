@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.1.7.
+* Version:     1.1.8.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -208,7 +208,7 @@
                     if (properties.aoColumns[i] != null) {
                         cells = $("td:nth-child(" + (i + 1) + ")", aoNodes);
                         var oColumnSettings = oDefaultEditableSettings;
-                        oColumnSettings = $.extend({}, properties.aoColumns[i], oDefaultEditableSettings);
+                        oColumnSettings = $.extend({}, oDefaultEditableSettings, properties.aoColumns[i]);
                         cells.editable(properties.sUpdateURL, oColumnSettings);
                     }
 
