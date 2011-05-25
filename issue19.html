@@ -21,15 +21,6 @@
         <script src="media/js/jquery.validate.js" type="text/javascript"></script>
         <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
 
-		<script type="text/javascript" charset="utf-8">
-			$(document).ready( function () {
-           $('#example').dataTable({
-                                      "bProcessing": true,
-                                      "sAjaxSource": "ajax_source.js"
-                                    }
-                                    ).makeEditable();
-			} );
-		</script>
 
 
 
@@ -57,7 +48,7 @@
 				
 
 				$('#example2').dataTable( {
-					"sAjaxSource": "ajax_source.js",
+					"sAjaxSource": "ajax_source_2.js",
 					"sScrollY": "200px",
 					"bScrollCollapse": true,
 					"bPaginate": false,
@@ -110,8 +101,7 @@
 			
 			<h1>Preamble</h1>
 			<p>
-           DataTable Editable plugin works with DataTables that dinamically read cells that should be displayed via ajax call. In this example, cells are not placed in the source
-           of the page - they is loaded from the server-side via JSON request. Once cells are loaded from the source via AJAX call, they are processed on the client side.</p>
+</p>
 
 
 	
@@ -120,6 +110,61 @@
 			<h1>Live example</h1>
 
 			<div id="demo">
+
+<form id="formAddNewRow" action="#" title="Add New Trident Browser">
+        <label for="engine">Rendering engine </label> Trident<br />
+	<input type="hidden" name="engine" id="name" value="Trident" class="required" rel="0" />
+        <br />
+        <label for="browser">Browser</label><br />
+	<input type="text" name="browser" id="browser" rel="1" />
+        <br />
+        <label for="platforms">Platform(s)</label><br />
+	<textarea name="platforms" id="platforms" rel="2"></textarea>
+        <br />
+        <label for="version">Engine version</label><br />
+	<select name="version" id="version" rel="3">
+                <option>1.5</option>
+                <option>1.7</option>
+                <option>1.8</option>
+        </select>
+        <br />
+        <label for="grade">CSS grade</label><br />
+		<input type="radio" name="grade" value="A" rel="4"> First<br>
+		<input type="radio" name="grade" value="B" rel="4"> Second<br>
+		<input type="radio" name="grade" value="C" checked rel="4"> Third
+        <br />
+</form>
+
+<form id="formAddNewRow2" action="#" title="Add New Gecko Browser">
+	<button id="btnAddNewRowCancel2" value="cancel">Cancel</button>
+	<button id="btnAddNewRowOk2" value="Ok">Add Gecko Browser</button>
+	<br />
+        <label for="engine">Rendering engine </label> Gecko<br />
+	<input type="hidden" name="engine" id="name" value="Gecko" class="required" rel="0" />
+        <br />
+        <label for="browser">Browser</label><br />
+	<input type="text" name="browser" id="browser" rel="1" />
+        <br />
+        <label for="platforms">Platform(s)</label><br />
+	<textarea name="platforms" id="platforms" rel="2"></textarea>
+        <br />
+        <label for="version">Engine version</label><br />
+	<select name="version" id="version">
+                <option>1.5</option>
+                <option>1.7</option>
+                <option>1.8</option>
+        </select>
+        <br />
+        <label for="grade">CSS grade</label><br />
+		<input type="radio" name="grade" value="A"> First<br>
+		<input type="radio" name="grade" value="B"> Second<br>
+		<input type="radio" name="grade" value="C" checkedssss> Third
+        <br />
+</form>
+
+
+
+<button id="btnDeleteRow">Delete Selected Trident Browser</button> <button id="btnAddNewRow">Add Trident Browser</button>
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example1">
 	<thead>
@@ -149,6 +194,7 @@
 
 <hr/>
 
+<button id="btnDeleteRow2">Delete Selected Gecko Browser</button> <button id="btnAddNewRow2">Add New Gecko Browser</button>
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example2">
 	<thead>
@@ -156,8 +202,6 @@
 			<th>Rendering engine</th>
 			<th>Browser</th>
 			<th>Platform(s)</th>
-			<th>Engine version</th>
-			<th>CSS grade</th>
 		</tr>
 	</thead>
 	<tfoot>
@@ -166,8 +210,6 @@
 			<th>Rendering engine</th>
 			<th>Browser</th>
 			<th>Platform(s)</th>
-			<th>Engine version</th>
-			<th>CSS grade</th>
 		</tr>
 
 	</tfoot>
@@ -178,18 +220,6 @@
 
 			</div>
 			<div class="spacer"></div>
-
-			<h1>Initialization code</h1>
-			<p>In the initialization code you will need to pass URL of the data source that contains data that will be loaded. Processing option is placed just to show "Processing" dialog while the action is performing.</p>
-			<pre>
-			$(document).ready( function () {
-           $('#example').dataTable({
-                                      "bProcessing": true,
-                                      "sAjaxSource": "ajax_source.js"
-                                      }
-                                    ).makeEditable();
-			} );
-	</pre>
 
 			<h1>Other examples</h1>
 			<ul>
