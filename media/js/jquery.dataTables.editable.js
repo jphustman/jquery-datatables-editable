@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.1.8.
+* Version:     1.1.9.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -135,6 +135,8 @@
         var sOldValue, sNewCellValue, sNewCellDislayValue;
         //Utility function used to apply editable plugin on table cells
         function _fnApplyEditable(aoNodes) {
+	    if(properties.bDisableEditing)
+	    	return;
             var oDefaultEditableSettings = {
                 event: 'dblclick',
                 "callback": function (sValue, settings) {
@@ -248,8 +250,20 @@
         ///Event handler called when a new row is added and response is returned from server
         function _fnOnRowAdded(data) {
             properties.fnEndProcessingMode();
+	    //@jocapc - Chad's fix for the issue 19 START
 
-            var iColumnCount = oTable.dataTableSettings[0].aoColumns.length;
+            var aoSettings = oTable.dataTableSettings;
+            var oSettings = null;
+            for (var i = 0; i < aoSettings.length; i++) {
+                if (aoSettings[i].nTable.id == oTable.attr('id')) {
+                    oSettings = aoSettings[i];
+                    break;
+                }
+            }
+            var iColumnCount = oSettings.aoColumns.length;
+
+	    //@jocapc - Chad's fix for the issue 19 END
+    	    var iColumnCount = oTable.dataTableSettings[0].aoColumns.length;
             var values = new Array();
 
             $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel]", oAddNewRowForm).each(function () {
@@ -428,7 +442,8 @@
             fnGetRowID: _fnGetRowIDFromAttribute,
             fnSetRowID: _fnSetRowIDInAttribute,
             sEditorHeight: "100%",
-            sEditorWidth: "100%"
+            sEditorWidth: "100%",
+	    bDisableEditing: false
 
         };
 
