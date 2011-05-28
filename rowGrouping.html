@@ -26,9 +26,9 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
-				var dt = $('#example').dataTable()
-				dt.rowGrouping();
-				dt.makeEditable({	sAddURL: "AddData.php",
+				var dt = $('#example').dataTable().rowGrouping();
+				$('#example').dataTable().makeEditable({
+							sAddURL: "AddData.php",
 							sAddHttpMethod: "GET",
 							sUpdateURL: function(value, settings){ return value;  },
 							sDeleteURL: "DeleteData.php",
@@ -36,7 +36,6 @@
 
 
 				});
-				
 			} );
 		</script>
 <script type="text/javascript">
