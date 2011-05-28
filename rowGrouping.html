@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
 		
-		<title>Using DataTable with row grouping plugin - Basic Example</title>
+		<title>Using DataTable Editable with row grouping plugin</title>
 		<style type="text/css" title="currentStyle">
 			@import "media/css/demo_page.css";
 			@import "media/css/demo_table.css";
@@ -64,14 +64,12 @@
 			<a href="http://code.google.com/p/jquery-datatables-column-filter/wiki/ColumnFilter">Wiki</a> 
 			<h1 class="full_width big">
 
-				JQuery DataTable Row Grouping - Default Example
+				JQuery DataTable Editable - Integration with the Row Grouping plugin
 			</h1>
 			
 			<h2>Preamble</h2>
 			<p>
-				DataTables Row Grouping add-in group rows by cell values. Value used for grouping is added as an additional heading row in the table.
-			Default behaviour is that table will be ordered by the first colum, this column will be hidden, and cell values will be added as a grouping
-			row before rows that contain the same value in the grouping cell.
+				Data Tables editable plugin works with other plugins. In this example is shown integration with the row grouping plugin.
 			</p>
 
 			
@@ -607,7 +605,17 @@
 			<p>Initialization code is very simple. You just need to add rowGrouping() call to the DataTable instance. By default 
 			the firt column is used for grouping. This column is hidden and values are added as a heading rows in each group.</p>
 			<pre>$(document).ready( function () {
-		$('#example').dataTable().rowGrouping();
+				var dt = $('#example').dataTable()
+				
+				dt.makeEditable({	sAddURL: "AddData.php",
+							sAddHttpMethod: "GET",
+							sUpdateURL: function(value, settings){ return value;  },
+							sDeleteURL: "DeleteData.php",
+							sDeleteHttpMethod: "GET"
+
+
+				});
+				dt.rowGrouping();
 }
 	</pre>
 	
