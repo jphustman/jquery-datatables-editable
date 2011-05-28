@@ -251,7 +251,7 @@
         function _fnOnRowAdded(data) {
             properties.fnEndProcessingMode();
 	    //@jocapc - Chad's fix for the issue 19 START
-
+/*
             var aoSettings = oTable.dataTableSettings;
             var oSettings = null;
             for (var i = 0; i < aoSettings.length; i++) {
@@ -261,7 +261,7 @@
                 }
             }
             var iColumnCount = oSettings.aoColumns.length;
-
+*/
 	    //@jocapc - Chad's fix for the issue 19 END
     	    var iColumnCount = oTable.dataTableSettings[0].aoColumns.length;
             var values = new Array();

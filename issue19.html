@@ -31,7 +31,7 @@
 
 
 				$('#example1').dataTable( {
-					"sAjaxSource": "ajax_source.js",
+					
 					"sScrollY": "200px",
 					"bScrollCollapse": true,
 					"bPaginate": false,
@@ -48,7 +48,7 @@
 				
 
 				$('#example2').dataTable( {
-					"sAjaxSource": "ajax_source_2.js",
+					
 					"sScrollY": "200px",
 					"bScrollCollapse": true,
 					"bPaginate": false,
@@ -69,6 +69,8 @@
                     							sDeleteRowButtonId: "btnDeleteRow2"
 										});
 			} );
+
+				
 		</script>
 
 
@@ -111,7 +113,7 @@
 
 			<div id="demo">
 
-<form id="formAddNewRow" action="#" title="Add New Trident Browser">
+<form id="formAddNewRow" action="#" title="Add New Browser With CSS Grade">
         <label for="engine">Rendering engine </label> Trident<br />
 	<input type="hidden" name="engine" id="name" value="Trident" class="required" rel="0" />
         <br />
@@ -135,12 +137,11 @@
         <br />
 </form>
 
-<form id="formAddNewRow2" action="#" title="Add New Gecko Browser">
-	<button id="btnAddNewRowCancel2" value="cancel">Cancel</button>
-	<button id="btnAddNewRowOk2" value="Ok">Add Gecko Browser</button>
-	<br />
-        <label for="engine">Rendering engine </label> Gecko<br />
-	<input type="hidden" name="engine" id="name" value="Gecko" class="required" rel="0" />
+
+
+<form id="formAddNewRow2" action="#" title="Add New Browser Without CSS Grade">
+        <label for="engine">Rendering engine </label> Trident<br />
+	<input type="hidden" name="engine" id="name" value="Trident" class="required" rel="0" />
         <br />
         <label for="browser">Browser</label><br />
 	<input type="text" name="browser" id="browser" rel="1" />
@@ -149,22 +150,15 @@
 	<textarea name="platforms" id="platforms" rel="2"></textarea>
         <br />
         <label for="version">Engine version</label><br />
-	<select name="version" id="version">
+	<select name="version" id="version" rel="3">
                 <option>1.5</option>
                 <option>1.7</option>
                 <option>1.8</option>
         </select>
         <br />
-        <label for="grade">CSS grade</label><br />
-		<input type="radio" name="grade" value="A"> First<br>
-		<input type="radio" name="grade" value="B"> Second<br>
-		<input type="radio" name="grade" value="C" checkedssss> Third
-        <br />
 </form>
 
-
-
-<button id="btnDeleteRow">Delete Selected Trident Browser</button> <button id="btnAddNewRow">Add Trident Browser</button>
+<button id="btnDeleteRow">Delete Selected Browser With CSS Grade</button> <button id="btnAddNewRow">Add Browser With CSS Grade</button>
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example1">
 	<thead>
@@ -188,13 +182,68 @@
 
 	</tfoot>
 	<tbody>
+		<tr id="1" class="odd gradeX">
+			<td>Trident</td>
 
+			<td>Internet
+				 Explorer 4.0</td>
+			<td>Win 95+</td>
+			<td class="center">4</td>
+			<td class="center">X</td>
+		</tr>
+		<tr id="2" class="odd gradeC">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 5.0</td>
+			<td>Win 95+</td>
+			<td class="center">5</td>
+			<td class="center">C</td>
+		</tr>
+		<tr id="3" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 5.5</td>
+			<td>Win 95+</td>
+			<td class="center">5.5</td>
+			<td class="center">A</td>
+		</tr>
+		<tr id="4" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 6</td>
+			<td>Win 98+</td>
+			<td class="center">6</td>
+			<td class="center">A</td>
+		</tr>
+		<tr id="5" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet Explorer 7</td>
+			<td>Win XP SP2+</td>
+			<td class="center">7</td>
+			<td class="center">A</td>
+		</tr>
+		<tr id="6" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>AOL browser (AOL desktop)</td>
+			<td>Win XP</td>
+			<td class="center">6</td>
+			<td class="center">A</td>
+		</tr>
 	</tbody>
 </table>
 
 <hr/>
 
-<button id="btnDeleteRow2">Delete Selected Gecko Browser</button> <button id="btnAddNewRow2">Add New Gecko Browser</button>
+
+
+
+<hr/>
+<button id="btnDeleteRow2">Delete Selected Browser Without CSS Grade</button> <button id="btnAddNewRow2">Add New Browser Without CSS Grade</button>
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example2">
 	<thead>
@@ -202,22 +251,64 @@
 			<th>Rendering engine</th>
 			<th>Browser</th>
 			<th>Platform(s)</th>
+			<th>Engine version</th>
 		</tr>
 	</thead>
-	<tfoot>
-		<tr>
-
-			<th>Rendering engine</th>
-			<th>Browser</th>
-			<th>Platform(s)</th>
-		</tr>
-
-	</tfoot>
 	<tbody>
+		<tr id="1" class="odd gradeX">
+			<td>Trident</td>
 
+			<td>Internet
+				 Explorer 4.0</td>
+			<td>Win 95+</td>
+			<td class="center">4</td>
+
+		</tr>
+		<tr id="2" class="odd gradeC">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 5.0</td>
+			<td>Win 95+</td>
+			<td class="center">4</td>
+
+		</tr>
+		<tr id="3" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 5.5</td>
+			<td>Win 95+</td>
+			<td class="center">5.5</td>
+
+		</tr>
+		<tr id="4" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 6</td>
+			<td>Win 98+</td>
+			<td class="center">6</td>
+			
+		</tr>
+		<tr id="5" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet Explorer 7</td>
+			<td>Win XP SP2+</td>
+			<td class="center">7</td>
+
+		</tr>
+		<tr id="6" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>AOL browser (AOL desktop)</td>
+			<td>Win XP</td>
+			<td class="center">6</td>
+
+		</tr>
 	</tbody>
 </table>
-
 			</div>
 			<div class="spacer"></div>
 
