@@ -50,12 +50,14 @@
 
 <body id="dt_example">
 		<div id="container">
-			<div class="full_width big">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/Overview">Wiki</a> 
+			<h1 class="full_width big">
 
 				Editable DataTable example - ajax data source
-			</div>
+			</h1>
 			
-			<h1>Preamble</h1>
+			<h2>Preamble</h2>
 			<p>
            DataTable Editable plugin works with DataTables that dinamically read cells that should be displayed via ajax call. In this example, cells are not placed in the source
            of the page - they is loaded from the server-side via JSON request. Once cells are loaded from the source via AJAX call, they are processed on the client side.</p>
@@ -64,7 +66,7 @@
 	
 		
 			
-			<h1>Live example</h1>
+			<h2>Live example</h2>
 
 			<div id="demo">
 
@@ -97,7 +99,7 @@
 			</div>
 			<div class="spacer"></div>
 
-			<h1>Initialization code</h1>
+			<h2>Initialization code</h2>
 			<p>In the initialization code you will need to pass URL of the data source that contains data that will be loaded. Processing option is placed just to show "Processing" dialog while the action is performing.
             Note that first column will be considered as an id and value of the first cell will added as an id of the row. You can hide this column if you want.</p>
 			<pre>
@@ -110,16 +112,20 @@
 			} );
 	</pre>
 
-			<h1>Other examples</h1>
+			<h2>Other examples</h2>
 			<ul>
-				<li><a href="index.html">Basic usage</a></li>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Editing cells</a></li>
 				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="delete-record.html">Delete records</a></li>
 				<li><a href="custom-editors.html">Custom editors</a></li>
 				<li><a href="inline-validation.html">Validation of inline cells</a></li>
 				<li><a href="events.html">Pre-processing and post-processing events</a></li>
 				<li><a href="customization.html">User interface customizations</a></li>
 				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
-            <li><a href="server_side_processing.html">Sever side processing</a></li>
+				<li><a href="customize-buttons.html">Customization of buttons and form</a></li>
+				<li><a href="configure-dom.html">Two different tables on the same page</a></li>
+				<li><a href="ajax.html">Using Ajax source</a></li>
 			</ul>
 			
 			<div id="footer" style="text-align:center;">

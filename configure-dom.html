@@ -89,12 +89,14 @@
 
 <body id="dt_example">
 		<div id="container">
-			<div class="full_width big">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/Overview">Wiki</a> 
+			<h1 class="full_width big">
 
                 DataTables Editable DOM Configuration - customize more than one table in the page
-            </div>
+            </h1>
             
-            <h1>Preamble</h1>
+            <h2>Preamble</h2>
             <p>This example shows how DataTables Editable can be customized to work with the two tables
             on the same page. First table that is placed in the first tab in configured as a standard table.
             For the second is added separate add form, add and delete buttons. The second table
@@ -111,7 +113,7 @@
             </ul
 </p>
 			
-			<h1>Live example</h1>
+			<h2>Live example</h2>
 
 
 
@@ -452,13 +454,13 @@
 				</div>
 			</div>
 			<div class="spacer"></div>
-     <h1>Custom DOM elements - add/delete buttons</h1>
+     <h2>Custom DOM elements - add/delete buttons</h2>
      <p>Add and delete buttons should be added in HTML code of the page so DataTables Editable plugin can attach add/delete event handlers to these buttons instead of the auto-generated ones.</p>
      <pre>
      &lt;button id=&quot;btnDeleteRow2&quot;&gt;Delete Selected Gecko Browser&lt;/button&gt; &lt;button id=&quot;btnAddNewRow2&quot;&gt;Add New Gecko Browser&lt;/button&gt;
      
      </pre>
-			     <h1>Custom DOM elements - add new row form</h1>
+			     <h2>Custom DOM elements - add new row form</h2>
               <p>Custom add new row form should be added to the page with ok and cancel buttons. When DataTables Editable plugin get ids of the ok and cancel buttons,
                detects that buttons exist, it will attach ok and cancel event handlers to these buttons.
      <pre>
@@ -470,7 +472,7 @@
 
       &lt;/form&gt;    
      </pre>
-			<h1>Initialization code (for the second table in the second tab)</h1>
+			<h2>Initialization code (for the second table in the second tab)</h2>
           <p>In the DataTable Editable initialization call should be passed ids of the elements listed in previous examples. When the DataTables Editable plugin detects that
           elements with these ids exist in the page, it will not autogenerate the new ones with default ids - it will attach event handlers to the
           existing buttons instead.
@@ -500,16 +502,21 @@ $('#example2').dataTable( {
 			} );
 </pre>
 			
-			<h1>Other examples</h1>
-                        <ul>
-                                <li><a href="index.html">Basic usage</a></li>
-                                <li><a href="addingrecords.html">Adding a new record</a></li>
-                                <li><a href="custom-editors.html">Custom editors</a></li>
-                                <li><a href="inline-validation.html">Validation of inline cells</a></li>
-                                <li><a href="events.html">Pre-processing and post-processing events</a></li>
-                                <li><a href="customization.html">User interface customizations</a></li>
-                                <li><a href="custom-messages.html">Customization of message dialogs</a></li>
-                        </ul>
+<h2>Other examples</h2>
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Editing cells</a></li>
+				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="delete-record.html">Delete records</a></li>
+				<li><a href="custom-editors.html">Custom editors</a></li>
+				<li><a href="inline-validation.html">Validation of inline cells</a></li>
+				<li><a href="events.html">Pre-processing and post-processing events</a></li>
+				<li><a href="customization.html">User interface customizations</a></li>
+				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
+				<li><a href="customize-buttons.html">Customization of buttons and form</a></li>
+				<li><a href="configure-dom.html">Two different tables on the same page</a></li>
+				<li><a href="ajax.html">Using Ajax source</a></li>
+			</ul>
 
 			
 			

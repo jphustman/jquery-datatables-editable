@@ -51,12 +51,14 @@
 
 <body id="dt_example">
 		<div id="container">
-			<div class="full_width big">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/AddingNewRecords">Wiki</a> 
+			<h1 class="full_width big">
 
 				Editable DataTable example - Adding new record
-			</div>
+			</h1>
 			
-			<h1>Preamble</h1>
+			<h2>Preamble</h2>
 			<p>
 				DataTable Editable plugin enhances standard DataTables plugin by adding functionalities that allow user to perform inline editing by 					double-clicking on a cell, to delete rows or add new recors. Plugin encapsulates all required processing, and you'll need to create a blank form that will be used for adding records and server-side code that accepts Add AJAX requests. 			
 			</p>
@@ -70,7 +72,7 @@ Page should return id of the new record if row was successfully added. This valu
 			
 			
 			
-			<h1>Live example</h1>
+			<h2>Live example</h2>
 
 
 
@@ -592,7 +594,7 @@ Page should return id of the new record if row was successfully added. This valu
 
 			
 			
-			<h1>Initialisation code</h1>
+			<h2>Initialisation code</h2>
 			<pre>$(document).ready( function () {
 		$('#example').dataTable().makeEditable({
 							sUpdateURL: "UpdateData.php",
@@ -601,7 +603,7 @@ Page should return id of the new record if row was successfully added. This valu
 							});
 }
 	</pre>
-			<h1>Additional HTML code</h1>
+			<h2>Additional HTML code</h2>
 			<pre>
 &lt;!-- Place holder where add and delete buttons will be generated --&gt;
 &lt;div class=&quot;add_delete_toolbar&quot; /&gt;
@@ -633,10 +635,12 @@ Page should return id of the new record if row was successfully added. This valu
 	</pre>	
 
 			
-			<h1>Other examples</h1>
+			<h2>Other examples</h2>
 			<ul>
-				<li><a href="index.html">Basic usage</a></li>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Editing cells</a></li>
 				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="delete-record.html">Delete records</a></li>
 				<li><a href="custom-editors.html">Custom editors</a></li>
 				<li><a href="inline-validation.html">Validation of inline cells</a></li>
 				<li><a href="events.html">Pre-processing and post-processing events</a></li>

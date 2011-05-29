@@ -82,12 +82,14 @@
 
 <body id="dt_example">
 		<div id="container">
-			<div class="full_width big">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/CustomCellEditors">Wiki</a> 
+			<h1 class="full_width big">
 
 				Editable DataTable example - custom editors
-			</div>
+			</h1>
 			
-			<h1>Preamble</h1>
+			<h2>Preamble</h2>
 			<p>
 				DataTable Editable plugin supports inline editing of varous input types (text box, textarea, select list etc). Editing is implemented 				using <a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a>. To initialize the editors that
 			will be applied on the columns, parameter aoColumns needs to be set in the plugin initialization call.
@@ -106,7 +108,7 @@
 	
 		
 			
-			<h1>Live example</h1>
+			<h2>Live example</h2>
 
 			<div id="demo">
 
@@ -598,7 +600,7 @@
 			
 
 			
-			<h1>Initialization code</h1>
+			<h2>Initialization code</h2>
 			<p>In the initialization code you will need to pass definitions of the columns according to the <a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a> rules.</p>
 			<pre>$(document).ready( function () {
 		$('#example').dataTable().makeEditable({
@@ -636,10 +638,12 @@
 		})
 	</pre>
 
-			<h1>Other examples</h1>
+<h2>Other examples</h2>
 			<ul>
-				<li><a href="index.html">Basic usage</a></li>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Editing cells</a></li>
 				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="delete-record.html">Delete records</a></li>
 				<li><a href="custom-editors.html">Custom editors</a></li>
 				<li><a href="inline-validation.html">Validation of inline cells</a></li>
 				<li><a href="events.html">Pre-processing and post-processing events</a></li>
