@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.1.9.
+* Version:     1.2.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -18,15 +18,15 @@
 * @sDeleteURL                   	String      URL of the server-side page used to delete row by id. Default value is "DeleteData".
 * @fnShowError                  	Function    function(message, action){...}  used to show error message. Action value can be "update", "add" or "delete".
 * @sAddNewRowFormId             	String      Id of the form for adding new row. Default id is "formAddNewRow".
-* @oAddNewRowFormOptions		    Object	    Options that will be set to the "Add new row" dialog
+* @oAddNewRowFormOptions            Object	    Options that will be set to the "Add new row" dialog
 * @sAddNewRowButtonId           	String      Id of the button for adding new row. Default id is "btnAddNewRow".
-* @oAddNewRowButtonOptions          Object	    Options that will be set to the "Add new" button
+* @oAddNewRowButtonOptions		    Object	    Options that will be set to the "Add new" button
 * @sAddNewRowOkButtonId         	String      Id of the OK button placed in add new row dialog. Default value is "btnAddNewRowOk".
 * @oAddNewRowOkButtonOptions		Object	    Options that will be set to the Ok button in the "Add new row" form
 * @sAddNewRowCancelButtonId     	String      Id of the Cancel button placed in add new row dialog. Default value is "btnAddNewRowCancel".
 * @oAddNewRowCancelButtonOptions	Object	    Options that will be set to the Cancel button in the "Add new row" form
 * @sDeleteRowButtonId           	String      Id of the button for adding new row. Default id is "btnDeleteRow".
-* @oDeleteRowButtonOptions          Object	    Options that will be set to the Delete button
+* @oDeleteRowButtonOptions		    Object	    Options that will be set to the Delete button
 * @sSelectedRowClass            	String      Class that will be associated to the selected row. Default class is "row_selected".
 * @sReadOnlyCellClass           	String      Class of the cells that should not be editable. Default value is "read_only".
 * @sAddDeleteToolbarSelector    	String      Selector used to identify place where add and delete buttons should be placed. Default value is ".add_delete_toolbar".
@@ -36,16 +36,18 @@
 * @sAddHttpMethod               	String      Method used for the Add AJAX request (default is 'POST')
 * @sDeleteHttpMethod            	String      Method used for the Delete AJAX request (default is 'POST')
 * @fnOnDeleting                 	Function    function(tr, id){...} Function called before row is deleted.
-                                        	        tr isJQuery object encapsulating row that will be deleted
-                                            	    id is an id of the record that will be deleted.
-                                            	    returns true if plugin should continue with deleting row, false will abort delete.
+                                                    tr isJQuery object encapsulating row that will be deleted
+                                                    id is an id of the record that will be deleted.
+                                                    returns true if plugin should continue with deleting row, false will abort delete.
 * @fnOnDeleted                  	Function    function(status){...} Function called after delete action. Status can be "success" or "failure"
 * @fnOnAdding                   	Function    function(){...} Function called before row is added.
-                                        	        returns true if plugin should continue with adding row, false will abort add.
+                                                    returns true if plugin should continue with adding row, false will abort add.
+* @fnOnNewRowPosted			        Function    function(data) Function that can override default function that is called when server-side sAddURL returns result
+                                                    You can use this function to add different behaviour when server-side page returns result
 * @fnOnAdded                    	Function    function(status){...} Function called after delete action. Status can be "success" or "failure"
 * @fnOnEditing                  	Function    function(input){...} Function called before cell is updated.
-                                        	        input JQuery object wrapping the inut element used for editing value in the cell.
-                                        	        returns true if plugin should continue with sending AJAX request, false will abort update.
+                                                    input JQuery object wrapping the inut element used for editing value in the cell.
+                                                    returns true if plugin should continue with sending AJAX request, false will abort update.
 * @fnOnEdited                   	Function    function(status){...} Function called after edit action. Status can be "success" or "failure"
 * @sEditorHeight                	String      Default height of the cell editors
 * @sEditorWidth                 	String      Default width of the cell editors
@@ -135,8 +137,8 @@
         var sOldValue, sNewCellValue, sNewCellDislayValue;
         //Utility function used to apply editable plugin on table cells
         function _fnApplyEditable(aoNodes) {
-	    if(properties.bDisableEditing)
-	    	return;
+            if (properties.bDisableEditing)
+                return;
             var oDefaultEditableSettings = {
                 event: 'dblclick',
                 "callback": function (sValue, settings) {
@@ -247,51 +249,60 @@
             event.preventDefault();
         }
 
+        function _fnOnNewRowPosted(data) {
+
+            return true;
+
+        }
         ///Event handler called when a new row is added and response is returned from server
         function _fnOnRowAdded(data) {
             properties.fnEndProcessingMode();
-	    //@jocapc - Chad's fix for the issue 19 START
-/*
-            var aoSettings = oTable.dataTableSettings;
-            var oSettings = null;
-            for (var i = 0; i < aoSettings.length; i++) {
+
+            if (properties.fnOnNewRowPosted(data)) {
+
+                //@jocapc - Chad's fix for the issue 19 START
+                /*
+                var aoSettings = oTable.dataTableSettings;
+                var oSettings = null;
+                for (var i = 0; i < aoSettings.length; i++) {
                 if (aoSettings[i].nTable.id == oTable.attr('id')) {
-                    oSettings = aoSettings[i];
-                    break;
+                oSettings = aoSettings[i];
+                break;
                 }
+                }
+                var iColumnCount = oSettings.aoColumns.length;
+                */
+                //@jocapc - Chad's fix for the issue 19 END
+                var iColumnCount = oTable.dataTableSettings[0].aoColumns.length;
+                var values = new Array();
+
+                $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel]", oAddNewRowForm).each(function () {
+                    var rel = $(this).attr("rel");
+                    if (rel >= iColumnCount)
+                        properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
+                    else {
+                        if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
+                            values[rel] = $("option:selected", this).text();
+                        else
+                            values[rel] = this.value;
+                    }
+                });
+
+                //Add values from the form into the table
+                var rtn = oTable.fnAddData(values);
+                var oTRAdded = oTable.fnGetNodes(rtn);
+                //Apply editable plugin on the cells of the table
+                _fnApplyEditable(oTRAdded);
+                //add id returned by server page as an TR id attribute
+                properties.fnSetRowID($(oTRAdded), data);
+                //Close the dialog
+                oAddNewRowForm.dialog('close');
+                $(oAddNewRowForm)[0].reset();
+                $(".error", $(oAddNewRowForm)).html("");
+
+                _fnSetDisplayStart();
+                properties.fnOnAdded("success");
             }
-            var iColumnCount = oSettings.aoColumns.length;
-*/
-	    //@jocapc - Chad's fix for the issue 19 END
-    	    var iColumnCount = oTable.dataTableSettings[0].aoColumns.length;
-            var values = new Array();
-
-            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel]", oAddNewRowForm).each(function () {
-                var rel = $(this).attr("rel");
-                if (rel >= iColumnCount)
-                    properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
-                else {
-                    if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
-                        values[rel] = $("option:selected", this).text();
-                    else
-                        values[rel] = this.value;
-                }
-            });
-
-            //Add values from the form into the table
-            var rtn = oTable.fnAddData(values);
-            var oTRAdded = oTable.fnGetNodes(rtn);
-            //Apply editable plugin on the cells of the table
-            _fnApplyEditable(oTRAdded);
-            //add id returned by server page as an TR id attribute
-            properties.fnSetRowID($(oTRAdded), data);
-            //Close the dialog
-            oAddNewRowForm.dialog('close');
-            $(oAddNewRowForm)[0].reset();
-            $(".error", $(oAddNewRowForm)).html("");
-
-            _fnSetDisplayStart();
-            properties.fnOnAdded("success")
         }
 
         //Called when user cancels adding new record in the popup dialog
@@ -434,6 +445,7 @@
             fnOnDeleting: fnOnDeleting,
             fnOnDeleted: fnOnDeleted,
             fnOnAdding: fnOnAdding,
+            fnOnNewRowPosted: _fnOnNewRowPosted,
             fnOnAdded: fnOnAdded,
             fnOnEditing: fnOnEditing,
             fnOnEdited: fnOnEdited,
@@ -443,7 +455,7 @@
             fnSetRowID: _fnSetRowIDInAttribute,
             sEditorHeight: "100%",
             sEditorWidth: "100%",
-	    bDisableEditing: false
+            bDisableEditing: false
 
         };
 
@@ -532,7 +544,7 @@
                 if (aAddNewRowFormButtons.length > 0) {
                     oAddNewRowForm.dialog('option', 'buttons', aAddNewRowFormButtons);
                 }
-                //Issue: It cannot find it wiht this call:
+                //Issue: It cannot find it with this call:
                 //oConfirmRowAddingButton = $("#" + properties.sAddNewRowOkButtonId, oAddNewRowForm);
                 //oCancelRowAddingButton = $("#" + properties.sAddNewRowCancelButtonId, oAddNewRowForm);
                 oConfirmRowAddingButton = $("#" + properties.sAddNewRowOkButtonId);

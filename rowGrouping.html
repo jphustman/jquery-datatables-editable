@@ -601,19 +601,17 @@
 
 			
 			<h2>Initialization code</h2>
-			<p>Initialization code is very simple. You just need to add rowGrouping() call to the DataTable instance. By default 
-			the firt column is used for grouping. This column is hidden and values are added as a heading rows in each group.</p>
+			<p>To combine these two plugins you will need to apply both of them on the same table. Example is shown below:</p>
 			<pre>$(document).ready( function () {
-				var dt = $('#example').dataTable()
+				var dt = $('#example').dataTable();
 				
 				dt.makeEditable({	sAddURL: "AddData.php",
 							sAddHttpMethod: "GET",
 							sUpdateURL: function(value, settings){ return value;  },
 							sDeleteURL: "DeleteData.php",
 							sDeleteHttpMethod: "GET"
-
-
 				});
+
 				dt.rowGrouping();
 }
 	</pre>
@@ -623,16 +621,12 @@
 			<h2>Other examples</h2>
 			<ul>
 
-				<li><a href="default.html">Basic usage</a></li>
-				<li><a href="letters.html">Group by letter</a></li>
-				<li><a href="year.html">Group by year</a></li>
-				<li><a href="customGroupOrdering.html">Custom group ordering</a></li>
-				<li><a href="serverSide.html">Server-side filtering</a></li>
+				<li><a href="index.html">Basic usage</a></li>
 			</ul>
 			
 			<div id="footer" style="text-align:center;">
 				<span style="font-size:10px;">
-					DataTables Row Grouping Add-on &copy; Jovan Popovic 2011.<br>
+					DataTables Edit Add-on &copy; Jovan Popovic 2011.<br>
 					DataTables designed and created by <a href="http://www.sprymedia.co.uk">Allan Jardine</a> &copy; 2007-2011<br>
 				</span>
 			</div>
