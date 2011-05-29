@@ -276,15 +276,17 @@
                 var iColumnCount = oTable.dataTableSettings[0].aoColumns.length;
                 var values = new Array();
 
-                $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel]", oAddNewRowForm).each(function () {
+                $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel]", oAddNewRowForm).each(function () {
                     var rel = $(this).attr("rel");
                     if (rel >= iColumnCount)
                         properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
                     else {
-                        if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
+                        if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")  
                             values[rel] = $("option:selected", this).text();
-                        else
-                            values[rel] = this.value;
+                         else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span"	)
+                            	values[rel] = $(this).html();
+                              else
+				values[rel] = this.value;
                     }
                 });
 
