@@ -504,7 +504,7 @@
                     });
                 } else {
                     if ($(properties.sAddDeleteToolbarSelector).length == 0) {
-                        throw "Cannot find button for adding new row although form for adding new record is specified";
+                        throw "Cannot find a button with an id '" + properties.sAddNewRowButtonId + "', od placeholder with an id '" + properties.sAddDeleteToolbarSelector + "' that should be used for adding new row although form for adding new record is specified";
                     } else {
                         oAddNewRowButton = null; //It will be auto-generated later
                     }
