@@ -25,7 +25,8 @@
 			$(document).ready( function () {
            $('#example').dataTable({
                                       "bProcessing": true,
-                                      "sAjaxSource": "ajax_source.js"
+                                      "sAjaxSource": "ajax_source.js",
+					aoColumns: [ { "bVisible": false} , null, null, null, null } ]
                                     }
                                     ).makeEditable();
 			} );
