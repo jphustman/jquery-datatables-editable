@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.2.1.
+* Version:     1.2.2.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -236,6 +236,7 @@
                     $.ajax({ 'url': properties.sAddURL,
                         'data': params,
                         'type': properties.sAddHttpMethod,
+                        "dataType": "text",
                         success: _fnOnRowAdded,
                         error: function (response) {
                             properties.fnEndProcessingMode();
@@ -356,6 +357,7 @@
                     'type': properties.sDeleteHttpMethod,
                     'data': 'id=' + id,
                     "success": _fnOnRowDeleted,
+                    "dataType": "text",
                     "error": function (response) {
                         properties.fnEndProcessingMode();
                         properties.fnShowError(response.responseText, "delete");
