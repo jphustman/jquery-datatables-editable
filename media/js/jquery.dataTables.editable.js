@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.2.
+* Version:     1.2.1.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -278,15 +278,19 @@
 
                 $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel]", oAddNewRowForm).each(function () {
                     var rel = $(this).attr("rel");
+                    var sCellValue = "";
                     if (rel >= iColumnCount)
                         properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
                     else {
-                        if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")  
-                            values[rel] = $("option:selected", this).text();
-                         else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span"	)
-                            	values[rel] = $(this).html();
-                              else
-				values[rel] = this.value;
+                        if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
+                            sCellValue = $("option:selected", this).text();
+                        else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
+                            sCellValue = $(this).html();
+                        else
+                            sCellValue = this.value;
+
+                        sCellValue = sCellValue.replace("{{ID}}", data);
+                        values[rel] = sCellValue;
                     }
                 });
 
