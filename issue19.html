@@ -36,8 +36,12 @@
 					"bScrollCollapse": true,
 					"bPaginate": false,
 					"bJQueryUI": true,
-					"aoColumnDefs": [
-						{ "sWidth": "10%", "aTargets": [ -1 ] }
+					"aoColumns": [
+							{ "bSortable": false },
+							null,
+							null,
+							null,
+							{ "sClass": "center" }
 					]
 				}).makeEditable({
 									sUpdateURL: "UpdateData.php",
@@ -53,8 +57,11 @@
 					"bScrollCollapse": true,
 					"bPaginate": false,
 					"bJQueryUI": true,
-					"aoColumnDefs": [
-						{ "sWidth": "10%", "aTargets": [ -1 ] }
+					"aoColumns": [
+							{ "bSortable": false },
+							null,
+							null,
+							{ "sClass": "center" }
 					]
 				}).makeEditable({
 									sUpdateURL: "UpdateData.php",
