@@ -142,6 +142,19 @@
                                     ).makeEditable();
 			} );
 	</pre>
+<h2>Additional HTML code</h2>
+<p>Html code is same as in the other cases, however you will need to add one change into the "Add" form. To  inject id of the new record you will to put hidden field with value {{ID}} that will be mapped to the ID colum (rel=0). Plugin will take the id returned from server and put it as an id attribute of the row.
+</p>
+			<pre>
+
+
+&lt;!-- Custom form for adding new records with included place holder for id column--&gt
+ &lt;form id=&quot;formAddNewRow&quot; action=&quot;#&quot; title=&quot;Add new record&quot;&gt;
+        ...
+	&lt;input type=&quot;hidden&quot; name=&quot;id&quot; id=&quot;id&quot; rel=&quot;0&quot; value=&quot;{{ID}}&quot; rel=&quot;0&quot; /&gt;
+        ...
+&lt;/form&gt;
+	</pre>	
 
 			<h2>Other examples</h2>
 			<ul>
