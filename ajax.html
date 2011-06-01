@@ -28,7 +28,13 @@
                                       "sAjaxSource": "ajax_source.js",
 					aoColumns: [ { "bVisible": false} , null, null, null, null ]
                                     }
-                                    ).makeEditable();
+                                    ).makeEditable({
+									sUpdateURL: "UpdateData.php",
+                    							sAddURL: "AddData.php",
+									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+                    							sDeleteURL: "DeleteData.php",
+									sDeleteHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+										});
 			} );
 		</script>
 <script type="text/javascript">
