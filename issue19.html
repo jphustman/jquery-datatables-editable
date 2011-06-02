@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
@@ -30,25 +30,6 @@
 			$(document).ready( function () {
 
 
-				$('#example1').dataTable( {
-					
-					"sScrollY": "200px",
-					"bScrollCollapse": true,
-					"bPaginate": false,
-					"bJQueryUI": true,
-					"aoColumns": [
-							{ "bSortable": false },
-							null,
-							null,
-							null,
-							{ "sClass": "center" }
-					]
-				}).makeEditable({
-									sUpdateURL: "UpdateData.php",
-                    							sAddURL: "AddData.php",
-									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
-                    							sDeleteURL: "DeleteData.php"
-										});
 				
 
 				$('#example2').dataTable( {
@@ -74,6 +55,28 @@
                     							sAddNewRowOkButtonId: "btnAddNewRowOk2",
                     							sAddNewRowCancelButtonId: "btnAddNewRowCancel2",
                     							sDeleteRowButtonId: "btnDeleteRow2"
+										});
+                              
+                              
+                              
+				$('#example1').dataTable( {
+					
+					"sScrollY": "200px",
+					"bScrollCollapse": true,
+					"bPaginate": false,
+					"bJQueryUI": true,
+					"aoColumns": [
+							{ "bSortable": false },
+							null,
+							null,
+							null,
+							{ "sClass": "center" }
+					]
+				}).makeEditable({
+									sUpdateURL: "UpdateData.php",
+                    							sAddURL: "AddData.php",
+									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+                    							sDeleteURL: "DeleteData.php"
 										});
 			} );
 
@@ -165,6 +168,81 @@
         <br />
 </form>
 
+           <hr />
+           
+           
+
+<hr/>
+<button id="btnDeleteRow2">Delete Selected Browser Without CSS Grade</button> <button id="btnAddNewRow2">Add New Browser Without CSS Grade</button>
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example2">
+	<thead>
+		<tr>
+			<th>Rendering engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="1" class="odd gradeX">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 4.0</td>
+			<td>Win 95+</td>
+			<td class="center">4</td>
+
+		</tr>
+		<tr id="2" class="odd gradeC">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 5.0</td>
+			<td>Win 95+</td>
+			<td class="center">4</td>
+
+		</tr>
+		<tr id="3" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 5.5</td>
+			<td>Win 95+</td>
+			<td class="center">5.5</td>
+
+		</tr>
+		<tr id="4" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet
+				 Explorer 6</td>
+			<td>Win 98+</td>
+			<td class="center">6</td>
+			
+		</tr>
+		<tr id="5" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>Internet Explorer 7</td>
+			<td>Win XP SP2+</td>
+			<td class="center">7</td>
+
+		</tr>
+		<tr id="6" class="odd gradeA">
+			<td>Trident</td>
+
+			<td>AOL browser (AOL desktop)</td>
+			<td>Win XP</td>
+			<td class="center">6</td>
+
+		</tr>
+	</tbody>
+</table>
+
+
+< hr />
+
 <button id="btnDeleteRow">Delete Selected Browser With CSS Grade</button> <button id="btnAddNewRow">Add Browser With CSS Grade</button>
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example1">
@@ -248,74 +326,6 @@
 
 
 
-
-<hr/>
-<button id="btnDeleteRow2">Delete Selected Browser Without CSS Grade</button> <button id="btnAddNewRow2">Add New Browser Without CSS Grade</button>
-
-<table cellpadding="0" cellspacing="0" border="0" class="display" id="example2">
-	<thead>
-		<tr>
-			<th>Rendering engine</th>
-			<th>Browser</th>
-			<th>Platform(s)</th>
-			<th>Engine version</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="1" class="odd gradeX">
-			<td>Trident</td>
-
-			<td>Internet
-				 Explorer 4.0</td>
-			<td>Win 95+</td>
-			<td class="center">4</td>
-
-		</tr>
-		<tr id="2" class="odd gradeC">
-			<td>Trident</td>
-
-			<td>Internet
-				 Explorer 5.0</td>
-			<td>Win 95+</td>
-			<td class="center">4</td>
-
-		</tr>
-		<tr id="3" class="odd gradeA">
-			<td>Trident</td>
-
-			<td>Internet
-				 Explorer 5.5</td>
-			<td>Win 95+</td>
-			<td class="center">5.5</td>
-
-		</tr>
-		<tr id="4" class="odd gradeA">
-			<td>Trident</td>
-
-			<td>Internet
-				 Explorer 6</td>
-			<td>Win 98+</td>
-			<td class="center">6</td>
-			
-		</tr>
-		<tr id="5" class="odd gradeA">
-			<td>Trident</td>
-
-			<td>Internet Explorer 7</td>
-			<td>Win XP SP2+</td>
-			<td class="center">7</td>
-
-		</tr>
-		<tr id="6" class="odd gradeA">
-			<td>Trident</td>
-
-			<td>AOL browser (AOL desktop)</td>
-			<td>Win XP</td>
-			<td class="center">6</td>
-
-		</tr>
-	</tbody>
-</table>
 			</div>
 			<div class="spacer"></div>
 
