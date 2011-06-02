@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.2.2.
+* Version:     1.2.3.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -518,7 +518,22 @@
                         oAddNewRowButton = null; //It will be auto-generated later
                     }
                 }
-
+                
+                //Prevent Submit handler
+                if (oAddNewRowForm[0].nodeName.toLowerCase() == "form") {
+                    oAddNewRowButton.unbind('submit');
+                    oAddNewRowForm.submit(function (event) {
+                        _fnOnRowAdding(event);
+                        return false;
+                    });
+                } else {
+                    $("form", oAddNewRowForm[0]).unbind('submit');
+                    $("form", oAddNewRowForm[0]).submit(function (event) {
+                        _fnOnRowAdding(event);
+                        return false;
+                    });
+                }
+                
                 // array to add default buttons to
                 var aAddNewRowFormButtons = [];
 
