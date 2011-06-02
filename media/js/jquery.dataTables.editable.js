@@ -521,7 +521,7 @@
                 
                 //Prevent Submit handler
                 if (oAddNewRowForm[0].nodeName.toLowerCase() == "form") {
-                    oAddNewRowButton.unbind('submit');
+                    oAddNewRowForm.unbind('submit');
                     oAddNewRowForm.submit(function (event) {
                         _fnOnRowAdding(event);
                         return false;
