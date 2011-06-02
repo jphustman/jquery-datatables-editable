@@ -274,7 +274,10 @@
                 var iColumnCount = oSettings.aoColumns.length;
                 */
                 //@jocapc - Chad's fix for the issue 19 END
-                var iColumnCount = oTable.dataTableSettings[0].aoColumns.length;
+
+                // var oSettings = oTable.dataTableSettings[0];
+                var oSettings = oTable.fnSettings();
+                var iColumnCount = oSettings.aoColumns.length;
                 var values = new Array();
 
                 $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel]", oAddNewRowForm).each(function () {
