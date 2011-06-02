@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.2.3.
+* Version:     1.2.4.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -35,9 +35,10 @@
 * @aoColumns                    	Array       Array of the JEditable settings that will be applied on the columns
 * @sAddHttpMethod               	String      Method used for the Add AJAX request (default is 'POST')
 * @sDeleteHttpMethod            	String      Method used for the Delete AJAX request (default is 'POST')
-* @fnOnDeleting                 	Function    function(tr, id){...} Function called before row is deleted.
+* @fnOnDeleting                 	Function    function(tr, id, fnDeleteRow){...} Function called before row is deleted.
                                                     tr isJQuery object encapsulating row that will be deleted
                                                     id is an id of the record that will be deleted.
+                                                    fnDeleteRow(id) callback function that should be called to delete row with id
                                                     returns true if plugin should continue with deleting row, false will abort delete.
 * @fnOnDeleted                  	Function    function(status){...} Function called after delete action. Status can be "success" or "failure"
 * @fnOnAdding                   	Function    function(){...} Function called before row is added.
@@ -345,6 +346,22 @@
             }
         }
 
+        function _fnDeleteRow(id) {
+            properties.fnStartProcessingMode();
+            $.ajax({ 'url': properties.sDeleteURL,
+                'type': properties.sDeleteHttpMethod,
+                'data': 'id=' + id,
+                "success": _fnOnRowDeleted,
+                "dataType": "text",
+                "error": function (response) {
+                    properties.fnEndProcessingMode();
+                    properties.fnShowError(response.responseText, "delete");
+                    properties.fnOnDeleted("failure");
+
+                }
+            });
+        }
+
         //Called when user deletes a row
         function _fnOnRowDelete(event) {
             iDisplayStart = _fnGetDisplayStart();
@@ -354,20 +371,24 @@
                 return;
             }
             var id = fnGetCellID($('tr.' + properties.sSelectedRowClass + ' td', oTable)[0]);
-            if (properties.fnOnDeleting($('tr.' + properties.sSelectedRowClass, oTable), id)) {
-                properties.fnStartProcessingMode();
+            if (properties.fnOnDeleting($('tr.' + properties.sSelectedRowClass, oTable), id, _fnDeleteRow)) {
+                _fnDeleteRow(id);
+                //----Refactored and moved to _fnDeleteRow(id)
+                //--start
+                /*properties.fnStartProcessingMode();
                 $.ajax({ 'url': properties.sDeleteURL,
-                    'type': properties.sDeleteHttpMethod,
-                    'data': 'id=' + id,
-                    "success": _fnOnRowDeleted,
-                    "dataType": "text",
-                    "error": function (response) {
-                        properties.fnEndProcessingMode();
-                        properties.fnShowError(response.responseText, "delete");
-                        properties.fnOnDeleted("failure");
+                'type': properties.sDeleteHttpMethod,
+                'data': 'id=' + id,
+                "success": _fnOnRowDeleted,
+                "dataType": "text",
+                "error": function (response) {
+                properties.fnEndProcessingMode();
+                properties.fnShowError(response.responseText, "delete");
+                properties.fnOnDeleted("failure");
 
-                    }
-                });
+                }
+                });*/
+                //--end
             }
         }
 
@@ -396,7 +417,7 @@
         * @param    id  id of the record that wil be deleted
         * @return   true if plugin should continue with deleting row, false will abort delete.
         */
-        function fnOnDeleting(tr, id) {
+        function fnOnDeleting(tr, id, fnDeleteRow) {
             return confirm("Are you sure that you want to delete this record?"); ;
         }
 
@@ -518,7 +539,7 @@
                         oAddNewRowButton = null; //It will be auto-generated later
                     }
                 }
-                
+
                 //Prevent Submit handler
                 if (oAddNewRowForm[0].nodeName.toLowerCase() == "form") {
                     oAddNewRowForm.unbind('submit');
@@ -533,7 +554,7 @@
                         return false;
                     });
                 }
-                
+
                 // array to add default buttons to
                 var aAddNewRowFormButtons = [];
 

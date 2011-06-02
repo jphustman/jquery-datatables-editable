@@ -52,6 +52,14 @@
                     },
                     fnEndProcessingMode: function () {
                         $("#processing_message").dialog("close");
+                    },
+                    fnOnDeleting: function (tr, id, fnDeleteRow) {
+                        jConfirm('Please confirm that you want to delete row with id ' + id, 'Confirm Delete', function (r) {
+                            if (r) {
+                                fnDeleteRow(id);
+                            }
+                        });
+                        return false;
                     }
                 });
 
@@ -640,7 +648,17 @@
                     },
                     fnEndProcessingMode: function () {
                         $("#processing_message").dialog("close");
-                    });
+                    },
+                    fnOnDeleting: function (tr, id, fnDeleteRow) {
+                        jConfirm('Please confirm that you want to delete row with id ' + id, 'Confirm Delete', function (r) {
+                            if (r) {
+                                fnDeleteRow(id);
+                            }
+                        });
+                        return false;
+                    }
+                    
+                    );
 });
 	</pre>
 			<h1>Additional HTML code</h1>
@@ -654,15 +672,20 @@
 </pre>
 	<p>Note that any JavaScript code can be placed in these functions. You can use them to refresh some element on the page when processing is finished.</p>
 
-			<h1>Other examples</h1>
+        <h1>Other examples</h1>
 			<ul>
-				<li><a href="index.html">Basic usage</a></li>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Edit cells inline</a></li>
+				<li><a href="delete-record.html">Select/Delete rows</a></li>
 				<li><a href="addingrecords.html">Adding a new record</a></li>
 				<li><a href="custom-editors.html">Custom editors</a></li>
 				<li><a href="inline-validation.html">Validation of inline cells</a></li>
 				<li><a href="events.html">Pre-processing and post-processing events</a></li>
 				<li><a href="customization.html">User interface customizations</a></li>
 				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
+				<li><a href="customize-buttons.html">Customization of buttons and form</a></li>
+				<li><a href="configure-dom.html">Two different tables on the same page</a></li>
+				<li><a href="ajax.html">Using Ajax source</a></li>
 			</ul>
 			
 			<div id="footer" style="text-align:center;">
