@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.2.4.
+* Version:     1.2.5.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -52,6 +52,7 @@
 * @fnOnEdited                   	Function    function(status){...} Function called after edit action. Status can be "success" or "failure"
 * @sEditorHeight                	String      Default height of the cell editors
 * @sEditorWidth                 	String      Default width of the cell editors
+* @oDeleteParameters                Object      Additonal objects added to the DELETE Ajax request
 */
 (function ($) {
 
@@ -348,9 +349,10 @@
 
         function _fnDeleteRow(id) {
             properties.fnStartProcessingMode();
+            var data = $.extend(properties.oDeleteParameters, { "id": id });
             $.ajax({ 'url': properties.sDeleteURL,
                 'type': properties.sDeleteHttpMethod,
-                'data': 'id=' + id,
+                'data': data,
                 "success": _fnOnRowDeleted,
                 "dataType": "text",
                 "error": function (response) {
@@ -487,7 +489,8 @@
             fnSetRowID: _fnSetRowIDInAttribute,
             sEditorHeight: "100%",
             sEditorWidth: "100%",
-            bDisableEditing: false
+            bDisableEditing: false,
+            oDeleteParameters: {}
 
         };
 
