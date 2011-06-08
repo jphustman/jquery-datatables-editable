@@ -73,7 +73,7 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
 			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/Overview">Wiki</a> 
 			<h1 class="full_width big">
 
-				Editable DataTable example - ajax data source with custom column
+				Editable DataTable example - Injecting id of the new record into the table
 			</h1>
 			
 			<h2>Preamble</h2>
@@ -108,7 +108,7 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
 		<input type="radio" name="grade" value="B" rel="4"> Second<br>
 		<input type="radio" name="grade" value="C" checked rel="4"> Third
         <br />
-<span class="datafield" rel="5" style="display:none"><a href="Edit.php?id={{ID}}">Edit</a></span>
+<span class="datafield" rel="5" style="display:none"><a href="Edit.php?id=ENTITYID">Edit</a></span>
 </form>
 
 <div class="add_delete_toolbar" />

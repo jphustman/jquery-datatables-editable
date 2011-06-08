@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.2.5.
+* Version:     1.2.6.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -53,6 +53,7 @@
 * @sEditorHeight                	String      Default height of the cell editors
 * @sEditorWidth                 	String      Default width of the cell editors
 * @oDeleteParameters                Object      Additonal objects added to the DELETE Ajax request
+* @sIDToken                         String      Token in the add new row dialog that will be replaced with a returned id of the record that is created
 */
 (function ($) {
 
@@ -263,21 +264,6 @@
 
             if (properties.fnOnNewRowPosted(data)) {
 
-                //@jocapc - Chad's fix for the issue 19 START
-                /*
-                var aoSettings = oTable.dataTableSettings;
-                var oSettings = null;
-                for (var i = 0; i < aoSettings.length; i++) {
-                if (aoSettings[i].nTable.id == oTable.attr('id')) {
-                oSettings = aoSettings[i];
-                break;
-                }
-                }
-                var iColumnCount = oSettings.aoColumns.length;
-                */
-                //@jocapc - Chad's fix for the issue 19 END
-
-                // var oSettings = oTable.dataTableSettings[0];
                 var oSettings = oTable.fnSettings();
                 var iColumnCount = oSettings.aoColumns.length;
                 var values = new Array();
@@ -295,7 +281,7 @@
                         else
                             sCellValue = this.value;
 
-                        sCellValue = sCellValue.replace("{{ID}}", data);
+                        sCellValue = sCellValue.replace(properties.sIDToken, data);
                         values[rel] = sCellValue;
                     }
                 });
@@ -375,22 +361,6 @@
             var id = fnGetCellID($('tr.' + properties.sSelectedRowClass + ' td', oTable)[0]);
             if (properties.fnOnDeleting($('tr.' + properties.sSelectedRowClass, oTable), id, _fnDeleteRow)) {
                 _fnDeleteRow(id);
-                //----Refactored and moved to _fnDeleteRow(id)
-                //--start
-                /*properties.fnStartProcessingMode();
-                $.ajax({ 'url': properties.sDeleteURL,
-                'type': properties.sDeleteHttpMethod,
-                'data': 'id=' + id,
-                "success": _fnOnRowDeleted,
-                "dataType": "text",
-                "error": function (response) {
-                properties.fnEndProcessingMode();
-                properties.fnShowError(response.responseText, "delete");
-                properties.fnOnDeleted("failure");
-
-                }
-                });*/
-                //--end
             }
         }
 
@@ -490,7 +460,8 @@
             sEditorHeight: "100%",
             sEditorWidth: "100%",
             bDisableEditing: false,
-            oDeleteParameters: {}
+            oDeleteParameters: {},
+            sIDToken: "ENTITYID"
 
         };
 
