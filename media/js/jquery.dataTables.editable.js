@@ -223,10 +223,10 @@
                         var oColumnSettings = oDefaultEditableSettings;
                         oColumnSettings = $.extend({}, oDefaultEditableSettings, properties.aoColumns[i]);
                         var sUpdateURL = properties.sUpdateURL;
-                        try{
-                            if(oColumnSettings.sUpdateURL != null)
+                        try {
+                            if (oColumnSettings.sUpdateURL != null)
                                 sUpdateURL = oColumnSettings.sUpdateURL;
-                        }catch(ex){
+                        } catch (ex) {
                         }
                         cells.editable(sUpdateURL, oColumnSettings);
                     }
@@ -350,10 +350,13 @@
             }
         }
 
-        function _fnDeleteRow(id) {
+        function _fnDeleteRow(id, sDeleteURL) {
+            var sURL = sDeleteURL;
+            if (sDeleteURL == null)
+                sURL = properties.sDeleteURL;
             properties.fnStartProcessingMode();
             var data = $.extend(properties.oDeleteParameters, { "id": id });
-            $.ajax({ 'url': properties.sDeleteURL,
+            $.ajax({ 'url': sURL,
                 'type': properties.sDeleteHttpMethod,
                 'data': data,
                 "success": _fnOnRowDeleted,
@@ -648,6 +651,31 @@
                 }
             }
 
+            //Add handler to the inline delete buttons
+            $(".table-action-deletelink", oTable).live("click", function (e) {
+
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var sURL = $(this).attr("href");
+
+                    if (sURL == null || sURL == "")
+                        sURL = properties.sDeleteURL;
+
+                    iDisplayStart = _fnGetDisplayStart();
+                    var oTD = ($(this).parents('td'))[0];
+                    var oTR = ($(this).parents('tr'))[0];
+
+                    $(oTR).addClass(properties.sSelectedRowClass);
+
+                    var id = fnGetCellID(oTD);
+                    if (properties.fnOnDeleting(oTD, id, _fnDeleteRow)) {
+                        _fnDeleteRow(id, sURL);
+                    }
+
+
+                }
+            );
+
             //Set selected class on row that is clicked
             //Enable delete button if row is selected, disable delete button if selected class is removed
             $("tbody", oTable).click(function (event) {
@@ -666,6 +694,8 @@
                     }
                 }
             });
+
+
 
         });
     };
