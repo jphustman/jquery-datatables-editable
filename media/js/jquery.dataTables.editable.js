@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.2.6.
+* Version:     1.2.7.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -305,10 +305,15 @@
 
         //Called when user cancels adding new record in the popup dialog
         function _fnOnCancelRowAdding(event) {
+            //Clear the validation messages and reset form
+            $(oAddNewRowForm).validate().resetForm();  // Clears the validation errors
+            $(oAddNewRowForm)[0].reset();
+            
+            $(".error", $(oAddNewRowForm)).html("");
+            $(".error", $(oAddNewRowForm)).hide();  // Hides the error element
+
             //Close the dialog
             oAddNewRowForm.dialog('close');
-            $(oAddNewRowForm)[0].reset();
-            $(".error", $(oAddNewRowForm)).html("");
             event.stopPropagation();
             event.preventDefault();
         }
@@ -461,7 +466,7 @@
             sEditorWidth: "100%",
             bDisableEditing: false,
             oDeleteParameters: {},
-            sIDToken: "ENTITYID"
+            sIDToken: "DATAROWID"
 
         };
 
