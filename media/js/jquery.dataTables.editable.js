@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.2.7.
+* Version:     1.2.8.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -146,15 +146,21 @@
                 event: 'dblclick',
                 "callback": function (sValue, settings) {
                     properties.fnEndProcessingMode();
+                    var status = "";
                     if (sNewCellValue == sValue) {
                         var aPos = oTable.fnGetPosition(this);
                         oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
-                        properties.fnOnEdited("success");
+                        status = "success";
                     } else {
                         var aPos = oTable.fnGetPosition(this);
                         oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
                         properties.fnShowError(sValue, "update");
-                        properties.fnOnEdited("failure");
+                        status = "failure";
+                    }
+
+                    properties.fnOnEdited(status, sOldValue, sNewCellDisplayValue, aPos[0], aPos[1], aPos[2]);
+                    if (settings.fnOnCellUpdated != null) {
+                        settings.fnOnCellUpdated(status, sValue, settings);
                     }
                     _fnSetDisplayStart();
 
@@ -216,7 +222,13 @@
                         cells = $("td:nth-child(" + (i + 1) + ")", aoNodes);
                         var oColumnSettings = oDefaultEditableSettings;
                         oColumnSettings = $.extend({}, oDefaultEditableSettings, properties.aoColumns[i]);
-                        cells.editable(properties.sUpdateURL, oColumnSettings);
+                        var sUpdateURL = properties.sUpdateURL;
+                        try{
+                            if(oColumnSettings.sUpdateURL != null)
+                                sUpdateURL = oColumnSettings.sUpdateURL;
+                        }catch(ex){
+                        }
+                        cells.editable(sUpdateURL, oColumnSettings);
                     }
 
 
@@ -308,7 +320,7 @@
             //Clear the validation messages and reset form
             $(oAddNewRowForm).validate().resetForm();  // Clears the validation errors
             $(oAddNewRowForm)[0].reset();
-            
+
             $(".error", $(oAddNewRowForm)).html("");
             $(".error", $(oAddNewRowForm)).hide();  // Hides the error element
 
@@ -407,7 +419,9 @@
         function fnOnDeleted(result) { }
 
         function fnOnEditing(input) { return true; }
-        function fnOnEdited(result) { }
+        function fnOnEdited(result, sOldValue, sNewValue, iRowIndex, iColumnIndex, iRealColumnIndex) {
+
+        }
 
         function fnOnAdding() { return true; }
         function fnOnAdded(result) { }

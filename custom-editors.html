@@ -26,7 +26,7 @@
 				$('#example').dataTable().makeEditable({
 									sUpdateURL: function(value, settings)
 									{
-                             return(value); //Simulation of server-side response using a callback function
+                             							return(value); //Simulation of server-side response using a callback function
 									},
                     							"aoColumns": [
                     									null,
@@ -36,7 +36,10 @@
                 									        indicator: 'Saving platforms...',
                                                             					tooltip: 'Click to edit platforms',
 												type: 'textarea',
-                                                 submit:'Save changes'
+                                                 						submit:'Save changes',
+												fnOnCellUpdated: function(sStatus, sValue, settings){
+													alert("(Cell Callback): Cell is updated with value " + sValue);
+												}
                     									},
                     									{
                                                             					indicator: 'Saving Engine Version...',
@@ -46,7 +49,8 @@
                                						            		onblur: 'cancel',
 												submit: 'Ok',
                                                             					loadurl: 'EngineVersionList.php',
-												loadtype: 'GET'
+												loadtype: 'GET',
+												sUpdateURL: "CustomUpdateEngineVersion.php"
                     									},
                     									{
                                                             					indicator: 'Saving CSS Grade...',
@@ -54,7 +58,12 @@
                                                             					loadtext: 'loading...',
                            					                                type: 'select',
                                						            		onblur: 'submit',
-                                                            					data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}"
+                                                            					data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}",
+												sUpdateURL: function(value, settings){
+													alert("Custom function for posting results");
+													return value;
+
+												}
                                                         				}
 											]									
 
@@ -100,9 +109,11 @@
 				cell editing functionalities to the JEditable plugin and just passes properties in the aoColumns to the editors for the 
 				praticular columns.
 			</p>
-			<p>In this example, first column is read only (passed null as aoColumns parameter), the second one uses standard settings,
-			 third column uses text area, fourth uses select list with php page as a source for the list of items and OK button for submiting
-			values, and fifth column uses select list with locally defined items that will be added in the list.</p>
+			<p>In this example, first column is read only (passed null as aoColumns parameter), and the second one uses standard settings.
+			 The third column uses text area, and has callback function fnOnCellUpdated that will be called when update is finished. The fourth
+			column uses select list with php page as a source for the list of items and OK button for submiting
+			values, and has own update server-side page. The fifth column uses select list with locally defined items that will be added in the list,
+			and uses callback function to post results.</p>
 
 
 	
@@ -603,39 +614,48 @@
 			<h2>Initialization code</h2>
 			<p>In the initialization code you will need to pass definitions of the columns according to the <a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a> rules.</p>
 			<pre>$(document).ready( function () {
-		$('#example').dataTable().makeEditable({
-			                        sUpdateURL: "UpdateData.php",
-                       	                	"aoColumns": [
-                    			                null,
-                    			                {
-                    			                },
-                    			                {
-                					        indicator: 'Saving platforms...',
-                                                        	tooltip: 'Click to edit platforms',
-						                type: 'textarea'
-                    			                },
-                    			                {
-                                                        	indicator: 'Saving Engine Version...',
-                                                        	tooltip: 'Click to select the engine version',
-                                                        	loadtext: 'loading...',
-                        					type: 'select',
-                               					onblur: 'cancel',
-								submit: 'Ok',
-                                                        	loadurl: 'EngineVersionList.php',
-						                loadtype: 'GET'
-                    			                },
-                    			                {
-                                                        	indicator: 'Saving CSS Grade...',
-                                                        	tooltip: 'Click to select CSS Grade',
-                                                        	loadtext: 'loading...',
-                           					type: 'select',
-                               					onblur: 'submit',
-                                                        	data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}"
-                                                	}
-						]									
+	$('#example').dataTable().makeEditable({
+                       	sUpdateURL: "UpdateData.php",
+                       	"aoColumns": [
+                    				null,
+                    				{
+                    				},
+                    				{
+                						indicator: 'Saving platforms...',
+                						tooltip: 'Click to edit platforms',
+                						type: 'textarea',
+                						submit:'Save changes',
+                						fnOnCellUpdated: function(sStatus, sValue, settings){
+                							alert("(Cell Callback): Cell is updated with value " + sValue);
+                						}
+                    				},
+                    				{
+                						indicator: 'Saving Engine Version...',
+                						tooltip: 'Click to select engine version',
+                						loadtext: 'loading...',
+                						type: 'select',
+                						onblur: 'cancel',
+                						submit: 'Ok',
+                						loadurl: 'EngineVersionList.php',
+                						loadtype: 'GET',
+                						sUpdateURL: "CustomUpdateEngineVersion.php"
+                    				},
+                    				{
+                						indicator: 'Saving CSS Grade...',
+                						tooltip: 'Click to select CSS Grade',
+                						loadtext: 'loading...',
+                						type: 'select',
+                						onblur: 'submit',
+                						data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}",
+                						sUpdateURL: function(value, settings){
+                							alert("Custom function for posting results");
+                							return value;
 
+                						}
+                					}
+					]									
 				});
-		})
+	})
 	</pre>
 
 <h2>Other examples</h2>
