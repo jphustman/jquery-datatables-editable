@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.3.
+* Version:     1.3.1
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -147,12 +147,11 @@
                 "callback": function (sValue, settings) {
                     properties.fnEndProcessingMode();
                     var status = "";
+                    var aPos = oTable.fnGetPosition(this);
                     if (sNewCellValue == sValue) {
-                        var aPos = oTable.fnGetPosition(this);
                         oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
                         status = "success";
                     } else {
-                        var aPos = oTable.fnGetPosition(this);
                         oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
                         properties.fnShowError(sValue, "update");
                         status = "failure";
@@ -247,18 +246,43 @@
                 if (oAddNewRowForm.valid()) {
                     iDisplayStart = _fnGetDisplayStart();
                     properties.fnStartProcessingMode();
-                    var params = oAddNewRowForm.serialize();
-                    $.ajax({ 'url': properties.sAddURL,
-                        'data': params,
-                        'type': properties.sAddHttpMethod,
-                        "dataType": "text",
-                        success: _fnOnRowAdded,
-                        error: function (response) {
-                            properties.fnEndProcessingMode();
-                            properties.fnShowError(response.responseText, "add");
-                            properties.fnOnAdded("failure");
+
+                    if (properties.bUseFormsPlugin) {
+                        //Still in beta(development)
+                        $(oAddNewRowForm).ajaxSubmit({
+                            success: function (response, statusString, xhr) {
+                                if (response.toLowerCase().indexOf("error") != -1 || statusString != "success") {
+                                    properties.fnEndProcessingMode();
+                                    properties.fnShowError(response, "add");
+                                    properties.fnOnAdded("failure");
+                                } else {
+                                    _fnOnRowAdded(response);
+                                }
+
+                            },
+                            error: function (response) {
+                                properties.fnEndProcessingMode();
+                                properties.fnShowError(response.responseText, "add");
+                                properties.fnOnAdded("failure");
+                            }
                         }
-                    });
+                        );
+
+                    } else {
+
+                        var params = oAddNewRowForm.serialize();
+                        $.ajax({ 'url': properties.sAddURL,
+                            'data': params,
+                            'type': properties.sAddHttpMethod,
+                            "dataType": "text",
+                            success: _fnOnRowAdded,
+                            error: function (response) {
+                                properties.fnEndProcessingMode();
+                                properties.fnShowError(response.responseText, "add");
+                                properties.fnOnAdded("failure");
+                            }
+                        });
+                    }
                 }
             }
             event.stopPropagation();
@@ -443,6 +467,119 @@
             }
         }
 
+        function _fnOnBeforeAction(sAction) {
+            return true;
+        }
+
+        function _fnOnActionCompleted(sStatus) {
+            //alert("Action completed: " + sStatus);
+        }
+
+        function _fnGetActionSettings(sAction) {
+            if (properties.aoTableAction)
+                fnShowError("Configuration error - aoTableAction setting are not set", sAction);
+            var i = 0;
+
+            for (i = 0; i < properties.aoTableActions.length; i++) {
+                if (properties.aoTableActions[i].sAction == sAction)
+                    return properties.aoTableActions[i];
+            }
+
+            fnShowError("Cannot find action configuration settings", sAction);
+        }
+
+
+        function _fnUpdateRow(oActionForm) {
+            var sAction = $(oActionForm).attr("id");
+            sAction = sAction.replace("form", "");
+            var sActionURL = $(oActionForm).attr("action");
+            if (properties.fnOnBeforeAction(sAction)) {
+                if ($(oActionForm).valid()) {
+                    iDisplayStart = _fnGetDisplayStart();
+                    properties.fnStartProcessingMode();
+                    if (properties.bUseFormsPlugin) {
+
+                        //Still in beta(development)
+                        var oAjaxSubmitOptions = {
+                            success: function (response, statusString, xhr) {
+                                properties.fnEndProcessingMode();
+                                if (response.toLowerCase().indexOf("error") != -1 || statusString != "success") {
+                                    properties.fnShowError(response, sAction);
+                                    properties.fnOnActionCompleted("failure");
+                                } else {
+                                    _fnUpdateRowOnSuccess(oActionForm);
+                                    properties.fnOnActionCompleted("success");
+                                }
+
+                            },
+                            error: function (response) {
+                                properties.fnEndProcessingMode();
+                                properties.fnShowError(response.responseText, sAction);
+                                properties.fnOnActionCompleted("failure");
+                            }
+                        };
+                        var oActionSettings = _fnGetActionSettings(sAction);
+                        oAjaxSubmitOptions = $.extend({}, properties.oAjaxSubmitOptions, oAjaxSubmitOptions);
+                        $(oActionForm).ajaxSubmit(oAjaxSubmitOptions);
+
+                    } else {
+                        var params = $(oActionForm).serialize();
+                        $.ajax({ 'url': sActionURL,
+                            'data': params,
+                            'type': properties.sAddHttpMethod,
+                            "dataType": "text",
+                            success: function (response) {
+                                properties.fnEndProcessingMode();
+                                _fnUpdateRowOnSuccess(oActionForm);
+                                properties.fnOnActionCompleted("success");
+                            },
+                            error: function (response) {
+                                properties.fnEndProcessingMode();
+                                properties.fnShowError(response.responseText, sAction);
+                                properties.fnOnActionCompleted("failure");
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        function _fnUpdateRowOnSuccess(oActionForm) {
+
+            var iRowID = jQuery.data(oActionForm, 'ROWID');
+            //var iDataRowID = jQuery.data(oActionForm, 'DATAROWID');
+            var oSettings = oTable.fnSettings();
+            var iColumnCount = oSettings.aoColumns.length;
+            var values = new Array();
+
+            var sAction = $(oActionForm).attr("id");
+            sAction = sAction.replace("form", "");
+
+            //$("input.ROWID").val(iRowID);
+            //$("input.DATAROWID").val(iDataRowID);
+
+            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel]", oActionForm).each(function () {
+                var rel = $(this).attr("rel");
+                var sCellValue = "";
+                if (rel >= iColumnCount)
+                    properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
+                else {
+                    if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
+                        sCellValue = $("option:selected", this).text();
+                    else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
+                        sCellValue = $(this).html();
+                    else
+                        sCellValue = this.value;
+
+                    //sCellValue = sCellValue.replace(properties.sIDToken, data);
+                    //values[rel] = sCellValue;
+                    oTable.fnUpdate(sCellValue, iRowID, rel);
+                }
+            });
+            $(oActionForm).dialog('close');
+
+
+        }
 
         oTable = this;
 
@@ -483,7 +620,12 @@
             sEditorWidth: "100%",
             bDisableEditing: false,
             oDeleteParameters: {},
-            sIDToken: "DATAROWID"
+            sIDToken: "DATAROWID",
+            aoTableActions: null,
+            fnOnBeforeAction: _fnOnBeforeAction,
+            bUseFormsPlugin: false,
+            fnOnActionCompleted: _fnOnActionCompleted
+
 
         };
 
@@ -654,26 +796,51 @@
             //Add handler to the inline delete buttons
             $(".table-action-deletelink", oTable).live("click", function (e) {
 
-                    e.preventDefault();
-                    e.stopPropagation();
-                    var sURL = $(this).attr("href");
+                e.preventDefault();
+                e.stopPropagation();
+                var sURL = $(this).attr("href");
 
-                    if (sURL == null || sURL == "")
-                        sURL = properties.sDeleteURL;
+                if (sURL == null || sURL == "")
+                    sURL = properties.sDeleteURL;
 
-                    iDisplayStart = _fnGetDisplayStart();
-                    var oTD = ($(this).parents('td'))[0];
-                    var oTR = ($(this).parents('tr'))[0];
+                iDisplayStart = _fnGetDisplayStart();
+                var oTD = ($(this).parents('td'))[0];
+                var oTR = ($(this).parents('tr'))[0];
 
-                    $(oTR).addClass(properties.sSelectedRowClass);
+                $(oTR).addClass(properties.sSelectedRowClass);
 
-                    var id = fnGetCellID(oTD);
-                    if (properties.fnOnDeleting(oTD, id, _fnDeleteRow)) {
-                        _fnDeleteRow(id, sURL);
-                    }
-
-
+                var id = fnGetCellID(oTD);
+                if (properties.fnOnDeleting(oTD, id, _fnDeleteRow)) {
+                    _fnDeleteRow(id, sURL);
                 }
+
+
+            }
+            );
+
+            //Add handler to the inline delete buttons
+            $(".table-action-editlink", oTable).live("click", function (e) {
+
+                e.preventDefault();
+                e.stopPropagation();
+                var sURL = $(this).attr("href");
+
+                if (sURL == null || sURL == "")
+                    sURL = properties.sDeleteURL;
+
+                iDisplayStart = _fnGetDisplayStart();
+                var oTD = ($(this).parents('td'))[0];
+                var oTR = ($(this).parents('tr'))[0];
+
+                $(oTR).addClass(properties.sSelectedRowClass);
+
+                var id = fnGetCellID(oTD);
+                if (properties.fnOnDeleting(oTD, id, _fnDeleteRow)) {
+                    _fnDeleteRow(id, sURL);
+                }
+
+
+            }
             );
 
             //Set selected class on row that is clicked
@@ -695,6 +862,105 @@
                 }
             });
 
+
+            if (properties.aoTableActions != null) {
+                for (var i = 0; i < properties.aoTableActions.length; i++) {
+                    var oTableAction = properties.aoTableActions[i];
+                    var sAction = oTableAction.sAction;
+                    var sActionFormId = oTableAction.sActionFormId;
+
+                    var oActionForm = $("#form" + sAction);
+                    if (oActionForm.length != 0) {
+                        var oFormOptions = { autoOpen: false, modal: true };
+                        oFormOptions = $.extend({}, oTableAction.oFormOptions, oFormOptions);
+                        oActionForm.dialog(oFormOptions);
+
+                        var oActionFormLink = $(".table-action-" + sAction);
+                        if (oActionFormLink.length != 0) {
+                            oActionFormLink.live("click", function () {
+
+                                var oTD = ($(this).parents('td'))[0];
+                                var oTR = ($(this).parents('tr'))[0];
+
+                                $(oTR).addClass(properties.sSelectedRowClass);
+
+                                var iRowID = oTable.fnGetPosition(oTR);
+
+
+                                var id = fnGetCellID(oTD);
+                                var sClass = this.className;
+                                sClass = sClass.replace("table-action-", "");
+                                $("#form" + sClass).validate().resetForm();
+                                jQuery.data($("#form" + sClass)[0], 'DATARECORDID', id);
+                                $("input.DATARECORDID", $("#form" + sClass)).val(id);
+                                jQuery.data($("#form" + sClass)[0], 'ROWID', iRowID);
+                                $("input.ROWID", $("#form" + sClass)).val(iRowID);
+
+
+                                var oSettings = oTable.fnSettings();
+                                var iColumnCount = oSettings.aoColumns.length;
+
+
+                                $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel]",
+                                    $("#form" + sClass)).each(function () {
+                                        var rel = $(this).attr("rel");
+
+
+                                        if (rel >= iColumnCount)
+                                            properties.fnShowError("In the action form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
+                                        else {
+                                            var sCellValue = oTable.fnGetData(oTR)[rel];
+                                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
+                                                $("option:selected", this).text(sCellValue);
+                                            else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
+                                                $(this).html(sCellValue);
+                                            else
+                                                this.value = sCellValue;
+
+                                            //sCellValue = sCellValue.replace(properties.sIDToken, data);
+                                            //values[rel] = sCellValue;
+                                            //oTable.fnUpdate(sCellValue, iRowID, rel);
+                                        }
+                                    });
+
+
+
+                                $("#form" + sClass).dialog('open');
+                            });
+                        }
+
+                        oActionForm.submit(function (event) {
+                            ///Start function _fnUpdateRow
+                            _fnUpdateRow(this);
+                            ///end function _fnUpdateRow
+                            return false;
+                        });
+
+
+
+                        var oActionFormCancel = $("#form" + sAction + "Cancel", oActionForm);
+                        if (oActionFormCancel.length != 0) {
+                            oActionFormCancel.click(function () {
+
+                                var oActionForm = $(this).parents("form")[0];
+                                //Clear the validation messages and reset form
+                                $(oActionForm).validate().resetForm();  // Clears the validation errors
+                                $(oActionForm)[0].reset();
+
+                                $(".error", $(oActionForm)).html("");
+                                $(".error", $(oActionForm)).hide();  // Hides the error element
+                                $(oActionForm).dialog('close');
+                            });
+                        }
+
+
+                    }
+
+
+
+
+                } // end for (var i = 0; i < properties.aoTableActions.length; i++)
+            } //end if (properties.aoTableActions != null)
 
 
         });
