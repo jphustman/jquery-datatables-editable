@@ -45,7 +45,7 @@ returns true if plugin should continue with deleting row, false will abort delet
 returns true if plugin should continue with adding row, false will abort add.
 * @fnOnNewRowPosted			Function    function(data) Function that can override default function that is called when server-side sAddURL returns result
 You can use this function to add different behaviour when server-side page returns result
-* @fnOnAdded                    	Function    function(status){...} Function called after delete action. Status can be "success" or "failure"
+* @fnOnAdded                    	Function    function(status){...} Function called after add action. Status can be "success" or "failure"
 * @fnOnEditing                  	Function    function(input){...} Function called before cell is updated.
 input JQuery object wrapping the inut element used for editing value in the cell.
 returns true if plugin should continue with sending AJAX request, false will abort update.
