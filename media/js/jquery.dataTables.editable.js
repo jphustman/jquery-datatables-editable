@@ -310,8 +310,15 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     if (rel >= iColumnCount)
                         properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
                     else {
-                        if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
-                            sCellValue = $("option:selected", this).text();
+                      if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select"){
+                            //sCellValue = $("option:selected", this).text();
+                            sCellValue = $.map(
+                                             $.makeArray($("option:selected", this)),
+                                             function (n, i) {
+                                                 return $(n).text();
+                                             }).join(",");
+                            
+                      }
                         else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
                             sCellValue = $(this).html();
                         else
