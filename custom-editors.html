@@ -37,8 +37,8 @@
                                                             					tooltip: 'Click to edit platforms',
 												type: 'textarea',
                                                  						submit:'Save changes',
-												fnOnCellUpdated: function(sStatus, sValue, settings){
-													alert("(Cell Callback): Cell is updated with value " + sValue);
+												fnOnCellUpdated: function(sStatus, sValue, row, column, settings){
+													alert("(Cell Callback): Cell["+row+","+column+"] is updated with value " + sValue);
 												}
                     									},
                     									{
