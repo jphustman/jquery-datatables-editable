@@ -159,7 +159,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                     properties.fnOnEdited(status, sOldValue, sNewCellDisplayValue, aPos[0], aPos[1], aPos[2]);
                     if (settings.fnOnCellUpdated != null) {
-                        settings.fnOnCellUpdated(status, sValue, settings);
+                        settings.fnOnCellUpdated(status, sValue, aPos[0], aPos[2], settings);
                     }
                     _fnSetDisplayStart();
 
