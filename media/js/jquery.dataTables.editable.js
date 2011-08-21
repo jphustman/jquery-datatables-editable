@@ -664,6 +664,17 @@ returns true if plugin should continue with sending AJAX request, false will abo
             //Setup form to open in dialog
             oAddNewRowForm = $("#" + properties.sAddNewRowFormId);
             if (oAddNewRowForm.length != 0) {
+            
+            
+                ///Check does the add new form has all nessecary fields
+                var oSettings = oTable.fnSettings();
+                var iColumnCount = oSettings.aoColumns.length;
+                for (i = 0; i < iColumnCount; i++) {
+                    if ($("[rel=" + i + "]", oAddNewRowForm).length == 0)
+                        properties.fnShowError("In the form that is used for adding new records cannot be found an input element with rel=" + i + " that will be bound to the value in the column " + i + ". See http://code.google.com/p/jquery-datatables-editable/wiki/AddingNewRecords#Add_new_record_form for more details", "init");
+                }
+                
+                
                 if (properties.oAddNewRowFormOptions != null) {
                     properties.oAddNewRowFormOptions.autoOpen = false;
                 } else {
