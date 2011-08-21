@@ -91,3 +91,6 @@
 .css_left {
 	float: left;
 }
+td.last-updated-cell { border:solid; background-color: yellow  !important }
+tr.last-added-row { border:solid; }
+tr.last-added-row td { background-color: green !important }
