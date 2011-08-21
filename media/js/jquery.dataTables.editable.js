@@ -150,6 +150,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     var aPos = oTable.fnGetPosition(this);
                     if (sNewCellValue == sValue) {
                         oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
+                        $("td.last-updated-cell", oTable).removeClass("last-updated-cell");
+                        $(this).addClass("last-updated-cell");
                         status = "success";
                     } else {
                         oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
@@ -336,6 +338,10 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 _fnApplyEditable(oTRAdded);
                 //add id returned by server page as an TR id attribute
                 properties.fnSetRowID($(oTRAdded), data);
+                
+                $("tr.last-added-row", oTable).removeClass("last-added-row");
+                $(oTRAdded).addClass("last-added-row");
+                
                 //Close the dialog
                 oAddNewRowForm.dialog('close');
                 $(oAddNewRowForm)[0].reset();
