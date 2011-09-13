@@ -1,0 +1,295 @@
+﻿ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Using DataTable with Editable plugin - Custom Column Editors</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/demo_validation.css";
+			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+
+        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+        <script src="jquery.jeditable.checkbox.js" type="text/javascript"></script>
+        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
+        <script src="media/js/jquery.validate.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready( function () {
+				$('#example').dataTable().makeEditable({
+									sUpdateURL: function(value, settings)
+									{
+                             							return(value); //Simulation of server-side response using a callback function
+									},
+                    							"aoColumns": [
+                    									
+                    									{	type:'checkbox',
+												cancel: 'Cancel',
+    												submit: 'OK',
+    												checkbox: { trueValue: 'Yes', falseValue: 'No' }
+                    									},
+											{ },
+                    									{
+                									        indicator: 'Saving platforms...',
+                                                            					tooltip: 'Click to edit platforms',
+												type: 'textarea',
+                                                 						submit:'Save changes',
+												fnOnCellUpdated: function(sStatus, sValue, row, column, settings){
+													alert("(Cell Callback): Cell["+row+","+column+"] is updated with value " + sValue);
+												}
+                    									},
+                    									{
+                                                            					tooltip: 'Click to select engine version',
+                                                            					loadtext: 'loading...',
+                           					                                type: 'select',
+                               						            		onblur: 'cancel',
+												submit: 'Ok',
+                                                            					loadurl: 'EngineVersionList.php',
+												loadtype: 'GET',
+												sUpdateURL: "CustomUpdateEngineVersion.php"
+                    									},
+                    									{
+                                                            					indicator: 'Saving CSS Grade...',
+                                                            					tooltip: 'Click to select CSS Grade',
+                                                            					loadtext: 'loading...',
+                           					                                type: 'select',
+                               						            		onblur: 'submit',
+                                                            					data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}",
+												sUpdateURL: function(value, settings){
+													alert("Custom function for posting results");
+													return value;
+
+												}
+                                                        				}
+											]									
+
+										});
+				
+			} );
+		</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17838786-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+		<div id="container">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/CustomCellEditors">Wiki</a> 
+			<h1 class="full_width big">
+
+				Editable DataTable example - custom editors + checkbox
+			</h1>
+			
+
+
+	
+		
+			
+			<h2>Live example</h2>
+
+			<div id="demo">
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+	<thead>
+		<tr>
+			<th>Is supported</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+
+			<th>Rendering engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+
+	</tfoot>
+	<tbody>
+		<tr class="odd_gradeX" id="2">
+			<td>No</td>
+			<td>Internet Explorer 4.0</td>
+			<td>Win 95+ (Entity: &amp;)</td>
+			<td class="center">4</td>
+
+			<td class="center">X</td>
+		</tr>
+		<tr class="even_gradeC" id="4">
+			<td>No</td>
+			<td>Internet Explorer 5.0</td>
+			<td>Win 95+</td>
+			<td class="center">5</td>
+
+			<td class="center">C</td>
+		</tr>
+		
+		<tr class="even_gradeA" id="1">
+			<td>Yes</td>
+			<td>Firefox 1.5</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td class="center">1.8</td>
+
+			<td class="center">A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Yes</td>
+			<td>Firefox 2.0</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td class="center">1.8</td>
+
+			<td class="center">A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Yes</td>
+			<td>Firefox 3.0</td>
+			<td>Win 2k+ / OSX.3+</td>
+			<td class="center">1.9</td>
+
+			<td class="center">A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Yes</td>
+			<td>Camino 1.0</td>
+			<td>OSX.2+</td>
+			<td class="center">1.8</td>
+
+			<td class="center">A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Yes</td>
+			<td>Camino 1.5</td>
+			<td>OSX.3+</td>
+			<td class="center">1.8</td>
+
+			<td class="center">A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Yes</td>
+			<td>Netscape 7.2</td>
+			<td>Win 95+ / Mac OS 8.6-9.2</td>
+			<td class="center">1.7</td>
+
+			<td class="center">A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Yes</td>
+			<td>Netscape Browser 8</td>
+			<td>Win 98SE+</td>
+			<td class="center">1.7</td>
+
+			<td class="center">A</td>
+		</tr>
+		
+	</tbody>
+</table>
+
+			</div>
+			<div class="spacer"></div>
+
+			
+			
+
+			
+			<h2>Initialization code</h2>
+			<p>In the initialization code you will need to pass definitions of the columns according to the <a href="http://www.appelsiini.net/projects/jeditable">JQuery JEditable plugin</a> rules.</p>
+			<pre>$(document).ready( function () {
+	$('#example').dataTable().makeEditable({
+                       	sUpdateURL: "UpdateData.php",
+                       	"aoColumns": [
+                    				{	type:'checkbox',
+							cancel: 'Cancel',
+    							submit: 'OK',
+    							checkbox: { trueValue: 'Yes', falseValue: 'No' }
+                    				},
+                    				{
+                    				},
+                    				{
+                						indicator: 'Saving platforms...',
+                						tooltip: 'Click to edit platforms',
+                						type: 'textarea',
+                						submit:'Save changes',
+                						fnOnCellUpdated: function(sStatus, sValue, settings){
+                							alert("(Cell Callback): Cell is updated with value " + sValue);
+                						}
+                    				},
+                    				{
+                						//indicator: 'Saving Engine Version...',
+                						tooltip: 'Click to select engine version',
+                						loadtext: 'loading...',
+                						type: 'select',
+                						onblur: 'cancel',
+                						submit: 'Ok',
+                						loadurl: 'EngineVersionList.php',
+                						loadtype: 'GET',
+                						sUpdateURL: "CustomUpdateEngineVersion.php"
+                    				},
+                    				{
+                						indicator: 'Saving CSS Grade...',
+                						tooltip: 'Click to select CSS Grade',
+                						loadtext: 'loading...',
+                						type: 'select',
+                						onblur: 'submit',
+                						data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}",
+                						sUpdateURL: function(value, settings){
+                							alert("Custom function for posting results");
+                							return value;
+
+                						}
+                					}
+					]									
+				});
+	})
+	</pre>
+
+<h2>Other examples</h2>
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Editing cells</a></li>
+				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="delete-record.html">Delete records</a></li>
+				<li><a href="custom-editors.html">Custom editors</a></li>
+				<li><a href="inline-validation.html">Validation of inline cells</a></li>
+				<li><a href="events.html">Pre-processing and post-processing events</a></li>
+				<li><a href="customization.html">User interface customizations</a></li>
+				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
+				<li><a href="customize-buttons.html">Customization of buttons and form</a></li>
+				<li><a href="configure-dom.html">Two different tables on the same page</a></li>
+				<li><a href="ajax.html">Using Ajax source</a></li>
+			</ul>
+			
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					DataTables Editable &copy; Jovan Popovic 2010-2011.<br>
+				</span>
+			</div>
+		</div>
+	</body>
+
+
+</html>
