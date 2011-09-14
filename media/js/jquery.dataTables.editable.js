@@ -229,7 +229,12 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                 sUpdateURL = oColumnSettings.sUpdateURL;
                         } catch (ex) {
                         }
-                        cells.editable(sUpdateURL, oColumnSettings);
+                        //cells.editable(sUpdateURL, oColumnSettings);
+                        cells.each(function () {
+                            if(!$(this).hasClass(properties.sReadOnlyCellClass)) {
+                                $(this).editable(sUpdateURL, oColumnSettings);
+                            }
+                        });
                     }
 
 
