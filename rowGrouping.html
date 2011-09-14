@@ -32,7 +32,46 @@
 							sAddHttpMethod: "GET",
 							sUpdateURL: function(value, settings){ return value;  },
 							sDeleteURL: "DeleteData.php",
-							sDeleteHttpMethod: "GET"
+							sDeleteHttpMethod: "GET",
+                   							"aoColumns": [
+                    									{
+                    									},
+                    									{
+                									        indicator: 'Saving platforms...',
+                                                            					tooltip: 'Click to edit platforms',
+												type: 'textarea',
+                                                 						submit:'Save changes',
+												fnOnCellUpdated: function(sStatus, sValue, row, column, settings){
+													alert("(Cell Callback): Cell["+row+","+column+"] is updated with value " + sValue);
+												}
+                    									},
+                    									{
+                                                            					tooltip: 'Click to select engine version',
+                                                            					loadtext: 'loading...',
+                           					                                type: 'select',
+                               						            		onblur: 'cancel',
+												submit: 'Ok',
+                                                            					loadurl: 'EngineVersionList.php',
+												loadtype: 'GET',
+												sUpdateURL: "CustomUpdateEngineVersion.php"
+                    									},
+                    									{
+                                                            					indicator: 'Saving CSS Grade...',
+                                                            					tooltip: 'Click to select CSS Grade',
+                                                            					loadtext: 'loading...',
+                           					                                type: 'select',
+                               						            		onblur: 'submit',
+                                                            					data: "{'':'Please select...', 'A':'A','B':'B','C':'C'}",
+												sUpdateURL: function(value, settings){
+													alert("Custom function for posting results");
+													return value;
+
+												}
+                                                        				}
+											]
+
+
+
 
 
 				});
