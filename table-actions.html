@@ -32,7 +32,15 @@
 										},
 										{
 										    sAction: "EditPlatforms"
-										}
+										},
+										{
+										    sAction: "AddBrowser1",
+										    sType: "add"
+										}/*,
+										{
+										    sAction: "AddBrowser2",
+										    sType: "add"
+										}*/
 
 
 
@@ -109,6 +117,26 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
 	<button id="formEditPlatformsCancel" type="button">Cancel</button>
 </form>
 
+ <form id="formAddBrowser1" action="UpdatePlatforms.php" title="Add Browser 1">
+    <input type="hidden" class="DATARECORDID" name="id" />
+    <input type="hidden" class="ROWID" name="row_id" />
+                <label for="platforms">Platform(s)</label><br />
+	<textarea name="platforms" id="Textarea1" class="required" rel="1"></textarea>
+        <br />
+        	<button id="formAddBrowser1Ok" type="submit">Ok</button>
+	<button id="formAddBrowser1Cancel" type="button">Cancel</button>
+</form>
+
+ <form id="formAddBrowser2" action="UpdatePlatforms.php" title="Add Browser 2">
+    <input type="hidden" class="DATARECORDID" name="id" />
+    <input type="hidden" class="ROWID" name="row_id" />
+                <label for="platforms">Platform(s)</label><br />
+	<textarea name="platforms" id="Textarea1" class="required" rel="1"></textarea>
+        <br />
+        	<button id="formAddBrowser2Ok" type="submit">Ok</button>
+	<button id="formAddBrowser2Cancel" type="button">Cancel</button>
+</form>
+
  <form id="formAddNewRow" action="#" title="Add new record">
         <input type="hidden" name="id" id="id" value="DATAROWID" />
         <label for="browser">Browser</label><br />
@@ -133,6 +161,7 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
 <a class="table-action-EditBrowser">Edit Browser</a>  <button type="button" class="table-action-EditPlatforms">Edit Platforms</button>          </span>
 </form>
 
+<a class="table-action-AddBrowser1">Add 1</a> <button class="table-action-AddBrowser2">Add 2</button>
 <div class="add_delete_toolbar" />
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">

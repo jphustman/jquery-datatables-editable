@@ -1,0 +1,184 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Using DataTable with Editable plugin - Getting the data source via ajax request</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/demo_validation.css";
+			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+
+        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.jeditable.js" type="text/javascript"></script>
+        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
+        <script src="media/js/jquery.validate.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready( function () {
+           $('#example').dataTable({
+                                      "bProcessing": true,
+                                      "sAjaxSource": "ajax_object_source.js"//,
+					//aoColumns: [ { "bVisible": false} , null, null, null, null ]
+                                    }
+                                    ).makeEditable({
+									sUpdateURL: "UpdateData.php",
+                    							sAddURL: "AddData.php",
+									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+                    							sDeleteURL: "DeleteData.php",
+									sDeleteHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+										});
+			} );
+		</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17838786-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+		<div id="container">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/Overview">Wiki</a> 
+			<h1 class="full_width big">
+
+				Editable DataTable example - ajax data source
+			</h1>
+			
+			<h2>Preamble</h2>
+			<p>
+           DataTable Editable plugin works with DataTables that dinamically read cells that should be displayed via ajax call. In this example, cells are not placed in the source
+           of the page - they is loaded from the server-side via JSON request. Once cells are loaded from the source via AJAX call, they are processed on the client side.</p>
+
+
+	
+		
+			
+			<h2>Live example</h2>
+
+			<div id="demo">
+
+ <form id="formAddNewRow" action="#" title="Add new record">
+        <input type="hidden" name="id" id="id" rel="0" value="DATAROWID" />
+        <label for="browser">Browser</label><br />
+	<input type="text" name="browser" id="browser" rel="1" />
+        <br />
+        <label for="platforms">Platform(s)</label><br />
+	<textarea name="platforms" id="platforms" rel="2"></textarea>
+        <br />
+        <label for="version">Engine version</label><br />
+	<select name="version" id="version" rel="3">
+                <option>1.5</option>
+                <option>1.7</option>
+                <option>1.8</option>
+        </select>
+        <br />
+        <label for="grade">CSS grade</label><br />
+		<input type="radio" name="grade" value="A" rel="4"> First<br>
+		<input type="radio" name="grade" value="B" rel="4"> Second<br>
+		<input type="radio" name="grade" value="C" checked rel="4"> Third
+        <br />
+</form>
+
+<div class="add_delete_toolbar" />
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+	<thead>
+		<tr>
+			<th>Engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+
+			<th>Engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+
+	</tfoot>
+	<tbody>
+
+	</tbody>
+</table>
+
+			</div>
+			<div class="spacer"></div>
+
+			<h2>Initialization code</h2>
+			<p>In the initialization code you will need to pass URL of the data source that contains data that will be loaded. Processing option is placed just to show "Processing" dialog while the action is performing.
+            Note that first column will be considered as an id and value of the first cell will added as an id of the row. You can hide this column if you want.</p>
+			<pre>
+			$(document).ready( function () {
+           $('#example').dataTable({
+                                      "bProcessing": true,
+                                      "sAjaxSource": "ajax_source.js"
+                                      }
+                                    ).makeEditable();
+			} );
+	</pre>
+<h2>Additional HTML code</h2>
+<p>Html code is same as in the other cases, however you will need to add one change into the "Add" form. To  inject id of the new record you will to put hidden field with value DATAROWID that will be mapped to the ID colum (rel=0). Plugin will take the id returned from server and put it as an id attribute of the row.
+</p>
+			<pre>
+
+
+&lt;!-- Custom form for adding new records with included place holder for id column--&gt
+ &lt;form id=&quot;formAddNewRow&quot; action=&quot;#&quot; title=&quot;Add new record&quot;&gt;
+        ...
+	&lt;input type=&quot;hidden&quot; name=&quot;id&quot; id=&quot;id&quot; rel=&quot;0&quot; value=&quot;DATAROWID&quot; rel=&quot;0&quot; /&gt;
+        ...
+&lt;/form&gt;
+	</pre>	
+
+			<h2>Other examples</h2>
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Editing cells</a></li>
+				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="delete-record.html">Delete records</a></li>
+				<li><a href="custom-editors.html">Custom editors</a></li>
+				<li><a href="inline-validation.html">Validation of inline cells</a></li>
+				<li><a href="events.html">Pre-processing and post-processing events</a></li>
+				<li><a href="customization.html">User interface customizations</a></li>
+				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
+				<li><a href="customize-buttons.html">Customization of buttons and form</a></li>
+				<li><a href="configure-dom.html">Two different tables on the same page</a></li>
+				<li><a href="ajax.html">Using Ajax source</a></li>
+			</ul>
+			
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					DataTables Editable &copy; Jovan Popovic 2010-2011.<br>
+				</span>
+			</div>
+		</div>
+ </body>
+
+
+</html>
