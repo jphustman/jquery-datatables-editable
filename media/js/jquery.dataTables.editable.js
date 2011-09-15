@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     1.3.2
+* Version:     1.3.3
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -76,7 +76,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
         //  <td>...</td><td>...</td><td>...</td><td>...</td>
         //</tr>
         function _fnSetRowIDInAttribute(row, id) {
-            row.attr("id", id);
+            if (row.attr("id") == null || row.attr("id") == "")
+                row.attr("id", id);
         }
 
         //Utility function used to get id of the row
