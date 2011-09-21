@@ -1,0 +1,652 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Editable DataTable Example - Adding new record</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+
+        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.jeditable.js" type="text/javascript"></script>
+        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
+        <script src="media/js/jquery.validate.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.editable.js" type="text/javascript"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready( function () {
+				var oTable = $('#example').dataTable().makeEditable({
+									sUpdateURL: "UpdateData.php",
+                    							sAddURL: "AddData.php",
+									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+                    							sDeleteURL: "DeleteData.php"
+										});
+				
+			} );
+		</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17838786-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+		<div id="container">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/AddingNewRecords">Wiki</a> 
+			<h1 class="full_width big">
+
+				Editable DataTable example - Adding new record
+			</h1>
+			
+			
+			
+			
+			<h2>Live example</h2>
+
+
+
+
+
+ <form id="formAddNewRow" title="Add new record">
+        <label for="engine">Rendering engine</label><br />
+	<input type="text" name="engine" id="name" class="required" rel="0" />
+        <br />
+        <label for="browser">Browser</label><br />
+	<input type="text" name="browser" id="browser" rel="1" />
+        <br />
+        <label for="platforms">Platform(s)</label><br />
+	<textarea name="platforms" id="platforms" rel="2"></textarea>
+        <br />
+        <label for="version">Engine version</label><br />
+	<select name="version" id="version" rel="3" multiple="multiple">
+                <option>1.5</option>
+                <option>1.7</option>
+                <option>1.8</option>
+        </select>
+        <br />
+        <label for="grade">Is A+ CSS grade?</label><br />
+		<input type="checkbox" name="grade" value="A+" rel="4"> 
+        <br />
+</form>
+
+
+
+			<div id="demo">
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+	<thead>
+		<tr>
+			<th>Rendering engine</th>
+			<th>Browser</th>
+
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+
+			<th>Rendering engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+
+	</tfoot>
+	<tbody>
+		<tr class="odd_gradeX" id="2">
+			<td>Trident</td>
+			<td>Internet Explorer 4.0</td>
+			<td>Win 95+ (Entity: &amp;)</td>
+			<td>4</td>
+
+			<td>X</td>
+		</tr>
+		<tr class="even_gradeC" id="4">
+			<td>Trident</td>
+			<td>Internet Explorer 5.0</td>
+			<td>Win 95+</td>
+			<td>5</td>
+
+			<td>C</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Trident</td>
+			<td>Internet Explorer 5.5</td>
+			<td>Win 95+</td>
+			<td>5.5</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Trident</td>
+			<td>Internet Explorer 6</td>
+			<td>Win 98+</td>
+			<td>6</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Trident</td>
+			<td>Internet Explorer 7</td>
+			<td>Win XP SP2+</td>
+			<td>7</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Trident</td>
+			<td>AOL browser (AOL desktop)</td>
+			<td>Win XP</td>
+			<td>6</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko (UTF-8: $¢€)</td>
+			<td>Firefox 1.0</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td>1.7</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Firefox 1.5</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td>1.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Firefox 2.0</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td>1.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Firefox 3.0</td>
+			<td>Win 2k+ / OSX.3+</td>
+			<td>1.9</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Camino 1.0</td>
+			<td>OSX.2+</td>
+			<td>1.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Camino 1.5</td>
+			<td>OSX.3+</td>
+			<td>1.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Netscape 7.2</td>
+			<td>Win 95+ / Mac OS 8.6-9.2</td>
+			<td>1.7</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Netscape Browser 8</td>
+			<td>Win 98SE+</td>
+			<td>1.7</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Netscape Navigator 9</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td>1.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Mozilla 1.0</td>
+			<td>Win 95+ / OSX.1+</td>
+			<td>1</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Mozilla 1.1</td>
+			<td>Win 95+ / OSX.1+</td>
+			<td>1.1</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Mozilla 1.2</td>
+			<td>Win 95+ / OSX.1+</td>
+			<td>1.2</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Mozilla 1.3</td>
+			<td>Win 95+ / OSX.1+</td>
+			<td>1.3</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Mozilla 1.4</td>
+			<td>Win 95+ / OSX.1+</td>
+			<td>1.4</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Mozilla 1.5</td>
+			<td>Win 95+ / OSX.1+</td>
+			<td>1.5</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Mozilla 1.6</td>
+			<td>Win 95+ / OSX.1+</td>
+			<td>1.6</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Mozilla 1.7</td>
+			<td>Win 98+ / OSX.1+</td>
+			<td>1.7</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Mozilla 1.8</td>
+			<td>Win 98+ / OSX.1+</td>
+			<td>1.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Gecko</td>
+			<td>Seamonkey 1.1</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td>1.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Gecko</td>
+			<td>Epiphany 2.20</td>
+			<td>Gnome</td>
+			<td>1.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Webkit</td>
+			<td>Safari 1.2</td>
+			<td>OSX.3</td>
+			<td>125.5</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Webkit</td>
+			<td>Safari 1.3</td>
+			<td>OSX.3</td>
+			<td>312.8</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Webkit</td>
+			<td>Safari 2.0</td>
+			<td>OSX.4+</td>
+			<td>419.3</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Webkit</td>
+			<td>Safari 3.0</td>
+			<td>OSX.4+</td>
+			<td>522.1</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Webkit</td>
+			<td>OmniWeb 5.5</td>
+			<td>OSX.4+</td>
+			<td>420</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Webkit</td>
+			<td>iPod Touch / iPhone</td>
+			<td>iPod</td>
+			<td>420.1</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Webkit</td>
+			<td>S60</td>
+			<td>S60</td>
+			<td>413</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Presto</td>
+			<td>Opera 7.0</td>
+			<td>Win 95+ / OSX.1+</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Presto</td>
+			<td>Opera 7.5</td>
+			<td>Win 95+ / OSX.2+</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Presto</td>
+			<td>Opera 8.0</td>
+			<td>Win 95+ / OSX.2+</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Presto</td>
+			<td>Opera 8.5</td>
+			<td>Win 95+ / OSX.2+</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Presto</td>
+			<td>Opera 9.0</td>
+			<td>Win 95+ / OSX.3+</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Presto</td>
+			<td>Opera 9.2</td>
+			<td>Win 88+ / OSX.3+</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Presto</td>
+			<td>Opera 9.5</td>
+			<td>Win 88+ / OSX.3+</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Presto</td>
+			<td>Opera for Wii</td>
+			<td>Wii</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Presto</td>
+			<td>Nokia N800</td>
+			<td>N800</td>
+			<td>-</td>
+
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Presto</td>
+			<td>Nintendo DS browser</td>
+			<td>Nintendo DS</td>
+			<td>8.5</td>
+
+			<td>C/A<sup>1</sup></td>
+		</tr>
+		<tr class="even_gradeC" id="4">
+			<td>KHTML</td>
+			<td>Konqureror 3.1</td>
+			<td>KDE 3.1</td>
+
+			<td>3.1</td>
+			<td>C</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>KHTML</td>
+			<td>Konqureror 3.3</td>
+			<td>KDE 3.3</td>
+
+			<td>3.3</td>
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>KHTML</td>
+			<td>Konqureror 3.5</td>
+			<td>KDE 3.5</td>
+
+			<td>3.5</td>
+			<td>A</td>
+		</tr>
+		<tr class="odd_gradeX" id="2">
+			<td>Tasman</td>
+			<td>Internet Explorer 4.5</td>
+			<td>Mac OS 8-9</td>
+
+			<td>-</td>
+			<td>X</td>
+		</tr>
+		<tr class="even_gradeC" id="4">
+			<td>Tasman</td>
+			<td>Internet Explorer 5.1</td>
+			<td>Mac OS 7.6-9</td>
+
+			<td>1</td>
+			<td>C</td>
+		</tr>
+		<tr class="odd_gradeC" id="3">
+			<td>Tasman</td>
+			<td>Internet Explorer 5.2</td>
+			<td>Mac OS 8-X</td>
+
+			<td>1</td>
+			<td>C</td>
+		</tr>
+		<tr class="even_gradeA" id="1">
+			<td>Misc</td>
+			<td>NetFront 3.1</td>
+			<td>Embedded devices</td>
+
+			<td>-</td>
+			<td>C</td>
+		</tr>
+		<tr class="odd_gradeA" id="5">
+			<td>Misc</td>
+			<td>NetFront 3.4</td>
+			<td>Embedded devices</td>
+
+			<td>-</td>
+			<td>A</td>
+		</tr>
+		<tr class="even_gradeX" id="11">
+			<td>Misc</td>
+			<td>Dillo 0.8</td>
+			<td>Embedded devices</td>
+
+			<td>-</td>
+			<td>X</td>
+		</tr>
+		<tr class="odd_gradeX" id="2">
+			<td>Misc</td>
+			<td>Links</td>
+			<td>Text only</td>
+
+			<td>-</td>
+			<td>X</td>
+		</tr>
+		<tr class="even_gradeX" id="11">
+			<td>Misc</td>
+			<td>Lynx</td>
+			<td>Text only</td>
+
+			<td>-</td>
+			<td>X</td>
+		</tr>
+		<tr class="odd_gradeC" id="3">
+			<td>Misc</td>
+			<td>IE Mobile</td>
+			<td>Windows Mobile 6</td>
+
+			<td>-</td>
+			<td>C</td>
+		</tr>
+		<tr class="even_gradeC" id="4">
+			<td>Misc</td>
+			<td>PSP browser</td>
+			<td>PSP</td>
+
+			<td>-</td>
+			<td>C</td>
+		</tr>
+		<tr class="odd_gradeU" id="10">
+			<td>Other browsers</td>
+			<td>All others</td>
+			<td>-</td>
+
+			<td>-</td>
+			<td>U</td>
+		</tr>
+	</tbody>
+</table>
+<div class="add_delete_toolbar" />
+			</div>
+			<div class="spacer"></div>
+
+			
+
+			
+			
+			<h2>Initialisation code</h2>
+			<pre>$(document).ready( function () {
+		$('#example').dataTable().makeEditable({
+							sUpdateURL: "UpdateData.php",
+							sAddURL: "AddData.php",
+                    					sDeleteURL: "DeleteData.php"
+							});
+}
+	</pre>
+			<h2>Additional HTML code</h2>
+			<pre>
+&lt;!-- Place holder where add and delete buttons will be generated --&gt;
+&lt;div class=&quot;add_delete_toolbar&quot; /&gt;
+
+&lt;!-- Custom form for adding new records --&gt
+ &lt;form id=&quot;formAddNewRow&quot; action=&quot;#&quot; title=&quot;Add new record&quot;&gt;
+        &lt;label for=&quot;engine&quot;&gt;Rendering engine&lt;/label&gt;&lt;br /&gt;
+	&lt;input type=&quot;text&quot; name=&quot;engine&quot; id=&quot;name&quot; class=&quot;required&quot; rel=&quot;0&quot; /&gt;
+        &lt;br /&gt;
+        &lt;label for=&quot;browser&quot;&gt;Browser&lt;/label&gt;&lt;br /&gt;
+	&lt;input type=&quot;text&quot; name=&quot;browser&quot; id=&quot;browser&quot; rel=&quot;1&quot; /&gt;
+        &lt;br /&gt;
+        &lt;label for=&quot;platforms&quot;&gt;Platform(s)&lt;/label&gt;&lt;br /&gt;
+	&lt;textarea name=&quot;platforms&quot; id=&quot;platforms&quot; rel=&quot;2&quot;&gt;&lt;/textarea&gt;
+        &lt;br /&gt;
+        &lt;label for=&quot;version&quot;&gt;Engine version&lt;/label&gt;&lt;br /&gt;
+	&lt;select name=&quot;version&quot; id=&quot;version&quot; rel=&quot;3&quot;&gt;
+                &lt;option&gt;1.5&lt;/option&gt;
+                &lt;option&gt;1.7&lt;/option&gt;
+                &lt;option&gt;1.8&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;br /&gt;
+        &lt;label for=&quot;grade&quot;&gt;CSS grade&lt;/label&gt;&lt;br /&gt;
+		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;A&quot; rel=&quot;4&quot;&gt; First&lt;br&gt;
+		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;B&quot; rel=&quot;4&quot;&gt; Second&lt;br&gt;
+		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;C&quot; checked rel=&quot;4&quot;&gt; Third
+        &lt;br /&gt;
+&lt;/form&gt;
+	</pre>	
+
+			
+			<h2>Other examples</h2>
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="inline-edit.html">Editing cells</a></li>
+				<li><a href="addingrecords.html">Adding a new record</a></li>
+				<li><a href="delete-record.html">Delete records</a></li>
+				<li><a href="custom-editors.html">Custom editors</a></li>
+				<li><a href="inline-validation.html">Validation of inline cells</a></li>
+				<li><a href="events.html">Pre-processing and post-processing events</a></li>
+				<li><a href="customization.html">User interface customizations</a></li>
+				<li><a href="custom-messages.html">Customization of message dialogs</a></li>
+				<li><a href="customize-buttons.html">Customization of buttons and form</a></li>
+				<li><a href="configure-dom.html">Two different tables on the same page</a></li>
+				<li><a href="ajax.html">Using Ajax source</a></li>
+			</ul>
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					Editable and DataTables &copy; Jovan Popovic 2011.<br>
+				</span>
+			</div>
+		</div>
+	</body>
+
+
+
+
+
+</html>

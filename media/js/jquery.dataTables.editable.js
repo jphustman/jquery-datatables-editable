@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.0.
+* Version:     2.0.1
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -375,19 +375,31 @@ returns true if plugin should continue with sending AJAX request, false will abo
             var iColumnCount = oSettings.aoColumns.length;
             var values = new Array();
 
-            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel]", oForm).each(function () {
+            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oForm).each(function () {
                 var rel = $(this).attr("rel");
                 var sCellValue = "";
                 if (rel >= iColumnCount)
                     properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
                 else {
-                    if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
-                        sCellValue = $("option:selected", this).text();
+                    if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
+                        //sCellValue = $("option:selected", this).text();
+                        sCellValue = $.map(
+                                             $.makeArray($("option:selected", this)),
+                                             function (n, i) {
+                                                 return $(n).text();
+                                             }).join(",");
+                    }
                     else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
                         sCellValue = $(this).html();
-                    else
-                        sCellValue = this.value;
-
+                    else {
+                        if (this.type == "checkbox") {
+                            if (this.checked)
+                                sCellValue = (this.value != "on") ? this.value : "true";
+                            else
+                                sCellValue = (this.value != "on") ? "" : "false";
+                        } else
+                            sCellValue = this.value;
+                    }
                     sCellValue = sCellValue.replace(properties.sIDToken, data);
                     values[rel] = sCellValue;
                 }
@@ -415,7 +427,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 var iColumnCount = oSettings.aoColumns.length;
                 var values = new Array();
 
-                $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel]", oAddNewRowForm).each(function () {
+                $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oAddNewRowForm).each(function () {
                     var rel = $(this).attr("rel");
                     var sCellValue = "";
                     if (rel >= iColumnCount)
@@ -431,8 +443,15 @@ returns true if plugin should continue with sending AJAX request, false will abo
                         }
                         else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
                             sCellValue = $(this).html();
-                        else
-                            sCellValue = this.value;
+                        else {
+                            if (this.type == "checkbox") {
+                                if (this.checked)
+                                    sCellValue = (this.value != "on") ? this.value : "true";
+                                else
+                                    sCellValue = (this.value != "on") ? "" : "false";
+                            } else
+                                sCellValue = this.value;
+                        }
 
                         sCellValue = sCellValue.replace(properties.sIDToken, data);
                         values[rel] = sCellValue;
@@ -718,20 +737,31 @@ returns true if plugin should continue with sending AJAX request, false will abo
             //$("input.ROWID").val(iRowID);
             //$("input.DATAROWID").val(iDataRowID);
 
-            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel]", oActionForm).each(function () {
+            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oActionForm).each(function () {
                 var rel = $(this).attr("rel");
                 var sCellValue = "";
                 if (rel >= iColumnCount)
                     properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
                 else {
                     if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
-                        sCellValue = $("option:selected", this).text();
-                        //BUG What to to with multiselects?
+                        //sCellValue = $("option:selected", this).text();
+                        sCellValue = $.map(
+                                             $.makeArray($("option:selected", this)),
+                                             function (n, i) {
+                                                 return $(n).text();
+                                             }).join(",");
                     }
                     else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
                         sCellValue = $(this).html();
-                    else
-                        sCellValue = this.value;
+                    else {
+                        if (this.type == "checkbox") {
+                            if (this.checked)
+                                sCellValue = (this.value != "on") ? this.value : "true";
+                            else
+                                sCellValue = (this.value != "on") ? "" : "false";
+                        } else
+                            sCellValue = this.value;
+                    }
 
                     //sCellValue = sCellValue.replace(properties.sIDToken, data);
                     //values[rel] = sCellValue;
@@ -1093,7 +1123,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                     var iColumnCount = oSettings.aoColumns.length;
 
 
-                                    $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel]",
+                                    $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],input:checkbox[rel]",
                                     $(sActionFormId)).each(function () {
                                         var rel = $(this).attr("rel");
 
@@ -1102,12 +1132,25 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                             properties.fnShowError("In the action form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
                                         else {
                                             var sCellValue = oTable.fnGetData(oTR)[rel];
-                                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select")
-                                                $("option:selected", this).text(sCellValue);
+                                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select"){
+                                                //sCellValue = $("option:selected", this).text();
+                                                sCellValue = $.map(
+                                                                     $.makeArray($("option:selected", this)),
+                                                                     function (n, i) {
+                                                                         return $(n).text();
+                                                                     }).join(",");
+                                            }
                                             else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
                                                 $(this).html(sCellValue);
-                                            else
-                                                this.value = sCellValue;
+                                            else{
+                                                if (this.type == "checkbox") {
+                                                    if (this.checked)
+                                                        sCellValue = (this.value != "on") ? this.value : "true";
+                                                    else
+                                                        sCellValue = (this.value != "on") ? "" : "false";
+                                                } else
+                                                    sCellValue = this.value;
+                                            }
 
                                             //sCellValue = sCellValue.replace(properties.sIDToken, data);
                                             //values[rel] = sCellValue;
