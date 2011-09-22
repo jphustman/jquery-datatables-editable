@@ -301,7 +301,6 @@ returns true if plugin should continue with sending AJAX request, false will abo
             } else {
                 cells = $('td:not(.' + properties.sReadOnlyCellClass + ')', aoNodes);
                 cells.editable(properties.sUpdateURL, oDefaultEditableSettings);
-                1
             }
         }
 
