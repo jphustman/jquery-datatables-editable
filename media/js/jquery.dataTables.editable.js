@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.0.1
+* Version:     2.0.2
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -244,13 +244,16 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     var sColumnName = oTable.fnSettings().aoColumns[columnId].sName;
                     if (sColumnName == null || sColumnName == "")
                         sColumnName = oTable.fnSettings().aoColumns[columnId].sTitle;
-                    var updateData = $.extend(properties.oUpdateParameters, {
-                        "id": id,
-                        "rowId": rowId,
-                        "columnPosition": columnPosition,
-                        "columnId": columnId,
-                        "columnName": sColumnName
-                    });
+                    var updateData = $.extend( {},
+                                                properties.oUpdateParameters, 
+                                                properties.aoColumns[columnId].oUpdateParameters, 
+                                                {
+                                                    "id": id,
+                                                    "rowId": rowId,
+                                                    "columnPosition": columnPosition,
+                                                    "columnId": columnId,
+                                                    "columnName": sColumnName
+                                                });
                     return updateData;
                     /*return {
                     "id": id,
