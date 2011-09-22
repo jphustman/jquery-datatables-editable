@@ -244,16 +244,30 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     var sColumnName = oTable.fnSettings().aoColumns[columnId].sName;
                     if (sColumnName == null || sColumnName == "")
                         sColumnName = oTable.fnSettings().aoColumns[columnId].sTitle;
-                    var updateData = $.extend( {},
-                                                properties.oUpdateParameters, 
-                                                properties.aoColumns[columnId].oUpdateParameters, 
-                                                {
-                                                    "id": id,
-                                                    "rowId": rowId,
-                                                    "columnPosition": columnPosition,
-                                                    "columnId": columnId,
-                                                    "columnName": sColumnName
-                                                });
+                    var updateData = null;
+                    if (properties.aoColumns == null || properties.aoColumns[columnId] == null) {
+                        updateData = $.extend({},
+                                            properties.oUpdateParameters,
+                                            {
+                                                "id": id,
+                                                "rowId": rowId,
+                                                "columnPosition": columnPosition,
+                                                "columnId": columnId,
+                                                "columnName": sColumnName
+                                            });
+                    }
+                    else {
+                        updateData = $.extend({},
+                                            properties.oUpdateParameters,
+                                            properties.aoColumns[columnId].oUpdateParameters,
+                                            {
+                                                "id": id,
+                                                "rowId": rowId,
+                                                "columnPosition": columnPosition,
+                                                "columnId": columnId,
+                                                "columnName": sColumnName
+                                            });
+                    }
                     return updateData;
                     /*return {
                     "id": id,
@@ -1134,7 +1148,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                             properties.fnShowError("In the action form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
                                         else {
                                             var sCellValue = oTable.fnGetData(oTR)[rel];
-                                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select"){
+                                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
                                                 //sCellValue = $("option:selected", this).text();
                                                 sCellValue = $.map(
                                                                      $.makeArray($("option:selected", this)),
@@ -1144,7 +1158,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                             }
                                             else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
                                                 $(this).html(sCellValue);
-                                            else{
+                                            else {
                                                 if (this.type == "checkbox") {
                                                     if (this.checked)
                                                         sCellValue = (this.value != "on") ? this.value : "true";
