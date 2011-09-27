@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.0.2
+* Version:     2.0.3
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -75,7 +75,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             return properties.fnGetRowID($(cell.parentNode));
         }
 
-        function _fnSetRowIDInAttribute(row, id) {
+        function _fnSetRowIDInAttribute(row, id, overwrite) {
             ///<summary>
             ///Utility function used to set id of the row. Usually when a new record is created, added to the table,
             ///and when id of the record is retrieved from the server-side.
@@ -86,8 +86,13 @@ returns true if plugin should continue with sending AJAX request, false will abo
             ///This function is used when a datatable is configured in the server side processing mode or ajax source mode
             ///</summary>
             ///<param name="row" type="DOM" domElement="true">TR row where record is placed</param>
-            if (row.attr("id") == null || row.attr("id") == "")
+
+            if (overwrite) {
                 row.attr("id", id);
+            } else {
+                if (row.attr("id") == null || row.attr("id") == "")
+                    row.attr("id", id);
+            }
         }
 
         function _fnGetRowIDFromAttribute(row) {
@@ -440,51 +445,68 @@ returns true if plugin should continue with sending AJAX request, false will abo
             if (properties.fnOnNewRowPosted(data)) {
 
                 var oSettings = oTable.fnSettings();
-                var iColumnCount = oSettings.aoColumns.length;
-                var values = new Array();
+                if (!oSettings.oFeatures.bServerSide) {
+                    var iColumnCount = oSettings.aoColumns.length;
+                    var values = new Array();
+                    var rowData = new Object();
 
-                $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oAddNewRowForm).each(function () {
-                    var rel = $(this).attr("rel");
-                    var sCellValue = "";
-                    if (rel >= iColumnCount)
-                        properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
-                    else {
-                        if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
-                            //sCellValue = $("option:selected", this).text();
-                            sCellValue = $.map(
+                    $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oAddNewRowForm).each(function () {
+                        var rel = $(this).attr("rel");
+                        var sCellValue = "";
+                        if (rel >= iColumnCount)
+                            properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
+                        else {
+                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
+                                //sCellValue = $("option:selected", this).text();
+                                sCellValue = $.map(
                                              $.makeArray($("option:selected", this)),
                                              function (n, i) {
                                                  return $(n).text();
                                              }).join(",");
-                        }
-                        else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
-                            sCellValue = $(this).html();
-                        else {
-                            if (this.type == "checkbox") {
-                                if (this.checked)
-                                    sCellValue = (this.value != "on") ? this.value : "true";
-                                else
-                                    sCellValue = (this.value != "on") ? "" : "false";
-                            } else
-                                sCellValue = this.value;
-                        }
+                            }
+                            else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
+                                sCellValue = $(this).html();
+                            else {
+                                if (this.type == "checkbox") {
+                                    if (this.checked)
+                                        sCellValue = (this.value != "on") ? this.value : "true";
+                                    else
+                                        sCellValue = (this.value != "on") ? "" : "false";
+                                } else
+                                    sCellValue = this.value;
+                            }
 
-                        sCellValue = sCellValue.replace(properties.sIDToken, data);
-                        values[rel] = sCellValue;
+                            sCellValue = sCellValue.replace(properties.sIDToken, data);
+                            if (oSettings.aoColumns != null
+                                && oSettings.aoColumns[rel] != null
+                                && isNaN( parseInt(oSettings.aoColumns[0].mDataProp) ) ) {
+                                rowData[oSettings.aoColumns[rel].mDataProp] = sCellValue;
+                            } else {
+                                values[rel] = sCellValue;
+                            }
+                        }
+                    });
+
+                    var rtn;
+                    //Add values from the form into the table
+                    if (oSettings.aoColumns != null && isNaN( parseInt(oSettings.aoColumns[0].mDataProp) ) ) {
+                        rtn = oTable.fnAddData(rowData);
                     }
-                });
+                    else {
+                        rtn = oTable.fnAddData(values);
+                    }
 
-                //Add values from the form into the table
-                var rtn = oTable.fnAddData(values);
-                var oTRAdded = oTable.fnGetNodes(rtn);
-                //Apply editable plugin on the cells of the table
-                fnApplyEditable(oTRAdded);
-                //add id returned by server page as an TR id attribute
-                properties.fnSetRowID($(oTRAdded), data);
+                    var oTRAdded = oTable.fnGetNodes(rtn);
+                    //add id returned by server page as an TR id attribute
+                    properties.fnSetRowID($(oTRAdded), data, true);
+                    //Apply editable plugin on the cells of the table
+                    fnApplyEditable(oTRAdded);
 
-                $("tr.last-added-row", oTable).removeClass("last-added-row");
-                $(oTRAdded).addClass("last-added-row");
-
+                    $("tr.last-added-row", oTable).removeClass("last-added-row");
+                    $(oTRAdded).addClass("last-added-row");
+                } else {
+                    oTable.fnDraw(false);
+                }
                 //Close the dialog
                 oAddNewRowForm.dialog('close');
                 $(oAddNewRowForm)[0].reset();
@@ -643,7 +665,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
         function fnSetDisplayStart() {
             ///<summary>
-            ///Set the pagination position
+            ///Set the pagination position(do nothing in the server-side mode)
             ///</summary>
 
             if (oSettings.oFeatures.bServerSide === false) {
