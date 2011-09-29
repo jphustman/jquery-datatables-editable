@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.0.3
+* Version:     2.0.4
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -293,18 +293,22 @@ returns true if plugin should continue with sending AJAX request, false will abo
             };
 
             var cells = null;
+
             if (properties.aoColumns != null) {
 
-                for (var i = 0, x = 0; i < properties.aoColumns.length; i++) {
-                    if (oSettings.aoColumns[i].bVisible) {
-                        if (properties.aoColumns[i] == null) {
-                            x++;
+                for (var iDTindex = 0, iDTEindex = 0; iDTindex < oSettings.aoColumns.length; iDTindex++) {
+                    if (oSettings.aoColumns[iDTindex].bVisible) {//if DataTables column is visible
+                        if (properties.aoColumns[iDTEindex] == null) {
+                            //If editor for the column is not defined go to the next column
+                            iDTEindex++;
                             continue;
                         }
-                        cells = $("td:nth-child(" + (x + 1) + ")", aoNodes);
-                        x++;
+                        //Get all cells in the iDTEindex column (nth child is 1-indexed array)
+                        cells = $("td:nth-child(" + (iDTEindex + 1) + ")", aoNodes);
+
                         var oColumnSettings = oDefaultEditableSettings;
-                        oColumnSettings = $.extend({}, oDefaultEditableSettings, properties.aoColumns[i]);
+                        oColumnSettings = $.extend({}, oDefaultEditableSettings, properties.aoColumns[iDTEindex]);
+                        iDTEindex++;
                         var sUpdateURL = properties.sUpdateURL;
                         try {
                             if (oColumnSettings.sUpdateURL != null)
@@ -479,7 +483,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                             sCellValue = sCellValue.replace(properties.sIDToken, data);
                             if (oSettings.aoColumns != null
                                 && oSettings.aoColumns[rel] != null
-                                && isNaN( parseInt(oSettings.aoColumns[0].mDataProp) ) ) {
+                                && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
                                 rowData[oSettings.aoColumns[rel].mDataProp] = sCellValue;
                             } else {
                                 values[rel] = sCellValue;
@@ -489,7 +493,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                     var rtn;
                     //Add values from the form into the table
-                    if (oSettings.aoColumns != null && isNaN( parseInt(oSettings.aoColumns[0].mDataProp) ) ) {
+                    if (oSettings.aoColumns != null && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
                         rtn = oTable.fnAddData(rowData);
                     }
                     else {
