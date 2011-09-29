@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.0.4
+* Version:     2.0.5
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -1176,22 +1176,32 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                             var sCellValue = oTable.fnGetData(oTR)[rel];
                                             if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
                                                 //sCellValue = $("option:selected", this).text();
-                                                sCellValue = $.map(
+                                                /*sCellValue = $.map(
                                                                      $.makeArray($("option:selected", this)),
                                                                      function (n, i) {
                                                                          return $(n).text();
                                                                      }).join(",");
+                                                                     */
+                                                $(this).val(sCellValue);
                                             }
                                             else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
                                                 $(this).html(sCellValue);
                                             else {
                                                 if (this.type == "checkbox") {
-                                                    if (this.checked)
-                                                        sCellValue = (this.value != "on") ? this.value : "true";
-                                                    else
-                                                        sCellValue = (this.value != "on") ? "" : "false";
+                                                    if (sCellValue == true)
+                                                    {
+                                                        this.checked = true;
+                                                    }
                                                 } else
-                                                    sCellValue = this.value;
+												{
+													if(this.type == "radio"){
+														if(this.value == sCellValue){
+															this.checked = true;
+														}
+													}else{
+														this.value = sCellValue;
+													}
+												}
                                             }
 
                                             //sCellValue = sCellValue.replace(properties.sIDToken, data);

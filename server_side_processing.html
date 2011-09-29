@@ -25,7 +25,16 @@
 			$(document).ready( function () {
            $('#example').dataTable({
                                       "bServerSide": true,
-                                      "sAjaxSource": "server_processing.js",
+                                      "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php",
+        "fnServerData": function( sUrl, aoData, fnCallback ) {
+            $.ajax( {
+                "url": sUrl,
+                "data": aoData,
+                "success": fnCallback,
+                "dataType": "jsonp",
+                "cache": false
+            } );
+        },
                                       "aoColumns":[
                                          {
                                             "bVisible" : false

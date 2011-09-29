@@ -27,29 +27,18 @@
                  .makeEditable({
 									aoTableActions: [
 										{
-										    sAction: "EditBrowser",
-                                            sServerActionURL: "UpdateData.php",
-											oFormOptions: { autoOpen: false, modal:true }
-										},
-										{
-										    sAction: "EditPlatforms",
-										    sServerActionURL: "UpdateDataError.php",
+										    sAction: "EditData",
+										    sServerActionURL: "UpdateData.php",
 											oFormOptions: { autoOpen: false, modal:true }
 										}
-
-
-
-
 									],
 									sUpdateURL: "UpdateData.php",
-                    							sAddURL: "AddData.php",
+                    				sAddURL: "AddData.php",
 									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
-                    							sDeleteURL: "DeleteData.php",
+                    				sDeleteURL: "DeleteData.php",
 									sDeleteHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
-aoColumns: [ { } ,  { } , { } , { } , null ]
-
-									
-	});
+									aoColumns: [ { } ,  { } , { } , { } , null ]									
+								});
 		        
 		    });
 		</script>
@@ -77,11 +66,11 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
 			<a href="http://code.google.com/p/jquery-datatables-editable/wiki/Overview">Wiki</a> 
 			<h1 class="full_width big">
 
-				Editable DataTable example - Injecting id of the new record into the table
+				Editable DataTable example - Editing data in the popup window(Beta)
 			</h1>
 			
 			<h2>Preamble</h2>
-			<p>
+			<p>Editable plugin enables you to add "actions" in the table. Action can be Editing columns in the popup.
           </p>
 
 
@@ -92,21 +81,34 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
 
 			<div id="demo">
 
- <form id="formEditBrowser" action="UpdateData.php" title="Update Browser">
-
+ <form id="formEditData" action="UpdateData.php" title="Update Platforms">
         <label for="browser">Browser</label><br />
-	<input type="text" name="browser" id="browser" class="required" rel="0" />
+		<input type="text" name="browser" id="browser" class="required" rel="0" />
         <br />
-	<button id="formEditBrowserOk" type="submit">Ok</button>
-	<button id="formEditBrowserCancel" type="button">Cancel</button>
-</form>
- <form id="formEditPlatforms" action="UpdateData.php" title="Update Platforms">
-
-                <label for="platforms">Platform(s)</label><br />
-	<textarea name="platforms" id="Textarea1" class="required" rel="1"></textarea>
+        <label for="platforms">Platform(s)</label><br />
+		<textarea name="platforms" id="Textarea1" class="required" rel="1"></textarea>
+		<br />
+        <label for="version">Engine version</label><br />
+		<select name="version" id="version" rel="2">
+                <option>1.5</option>
+                <option>1.7</option>
+                <option>1.8</option>
+				<option>1.5</option>
+                <option>4</option>
+                <option>5</option>
+				<option>5.5</option>
+                <option>6</option>
+                <option>7</option>
+        </select>
         <br />
-        	<button id="formEditPlatformsOk" type="submit">Ok</button>
-	<button id="formEditPlatformsCancel" type="button">Cancel</button>
+        <label for="grade">CSS grade</label><br />
+		<input type="radio" name="grade" value="A" rel="3"> First<br>
+		<input type="radio" name="grade" value="B" rel="3"> Second<br>
+		<input type="radio" name="grade" value="C" rel="3"> Third
+		<input type="radio" name="grade" value="X" rel="3"> The Worst
+        <br />
+        <button id="formEditDataOk" type="submit">Ok</button>
+		<button id="formEditDataCancel" type="button">Cancel</button>
 </form>
 
 
@@ -171,8 +173,8 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
                 X
             </td>
             <td>
-                <a class="table-action-EditBrowser">Edit Browser</a> <a class="table-action-EditPlatforms">
-                    Edit Platforms</a>
+                 <a class="table-action-EditData">
+                    Edit</a>
             </td>
         </tr>
         <tr id="2">
@@ -189,8 +191,8 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
                 C
             </td>
             <td>
-                <a class="table-action-EditBrowser">Edit Browser</a> <a class="table-action-EditPlatforms">
-                    Edit Platforms</a>
+                 <a class="table-action-EditData">
+                    Edit</a>
             </td>
         </tr>
         <tr id="3">
@@ -207,8 +209,8 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
                 A
             </td>
             <td>
-                <a class="table-action-EditBrowser">Edit Browser</a> <a class="table-action-EditPlatforms">
-                    Edit Platforms</a>
+                 <a class="table-action-EditData">
+                    Edit</a>
             </td>
         </tr>
         <tr id="4">
@@ -225,8 +227,8 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
                 A
             </td>
             <td>
-                <a class="table-action-EditBrowser">Edit Browser</a> <a class="table-action-EditPlatforms">
-                    Edit Platforms</a>
+                 <a class="table-action-EditData">
+                    Edit</a>
             </td>
         </tr>
         <tr id="5">
@@ -243,8 +245,8 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
                 A
             </td>
             <td>
-                <a class="table-action-EditBrowser">Edit Browser</a> <a class="table-action-EditPlatforms">
-                    Edit Platforms</a>
+                 <a class="table-action-EditData">
+                    Edit</a>
             </td>
         </tr>
         <tr id="6">
@@ -261,8 +263,8 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
                 A
             </td>
             <td>
-                <a class="table-action-EditBrowser">Edit Browser</a> <a class="table-action-EditPlatforms">
-                    Edit Platforms</a>
+                 <a class="table-action-EditData">
+                    Edit</a>
             </td>
         </tr>
     </tbody>
@@ -270,9 +272,71 @@ aoColumns: [ { } ,  { } , { } , { } , null ]
 
 			</div>
 			<div class="spacer"></div>
-
+			<h1>Initialization code</h1>
+			<p>To initialize action, the action definition in the aoTableActions array. Action definition should contain name of the action,
+			URL of the server-side page that will be called, and dialog options that will be passed to the action popup dialog. </p>
+			<pre>$(document).ready(function () {
+	$('#example').dataTable()
+			.makeEditable({
+						aoTableActions: [
+							{
+								sAction: "EditData",
+								sServerActionURL: "UpdateData.php",
+								oFormOptions: { autoOpen: false, modal:true }
+							}
+						],
+						sUpdateURL: "UpdateData.php",
+						sAddURL: "AddData.php",
+						sDeleteURL: "DeleteData.php",
+						aoColumns: [ { } ,  { } , { } , { } , null ]									
+					});
 	
-
+});		
+			</pre>
+			<h1>Action form</h1>
+			<p>One action form that will be loaded from the form and update row cells should be defined. 
+			This form should have the following properties:
+			<ul>
+				<li>id of the form should be  form(ACTION NAME)
+				<li>Elements of the form should have rel attributes that match table cells by id
+				<li>There should be ok and cancel buttons with the ids form(ACTION NAME)Ok nd form(ACTION NAME)Cancel
+			</ul>
+			Example is shown below:
+			</p>
+			
+			<pre>&lt;form id=&quot;formEditData&quot; action=&quot;UpdateData.php&quot; title=&quot;Update Platforms&quot;&gt;
+        &lt;label for=&quot;browser&quot;&gt;Browser&lt;/label&gt;&lt;br /&gt;
+		&lt;input type=&quot;text&quot; name=&quot;browser&quot; id=&quot;browser&quot; class=&quot;required&quot; rel=&quot;0&quot; /&gt;
+        &lt;br /&gt;
+        &lt;label for=&quot;platforms&quot;&gt;Platform(s)&lt;/label&gt;&lt;br /&gt;
+		&lt;textarea name=&quot;platforms&quot; id=&quot;Textarea1&quot; class=&quot;required&quot; rel=&quot;1&quot;&gt;&lt;/textarea&gt;
+		&lt;br /&gt;
+        &lt;label for=&quot;version&quot;&gt;Engine version&lt;/label&gt;&lt;br /&gt;
+		&lt;select name=&quot;version&quot; id=&quot;version&quot; rel=&quot;2&quot;&gt;
+                &lt;option&gt;1.5&lt;/option&gt;
+                &lt;option&gt;1.7&lt;/option&gt;
+                &lt;option&gt;1.8&lt;/option&gt;
+				&lt;option&gt;1.5&lt;/option&gt;
+                &lt;option&gt;4&lt;/option&gt;
+                &lt;option&gt;5&lt;/option&gt;
+				&lt;option&gt;5.5&lt;/option&gt;
+                &lt;option&gt;6&lt;/option&gt;
+                &lt;option&gt;7&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;br /&gt;
+        &lt;label for=&quot;grade&quot;&gt;CSS grade&lt;/label&gt;&lt;br /&gt;
+		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;A&quot; rel=&quot;3&quot;&gt; First&lt;br&gt;
+		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;B&quot; rel=&quot;3&quot;&gt; Second&lt;br&gt;
+		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;C&quot; rel=&quot;3&quot;&gt; Third
+		&lt;input type=&quot;radio&quot; name=&quot;grade&quot; value=&quot;X&quot; rel=&quot;3&quot;&gt; The Worst
+        &lt;br /&gt;
+        &lt;button id=&quot;formEditDataOk&quot; type=&quot;submit&quot;&gt;Ok&lt;/button&gt;
+		&lt;button id=&quot;formEditDataCancel&quot; type=&quot;button&quot;&gt;Cancel&lt;/button&gt;
+&lt;/form&gt;		
+			
+			</pre>
+			<h1>Starting actions</h1>
+			<p>Each table row should have a link with id table-action-(ACTION NAME) that will start the action.</p>
 			<h2>Other examples</h2>
 			<ul>
 				<li><a href="index.html">Home</a></li>
