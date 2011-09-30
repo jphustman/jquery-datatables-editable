@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.0.5
+* Version:     2.0.6
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -55,6 +55,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 * @oDeleteParameters                Object      Additonal objects added to the DELETE Ajax request
 * @oUpdateParameters                Object      Additonal objects added to the UPDATE Ajax request
 * @sIDToken                         String      Token in the add new row dialog that will be replaced with a returned id of the record that is created
+* @sSuccessResponse					String		Text returned from the server if record is successfully deleted or edited. Default "ok" 
 */
 (function ($) {
 
@@ -198,7 +199,11 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     properties.fnEndProcessingMode();
                     var status = "";
                     var aPos = oTable.fnGetPosition(this);
-                    if (sNewCellValue == sValue) {
+                    if (sNewCellValue == sValue || properties.sSuccessResponse == sValue) {
+						if( typeof sNewCellDisplayValue == "undefined")
+						{
+							sNewCellDisplayValue = sValue;
+						}
                         oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
                         $("td.last-updated-cell", oTable).removeClass("last-updated-cell");
                         $(this).addClass("last-updated-cell");
@@ -240,6 +245,10 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     }
                 },
                 "submitdata": function (value, settings) {
+					if( typeof sNewCellDisplayValue == "undefined")
+					{
+						sNewCellDisplayValue = value;
+					} 
                     iDisplayStart = fnGetDisplayStart();
                     properties.fnStartProcessingMode();
                     var id = fnGetCellID(this);
@@ -620,7 +629,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
             properties.fnEndProcessingMode();
             var oTRSelected = $('tr.' + properties.sSelectedRowClass, oTable)[0];
-            if (response == "ok" || response == "") {
+            if (response == properties.sSuccessResponse || response == "") {
                 oTable.fnDeleteRow(oTRSelected);
                 fnDisableDeleteButton();
                 fnSetDisplayStart();
@@ -859,7 +868,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
             aoTableActions: null,
             fnOnBeforeAction: _fnOnBeforeAction,
             bUseFormsPlugin: false,
-            fnOnActionCompleted: _fnOnActionCompleted
+            fnOnActionCompleted: _fnOnActionCompleted,
+			sSuccessResponse: "ok"
 
 
         };
