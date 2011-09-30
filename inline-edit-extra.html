@@ -33,7 +33,7 @@
                                                                             return value; //Simulation of server-side response using a callback function
                                                                         }//Remove this line in your code
 									*/									
-									ajaxoptions:{ type: 'GET'}				,				
+									,oEditableSettings: { ajaxoptions:{ type: 'GET'} },		
 												aoColumns: [
 													{ 
 														indicator : "<img src='img/indicator.gif'>",
@@ -52,17 +52,15 @@
 													    type:   'checkbox',
 													    cancel: 'Cancel',
 													    submit: 'OK',
-													    checkbox: { trueValue: 'Yes', falseValue: 'No' }/*,
-														sUpdateURL:function(value, settings)
-                                                                        {
-                                                                            return "on"; //Simulation of server-side response using a callback function
-                                                                        }*/
+													    checkbox: { trueValue: 'Yes', falseValue: 'No' },
+ajaxoptions:{ type: 'GET'}
 													},
 													{ 
 														indicator : "<img src='img/indicator.gif'>",
 														type      : 'time',
 														submit    : 'OK',
-														tooltip   : "Click to edit..."
+														tooltip   : "Click to edit...",
+ajaxoptions:{ type: 'GET'}
 													}
 												
 												]

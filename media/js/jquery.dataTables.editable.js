@@ -316,7 +316,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                         cells = $("td:nth-child(" + (iDTEindex + 1) + ")", aoNodes);
 
                         var oColumnSettings = oDefaultEditableSettings;
-                        oColumnSettings = $.extend({}, oDefaultEditableSettings, properties.aoColumns[iDTEindex]);
+                        oColumnSettings = $.extend({}, oDefaultEditableSettings, properties.oEditableSettings, properties.aoColumns[iDTEindex]);
                         iDTEindex++;
                         var sUpdateURL = properties.sUpdateURL;
                         try {
@@ -335,7 +335,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 } //end for
             } else {
                 cells = $('td:not(.' + properties.sReadOnlyCellClass + ')', aoNodes);
-                cells.editable(properties.sUpdateURL, oDefaultEditableSettings);
+                cells.editable(properties.sUpdateURL, $.extend({}, oDefaultEditableSettings, properties.oEditableSettings));
             }
         }
 
