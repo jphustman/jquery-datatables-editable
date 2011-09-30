@@ -27,13 +27,13 @@
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
 				$('#example').dataTable().makeEditable({
-                    							//sUpdateURL: "UpdateData.php", //On the code.google.com POST request is not supported so this line is commeted out
-                    							sUpdateURL:function(value, settings)
+                    							sUpdateURL: "UpdateData.php", //On the code.google.com POST request is not supported so this line is commeted out
+                    							/*sUpdateURL:function(value, settings)
                                                                         {
                                                                             return value; //Simulation of server-side response using a callback function
                                                                         }//Remove this line in your code
-																		
-													,				
+									*/									
+									,ajaxoptions{ type: 'GET'}				,				
 												aoColumns: [
 													{ 
 														indicator : "<img src='img/indicator.gif'>",
