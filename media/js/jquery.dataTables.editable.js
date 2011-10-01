@@ -195,62 +195,41 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 return;
             var oDefaultEditableSettings = {
                 event: 'dblclick',
-                "callback": function (sValue, settings) {
-                    properties.fnEndProcessingMode();
-                    var status = "";
-                    var aPos = oTable.fnGetPosition(this);
-                    if (sNewCellValue == sValue || properties.sSuccessResponse == sValue) {
-						if( typeof sNewCellDisplayValue == "undefined")
-						{
-							sNewCellDisplayValue = sValue;
-						}
-                        oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
-                        $("td.last-updated-cell", oTable).removeClass("last-updated-cell");
-                        $(this).addClass("last-updated-cell");
-                        status = "success";
-                    } else {
-                        oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
-                        properties.fnShowError(sValue, "update");
-                        status = "failure";
-                    }
 
-                    properties.fnOnEdited(status, sOldValue, sNewCellDisplayValue, aPos[0], aPos[1], aPos[2]);
-                    if (settings.fnOnCellUpdated != null) {
-                        settings.fnOnCellUpdated(status, sValue, aPos[0], aPos[2], settings);
-                    }
-                    fnSetDisplayStart();
-
-                },
                 "onsubmit": function (settings, original) {
-                    var input = $("input,select,textarea", this);
-                    sOldValue = original.revert;
-                    sNewCellValue = $("input,select,textarea", $(this)).val();
-                    if (input.length == 1) {
-                        var oEditElement = input[0];
-                        if (oEditElement.nodeName.toLowerCase() == "select" || oEditElement.tagName.toLowerCase() == "select")
-                            sNewCellDisplayValue = $("option:selected", oEditElement).text(); //For select list use selected text instead of value for displaying in table
-                        else
-                            sNewCellDisplayValue = sNewCellValue;
-                    }
+					sOldValue = original.revert;
+					sNewCellValue = null;
+					sNewCellDisplayValue = null;
+					if(settings.type == "text" || settings.type == "select" || settings.type == "textarea" )
+					{
+						var input = $("input,select,textarea", this);
+						sNewCellValue = $("input,select,textarea", $(this)).val();
+						if (input.length == 1) {
+							var oEditElement = input[0];
+							if (oEditElement.nodeName.toLowerCase() == "select" || oEditElement.tagName.toLowerCase() == "select")
+								sNewCellDisplayValue = $("option:selected", oEditElement).text(); //For select list use selected text instead of value for displaying in table
+							else
+								sNewCellDisplayValue = sNewCellValue;
+						}
 
-                    if (!properties.fnOnEditing(input))
-                        return false;
-                    var x = settings;
-                    if (settings.cssclass != null) {
-                        input.addClass(settings.cssclass);
-                        if (!input.valid() || 0 == input.valid())
-                            return false;
-                        else
-                            return true;
-                    }
+						if (!properties.fnOnEditing(input))
+							return false;
+						var x = settings;
+						if (settings.cssclass != null) {
+							input.addClass(settings.cssclass);
+							if (!input.valid() || 0 == input.valid())
+								return false;
+							else
+								return true;
+						}
+					}
+					
+					iDisplayStart = fnGetDisplayStart();
+                    properties.fnStartProcessingMode();
                 },
                 "submitdata": function (value, settings) {
-					if( typeof sNewCellDisplayValue == "undefined")
-					{
-						sNewCellDisplayValue = value;
-					} 
-                    iDisplayStart = fnGetDisplayStart();
-                    properties.fnStartProcessingMode();
+                    //iDisplayStart = fnGetDisplayStart();
+                    //properties.fnStartProcessingMode();
                     var id = fnGetCellID(this);
                     var rowId = oTable.fnGetPosition(this)[0];
                     var columnPosition = oTable.fnGetPosition(this)[1];
@@ -283,18 +262,44 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                             });
                     }
                     return updateData;
-                    /*return {
-                    "id": id,
-                    "rowId": rowId,
-                    "columnPosition": columnPosition,
-                    "columnId": columnId,
-                    "columnName": sColumnName
-                    };*/
+                },
+				"callback": function (sValue, settings) {
+                    properties.fnEndProcessingMode();
+                    var status = "";
+                    var aPos = oTable.fnGetPosition(this);
 
+					if (properties.sSuccessResponse == "IGNORE" || 
+						( 	properties.aoColumns != null
+							&& properties.aoColumns[aPos[2]] != null 
+							&& properties.aoColumns[aPos[2]].sSuccessResponse == "IGNORE") || 
+						(sNewCellValue == sValue) || 
+						properties.sSuccessResponse == sValue) {
+						if(sNewCellDisplayValue == null)
+						{
+							//sNewCellDisplayValue = sValue;
+							oTable.fnUpdate(sValue, aPos[0], aPos[2]);
+						}else{
+							oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
+						}
+						$("td.last-updated-cell", oTable).removeClass("last-updated-cell");
+						$(this).addClass("last-updated-cell");
+						status = "success";
+					} else {
+						oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
+						properties.fnShowError(sValue, "update");
+						status = "failure";
+					}
+
+					properties.fnOnEdited(status, sOldValue, sNewCellDisplayValue, aPos[0], aPos[1], aPos[2]);
+					if (settings.fnOnCellUpdated != null) {
+						settings.fnOnCellUpdated(status, sValue, aPos[0], aPos[2], settings);
+					}
+					
+                    fnSetDisplayStart();
                 },
                 "onerror": function () {
                     properties.fnEndProcessingMode();
-                    properties.fnShowError("Cell cannot be updated(Server error)", "update");
+                    properties.fnShowError("Cell cannot be updated", "update");
                     properties.fnOnEdited("failure");
                 },
                 "height": properties.sEditorHeight,

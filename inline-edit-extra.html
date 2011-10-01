@@ -27,18 +27,19 @@
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
 				$('#example').dataTable().makeEditable({
-                    							sUpdateURL: "UpdateData.php", //On the code.google.com POST request is not supported so this line is commeted out
-                    							/*sUpdateURL:function(value, settings)
+                    							//sUpdateURL: "UpdateData.php", //On the code.google.com POST request is not supported so this line is commeted out
+                    							sUpdateURL:function(value, settings)
                                                                         {
                                                                             return value; //Simulation of server-side response using a callback function
                                                                         }//Remove this line in your code
-									*/									
-									oEditableSettings: { ajaxoptions:{ type: 'GET'} },		
+												,
+												oEditableSettings: { ajaxoptions:{ type: 'GET'} },		
 												aoColumns: [
 													{ 
 														indicator : "<img src='img/indicator.gif'>",
 														type      : 'datepicker',
-														tooltip   : "Click to edit..."
+														tooltip   : "Click to edit...",
+														sSuccessResponse: "IGNORE"
 													},
 													{},
 													{ 
@@ -46,21 +47,32 @@
 														type      : 'ajaxupload',
 														submit    : 'Upload',
 														cancel    : 'Cancel',
-														tooltip   : "Click to upload..."
+														tooltip   : "Click to upload...",
+														sSuccessResponse: "IGNORE"
 													},
 													{
 													    type:   'checkbox',
 													    cancel: 'Cancel',
 													    submit: 'OK',
 													    checkbox: { trueValue: 'Yes', falseValue: 'No' },
-ajaxoptions:{ type: 'GET'}
+														sUpdateURL:function(value, settings)
+                                                                        {
+                                                                            return value; //Simulation of server-side response using a callback function
+                                                                        },
+														ajaxoptions:{ type: 'GET'},
+														sSuccessResponse: "IGNORE"
 													},
 													{ 
 														indicator : "<img src='img/indicator.gif'>",
 														type      : 'time',
 														submit    : 'OK',
 														tooltip   : "Click to edit...",
-ajaxoptions:{ type: 'GET'}
+														sUpdateURL:function(value, settings)
+                                                                        {
+                                                                            return value; //Simulation of server-side response using a callback function
+                                                                        },
+														ajaxoptions:{ type: 'GET'},
+														sSuccessResponse: "IGNORE"
 													}
 												
 												]
@@ -595,28 +607,60 @@ ajaxoptions:{ type: 'GET'}
 
 			
 			<h1>Initialization code</h1>
-			<p>Initialization code is very simple. You just need to specify URL of the pages that accept update requests on the server side.</p>
-			<pre>$(document).ready( function () {
-		$('#example').dataTable().makeEditable({
-							sUpdateURL: "UpdateData.php"
-							});
-}
+			<pre>				$('#example').dataTable().makeEditable({
+                    							
+                    							sUpdateURL:function(value, settings)
+                                                                        {
+                                                                            return value; //Simulation of server-side response using a callback function
+                                                                        }
+												,
+												oEditableSettings: { ajaxoptions:{ type: 'GET'} },		
+												aoColumns: [
+													{ 
+														indicator : "<img src='img/indicator.gif'>",
+														type      : 'datepicker',
+														tooltip   : "Click to edit...",
+														sSuccessResponse: "IGNORE"
+													},
+													{},
+													{ 
+														indicator : "<img src='img/indicator.gif'>",
+														type      : 'ajaxupload',
+														submit    : 'Upload',
+														cancel    : 'Cancel',
+														tooltip   : "Click to upload...",
+														sSuccessResponse: "IGNORE"
+													},
+													{
+													    type:   'checkbox',
+													    cancel: 'Cancel',
+													    submit: 'OK',
+													    checkbox: { trueValue: 'Yes', falseValue: 'No' },
+														sUpdateURL:function(value, settings)
+                                                                        {
+                                                                            return value; //Simulation of server-side response using a callback function
+                                                                        },
+														ajaxoptions:{ type: 'GET'},
+														sSuccessResponse: "IGNORE"
+													},
+													{ 
+														indicator : "<img src='img/indicator.gif'>",
+														type      : 'time',
+														submit    : 'OK',
+														tooltip   : "Click to edit...",
+														sUpdateURL:function(value, settings)
+                                                                        {
+                                                                            return value; //Simulation of server-side response using a callback function
+                                                                        },
+														ajaxoptions:{ type: 'GET'},
+														sSuccessResponse: "IGNORE"
+													}
+												
+												]
+
+										});
+
 	</pre>
-
-	
-			
-
-	
-
-			<h1>Server-side code for update request (PHP)</h1>
-<p>Server-side page that accepts update request should return the same value that plugin sent in the value parameter if record was successfully updated, or an error message if operation failed. In this example, server page always returns posted value:</p>
-			<pre>
-&lt;?php
-	$editedValue = $_GET['value']
-	//Always accepts update(return posted value)
-	echo $editedValue
-?&gt;
-</pre>	
 
 			<h1>Other examples</h1>
 			<ul>
