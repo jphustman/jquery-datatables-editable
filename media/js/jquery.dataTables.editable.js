@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.0.6
+* Version:     2.0.7
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -358,13 +358,14 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     if (properties.bUseFormsPlugin) {
                         //Still in beta(development)
                         $(oAddNewRowForm).ajaxSubmit({
+                            dataType: 'xml',
                             success: function (response, statusString, xhr) {
-                                if (response.toLowerCase().indexOf("error") != -1 || statusString != "success") {
+                                if (xhr.responseText.toLowerCase().indexOf("error") != -1) {
                                     properties.fnEndProcessingMode();
-                                    properties.fnShowError(response, "add");
+                                    properties.fnShowError(xhr.responseText.replace("Error",""), "add");
                                     properties.fnOnAdded("failure");
                                 } else {
-                                    fnOnRowAdded(response);
+                                    fnOnRowAdded(xhr.responseText);
                                 }
 
                             },
@@ -439,7 +440,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                         } else
                             sCellValue = this.value;
                     }
-                    sCellValue = sCellValue.replace(properties.sIDToken, data);
+                    sCellValue = sCellValue.replace(properties.sIDToken, data);//@BUG What is data?????
                     values[rel] = sCellValue;
                 }
             });
@@ -874,7 +875,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             fnOnBeforeAction: _fnOnBeforeAction,
             bUseFormsPlugin: false,
             fnOnActionCompleted: _fnOnActionCompleted,
-			sSuccessResponse: "ok"
+            sSuccessResponse: "ok"
 
 
         };
@@ -1192,20 +1193,21 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                             if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
                                                 //sCellValue = $("option:selected", this).text();
                                                 /*sCellValue = $.map(
-                                                                     $.makeArray($("option:selected", this)),
-                                                                     function (n, i) {
-                                                                         return $(n).text();
-                                                                     }).join(",");
-                                                                     */
-                                                $(this).val(sCellValue);
+                                                $.makeArray($("option:selected", this)),
+                                                function (n, i) {
+                                                return $(n).text();
+                                                }).join(",");
+                                                */
+                                                //$(this).val(sCellValue);
+                                                $(this).attr("value", sCellValue);
+
                                             }
                                             else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
                                                 $(this).html(sCellValue);
                                             else {
                                                 if (this.type == "checkbox") {
-                                                    if (sCellValue == true)
-                                                    {
-                                                        this.checked = true;
+                                                    if (sCellValue == "true") {
+                                                        $(this).attr("checked", true);
                                                     }
                                                 } else
 												{
