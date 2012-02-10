@@ -25,34 +25,34 @@
 		    $(document).ready(function () {
 		        $('#example').dataTable()
                  .makeEditable({
-									aoTableActions: [
+                     aoTableActions: [
 										{
 										    sAction: "EditData",
 										    sServerActionURL: "UpdateData.php",
-											oFormOptions: { autoOpen: false, modal:true }
+										    oFormOptions: { autoOpen: false, modal: true }
 										}
 									],
-									sUpdateURL: "UpdateData.php",
-                    				sAddURL: "AddData.php",
-									sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
-                    				sDeleteURL: "DeleteData.php",
-									sDeleteHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
-									aoColumns: [ { } ,  { } , { } , { } , null ]									
-								});
-		        
+                     sUpdateURL: "UpdateData.php",
+                     sAddURL: "AddData.php",
+                     sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+                     sDeleteURL: "DeleteData.php",
+                     sDeleteHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
+                     aoColumns: [{}, {}, {}, {}, null]
+                 });
+
 		    });
 		</script>
 <script type="text/javascript">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-17838786-2']);
-  _gaq.push(['_trackPageview']);
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-17838786-2']);
+    _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+    (function () {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
 
 </script>
 	</head>
@@ -89,8 +89,7 @@
 		<textarea name="platforms" id="Textarea1" class="required" rel="1"></textarea>
 		<br />
         <label for="version">Engine version</label><br />
-		<select name="version" id="version" rel="2">
-                <option>1.5</option>
+		<select name="version" id="version" rel="2" multiple="multiple">
                 <option>1.7</option>
                 <option>1.8</option>
 				<option>1.5</option>
@@ -107,8 +106,14 @@
 		<input type="radio" name="grade" value="C" rel="3"> Third
 		<input type="radio" name="grade" value="X" rel="3"> The Worst
         <br />
-				<span class="datafield" style="display:none" rel="4"><a class="table-action-EditData">Edit</a></span>
-				<span class="datafield" style="display:none" rel="5"><a href="/Details/DATAROWID">Details</a></span>
+                <label for="version">Status</label><br />
+		<select name="status" id="status" rel="4">
+                <option value="1">Retired</option>
+                <option value="2">Live</option>
+        </select>
+        <br />
+				<span class="datafield" style="display:none" rel="5"><a class="table-action-EditData">Edit</a></span>
+				<span class="datafield" style="display:none" rel="6"><a href="/Details/DATAROWID">Details</a></span>
         <button id="formEditDataOk" type="submit">Ok</button>
 		<button id="formEditDataCancel" type="button">Cancel</button>
 </form>
@@ -123,7 +128,7 @@
 	<textarea name="platforms" id="platforms" rel="1"></textarea>
         <br />
         <label for="version">Engine version</label><br />
-	<select name="version" id="version" rel="2">
+	<select name="version" id="version" rel="2" multiple="multiple">
                 <option>1.5</option>
                 <option>1.7</option>
                 <option>1.8</option>
@@ -134,8 +139,14 @@
 		<input type="radio" name="grade" value="B" rel="3"> Second<br>
 		<input type="radio" name="grade" value="C" checked rel="3"> Third
         <br />
-				<span class="datafield" style="display:none" rel="4"><a class="table-action-EditData">Edit</a></span>
-				<span class="datafield" style="display:none" rel="5"><a href="/Details/DATAROWID">Details</a></span>
+                        <label for="version">Status</label><br />
+		<select name="status" id="Select1" rel="4">
+                <option value="1">Retired</option>
+                <option value="2">Live</option>
+        </select>
+        <br />
+				<span class="datafield" style="display:none" rel="5"><a class="table-action-EditData">Edit</a></span>
+				<span class="datafield" style="display:none" rel="6"><a href="/Details/DATAROWID">Details</a></span>
 </form>
 
 <div class="add_delete_toolbar" />
@@ -147,21 +158,10 @@
 			<th>Platform(s)</th>
 			<th>Engine version</th>
 			<th>CSS grade</th>
+            <th>Status</th>
 			<th>Edit</th>
 		<th>Details</th></tr>
 	</thead>
-	<tfoot>
-		<tr>
-
-
-			<th>Browser</th>
-			<th>Platform(s)</th>
-			<th>Engine version</th>
-			<th>CSS grade</th>
-			<th>Edit</th>
-		<th>Details</th></tr>
-
-	</tfoot>
     <tbody>
         <tr id="101">
             <td>
@@ -177,7 +177,7 @@
                 X
             </td>
             <td>
-                 <a class="table-action-EditData">
+                 Retired</td><td><a class="table-action-EditData">
                     Edit</a>
             </td>
         <td><a href="/Details/17">Details</a></td></tr>
@@ -189,13 +189,13 @@
                 Win 95+
             </td>
             <td>
-                5
+                5,5.5
             </td>
             <td>
                 C
             </td>
             <td>
-                 <a class="table-action-EditData">
+                 Retired</td><td><a class="table-action-EditData">
                     Edit</a>
             </td>
         <td><a href="/Details/17">Details</a></td></tr>
@@ -213,7 +213,7 @@
                 A
             </td>
             <td>
-                 <a class="table-action-EditData">
+                 Retired</td><td><a class="table-action-EditData">
                     Edit</a>
             </td>
         <td><a href="/Details/17">Details</a></td></tr>
@@ -231,7 +231,7 @@
                 A
             </td>
             <td>
-                 <a class="table-action-EditData">
+                 Live</td><td><a class="table-action-EditData">
                     Edit</a>
             </td>
         <td><a href="/Details/17">Details</a></td></tr>
@@ -249,7 +249,7 @@
                 A
             </td>
             <td>
-                 <a class="table-action-EditData">
+                 Live</td><td><a class="table-action-EditData">
                     Edit</a>
             </td>
         <td><a href="/Details/17">Details</a></td></tr>
@@ -267,7 +267,7 @@
                 A
             </td>
             <td>
-                 <a class="table-action-EditData">
+                 Retired</td><td><a class="table-action-EditData">
                     Edit</a>
             </td>
         <td><a href="/Details/17">Details</a></td></tr>

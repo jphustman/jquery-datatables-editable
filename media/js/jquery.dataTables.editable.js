@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.0.8
+* Version:     2.1.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -785,7 +785,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             ///<param name="oActionForm" type="DOM">Form used to enter data</param>
 
             var iRowID = jQuery.data(oActionForm, 'ROWID');
-            //var iDataRowID = jQuery.data(oActionForm, 'DATAROWID');
+            var iDataRowID = jQuery.data(oActionForm, 'DATARECORDID');
             var oSettings = oTable.fnSettings();
             var iColumnCount = oSettings.aoColumns.length;
             var values = new Array();
@@ -822,7 +822,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                             sCellValue = this.value;
                     }
 
-                    //sCellValue = sCellValue.replace(properties.sIDToken, data);
+                    sCellValue = sCellValue.replace(properties.sIDToken, iDataRowID);
                     //values[rel] = sCellValue;
                     oTable.fnUpdate(sCellValue, iRowID, rel);
                 }
@@ -1195,15 +1195,23 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                         else {
                                             var sCellValue = oTable.fnGetData(oTR)[rel];
                                             if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
-                                                //sCellValue = $("option:selected", this).text();
-                                                /*sCellValue = $.map(
-                                                $.makeArray($("option:selected", this)),
-                                                function (n, i) {
-                                                return $(n).text();
-                                                }).join(",");
-                                                */
-                                                //$(this).val(sCellValue);
-                                                $(this).attr("value", sCellValue);
+
+                                                if (this.multiple == true) {
+                                                    var aoSelectedValue = new Array();
+                                                    aoCellValues = sCellValue.split(",");
+                                                    for (i = 0; i <= this.options.length - 1; i++) {
+                                                        if (jQuery.inArray(this.options[i].text.toLowerCase().trim(), aoCellValues) != -1) {
+                                                            aoSelectedValue.push(this.options[i].value);
+                                                        }
+                                                    }
+                                                    $(this).val(aoSelectedValue);
+                                                } else {
+                                                    for (i = 0; i <= this.options.length - 1; i++) {
+                                                        if (this.options[i].text.toLowerCase() == sCellValue.toLowerCase()) {
+                                                            $(this).val(this.options[i].value);
+                                                        }
+                                                    }
+                                                }
 
                                             }
                                             else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
