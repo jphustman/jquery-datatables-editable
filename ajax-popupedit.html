@@ -107,31 +107,35 @@
 		<input type="radio" name="grade" value="C" rel="3"> Third
 		<input type="radio" name="grade" value="X" rel="3"> The Worst
         <br />
+				<span class="datafield" style="display:none" rel="4"><a class="table-action-EditData">Edit</a></span>
+				<span class="datafield" style="display:none" rel="5"><a href="/Details/DATAROWID">Details</a></span>
         <button id="formEditDataOk" type="submit">Ok</button>
 		<button id="formEditDataCancel" type="button">Cancel</button>
 </form>
 
 
  <form id="formAddNewRow" action="#" title="Add new record">
-        <input type="hidden" name="id" id="id" rel="0" value="DATAROWID" />
+        <input type="hidden" name="id" id="id"  value="DATAROWID" />
         <label for="browser">Browser</label><br />
-	<input type="text" name="browser" id="browser" rel="1" />
+	<input type="text" name="browser" id="browser" rel="0" />
         <br />
         <label for="platforms">Platform(s)</label><br />
-	<textarea name="platforms" id="platforms" rel="2"></textarea>
+	<textarea name="platforms" id="platforms" rel="1"></textarea>
         <br />
         <label for="version">Engine version</label><br />
-	<select name="version" id="version" rel="3">
+	<select name="version" id="version" rel="2">
                 <option>1.5</option>
                 <option>1.7</option>
                 <option>1.8</option>
         </select>
         <br />
         <label for="grade">CSS grade</label><br />
-		<input type="radio" name="grade" value="A" rel="4"> First<br>
-		<input type="radio" name="grade" value="B" rel="4"> Second<br>
-		<input type="radio" name="grade" value="C" checked rel="4"> Third
+		<input type="radio" name="grade" value="A" rel="3"> First<br>
+		<input type="radio" name="grade" value="B" rel="3"> Second<br>
+		<input type="radio" name="grade" value="C" checked rel="3"> Third
         <br />
+				<span class="datafield" style="display:none" rel="4"><a class="table-action-EditData">Edit</a></span>
+				<span class="datafield" style="display:none" rel="5"><a href="/Details/DATAROWID">Details</a></span>
 </form>
 
 <div class="add_delete_toolbar" />
@@ -144,7 +148,7 @@
 			<th>Engine version</th>
 			<th>CSS grade</th>
 			<th>Edit</th>
-		</tr>
+		<th>Details</th></tr>
 	</thead>
 	<tfoot>
 		<tr>
@@ -155,11 +159,11 @@
 			<th>Engine version</th>
 			<th>CSS grade</th>
 			<th>Edit</th>
-		</tr>
+		<th>Details</th></tr>
 
 	</tfoot>
     <tbody>
-        <tr id="1">
+        <tr id="101">
             <td>
                 Internet Explorer 4.0
             </td>
@@ -176,8 +180,8 @@
                  <a class="table-action-EditData">
                     Edit</a>
             </td>
-        </tr>
-        <tr id="2">
+        <td><a href="/Details/17">Details</a></td></tr>
+        <tr id="102">
             <td>
                 Internet Explorer 5.0
             </td>
@@ -194,8 +198,8 @@
                  <a class="table-action-EditData">
                     Edit</a>
             </td>
-        </tr>
-        <tr id="3">
+        <td><a href="/Details/17">Details</a></td></tr>
+        <tr id="103">
             <td>
                 Internet Explorer 5.5
             </td>
@@ -212,8 +216,8 @@
                  <a class="table-action-EditData">
                     Edit</a>
             </td>
-        </tr>
-        <tr id="4">
+        <td><a href="/Details/17">Details</a></td></tr>
+        <tr id="104">
             <td>
                 Internet Explorer 6
             </td>
@@ -230,8 +234,8 @@
                  <a class="table-action-EditData">
                     Edit</a>
             </td>
-        </tr>
-        <tr id="5">
+        <td><a href="/Details/17">Details</a></td></tr>
+        <tr id="105">
             <td>
                 Internet Explorer 7
             </td>
@@ -248,8 +252,8 @@
                  <a class="table-action-EditData">
                     Edit</a>
             </td>
-        </tr>
-        <tr id="6">
+        <td><a href="/Details/17">Details</a></td></tr>
+        <tr id="106">
             <td>
                 AOL browser (AOL desktop)
             </td>
@@ -266,7 +270,7 @@
                  <a class="table-action-EditData">
                     Edit</a>
             </td>
-        </tr>
+        <td><a href="/Details/17">Details</a></td></tr>
     </tbody>
 </table>
 
