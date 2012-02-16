@@ -1,0 +1,1 @@
+ERROR On the Google demo site, server-side page for updating time always return this error mesage. Error message should be shown in the popup window.
