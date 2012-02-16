@@ -274,7 +274,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 					if(sValue.indexOf(properties.sFailureResponsePrefix)>-1)
 					{
 					    oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
-                        properties.fnShowError(sValue, "update");
+                        properties.fnShowError(sValue.replace(properties.sFailureResponsePrefix, "").trim(), "update");
                         status = "failure";
 					} else {
 					
