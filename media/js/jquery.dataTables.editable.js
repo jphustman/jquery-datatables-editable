@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.1.
+* Version:     2.1.1.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2011 Jovan Popovic, all rights reserved.
@@ -57,7 +57,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 * @oDeleteParameters                Object      Additonal objects added to the DELETE Ajax request
 * @oUpdateParameters                Object      Additonal objects added to the UPDATE Ajax request
 * @sIDToken                         String      Token in the add new row dialog that will be replaced with a returned id of the record that is created
-* @sSuccessResponse                    String        Text returned from the server if record is successfully deleted or edited. Default "ok" 
+* @sSuccessResponse                 String        Text returned from the server if record is successfully deleted or edited. Default "ok" 
+* @sFailureResponsePrefix			String		Prefix of the error message returned form the server during edit action
 */
 (function ($) {
 
@@ -269,28 +270,36 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     properties.fnEndProcessingMode();
                     var status = "";
                     var aPos = oTable.fnGetPosition(this);
-
-                    if (properties.sSuccessResponse == "IGNORE" || 
-                        (     properties.aoColumns != null
-                            && properties.aoColumns[aPos[2]] != null 
-                            && properties.aoColumns[aPos[2]].sSuccessResponse == "IGNORE") || 
-                        (sNewCellValue == sValue) || 
-                        properties.sSuccessResponse == sValue) {
-                        if(sNewCellDisplayValue == null)
-                        {
-                            //sNewCellDisplayValue = sValue;
-                            oTable.fnUpdate(sValue, aPos[0], aPos[2]);
-                        }else{
-                            oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
-                        }
-                        $("td.last-updated-cell", oTable).removeClass("last-updated-cell");
-                        $(this).addClass("last-updated-cell");
-                        status = "success";
-                    } else {
-                        oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
+					
+					if(sValue.indexOf(properties.sFailureResponsePrefix)>-1)
+					{
+					    oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
                         properties.fnShowError(sValue, "update");
                         status = "failure";
-                    }
+					} else {
+					
+						if (properties.sSuccessResponse == "IGNORE" || 
+							(     properties.aoColumns != null
+								&& properties.aoColumns[aPos[2]] != null 
+								&& properties.aoColumns[aPos[2]].sSuccessResponse == "IGNORE") || 
+							(sNewCellValue == null) || (sNewCellValue == sValue) || 
+							properties.sSuccessResponse == sValue) {
+							if(sNewCellDisplayValue == null)
+							{
+								//sNewCellDisplayValue = sValue;
+								oTable.fnUpdate(sValue, aPos[0], aPos[2]);
+							}else{
+								oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
+							}
+							$("td.last-updated-cell", oTable).removeClass("last-updated-cell");
+							$(this).addClass("last-updated-cell");
+							status = "success";
+						} else {
+							oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
+							properties.fnShowError(sValue, "update");
+							status = "failure";
+						}
+					}
 
                     properties.fnOnEdited(status, sOldValue, sNewCellDisplayValue, aPos[0], aPos[1], aPos[2]);
                     if (settings.fnOnCellUpdated != null) {
@@ -879,7 +888,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
             fnOnBeforeAction: _fnOnBeforeAction,
             bUseFormsPlugin: false,
             fnOnActionCompleted: _fnOnActionCompleted,
-            sSuccessResponse: "ok"
+            sSuccessResponse: "ok",
+			sFailureResponsePrefix: "ERROR"
 
 
         };
