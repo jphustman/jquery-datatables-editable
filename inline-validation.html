@@ -32,11 +32,12 @@
                     									{
                 									        cssclass:"email"
                     									},
+                    									
                     									{
-                									        cssclass:"date"
+															oValidationOptions : { rules:{ value: {minlength: 5 }  },
+																					messages: { value: {minlength: "Enter at least 5 characters"} } }
                     									},
-                    									{
-                    									},
+														null,
                     									{
                                                    type: 'select',
                         									onblur: 'submit',

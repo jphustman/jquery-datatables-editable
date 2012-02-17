@@ -1,9 +1,9 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.1.1.
+* Version:     2.1.2.
 * Author:      Jovan Popovic 
 * 
-* Copyright 2010-2011 Jovan Popovic, all rights reserved.
+* Copyright 2010-2012 Jovan Popovic, all rights reserved.
 *
 * This source file is free software, under either the GPL v2 license or a
 * BSD style license, as supplied with this software.
@@ -218,13 +218,23 @@ returns true if plugin should continue with sending AJAX request, false will abo
                         if (!properties.fnOnEditing(input))
                             return false;
                         var x = settings;
+						
+						//2.2.2 INLINE VALIDATION
+						if (settings.oValidationOptions != null) {
+							input.parents("form").validate(settings.oValidationOptions);
+						}
                         if (settings.cssclass != null) {
                             input.addClass(settings.cssclass);
-                            if (!input.valid() || 0 == input.valid())
-                                return false;
-                            else
-                                return true;
-                        }
+						}
+						if(settings.cssclass == null && settings.oValidationOptions == null){
+							return true;
+						}else{
+						if (!input.valid() || 0 == input.valid())
+							return false;
+						else
+							return true;
+							}
+                        
                     }
                     
                     iDisplayStart = fnGetDisplayStart();
@@ -1009,6 +1019,10 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 //oCancelRowAddingButton = $("#" + properties.sAddNewRowCancelButtonId, oAddNewRowForm);
                 oConfirmRowAddingButton = $("#" + properties.sAddNewRowOkButtonId);
                 oCancelRowAddingButton = $("#" + properties.sAddNewRowCancelButtonId);
+				
+				if (properties.oAddNewRowFormValidation != null) {
+                    oAddNewRowForm.validate(properties.oAddNewRowFormValidation);
+					}
             } else {
                 oAddNewRowForm = null;
             }
