@@ -32,7 +32,6 @@
                     									{
                 									        cssclass:"email"
                     									},
-                    									
                     									{
 															oValidationOptions : { rules:{ value: {minlength: 5 }  },
 																					messages: { value: {minlength: "Enter at least 5 characters"} } }
@@ -70,12 +69,13 @@
 
 <body id="dt_example">
 		<div id="container">
-			<div class="full_width big">
+		            <a href="index.html">Home</a>
+            <a href="http://code.google.com/p/jquery-datatables-editable/wiki/CellEditorValidation">Wiki</a> 
+			<h1 class="full_width big">
 
 				Editable DataTable example - Inline validation
-			</div>
+			</h1>
 			
-			<h1>Preamble</h1>
 			<p>
 				DataTable Editable plugin supports validation for inline editing. In the aoColumns settings we can define what CSS class
 				should be aplied to the particular cells during editing. These classes are used for validation of input values before cell
@@ -84,7 +84,7 @@
             this plugin for any customization.
 			</p>
 			<p>In this example, first cell is required field, second cell is an email address(note that the original values are not emails), third one
-			is a date column, fourth column does not have any validation, and fifth column is a select list with required field validation.			
+			must me at least 5 characters long, fourth column does not have any validation, and fifth column is a select list with required field validation.			
 			</p>
 
 
@@ -589,34 +589,7 @@
 			
 
 			
-			<h1>Initialization code</h1>
-			<p>In the initialization code you will need to pass definitions of the columns including CSS classes that should be added in order to apply validation rules.</p>
-			<pre>$(document).ready( function () {
-		$('#example').dataTable().makeEditable({
-					sUpdateURL: "UpdateData.php",
-                    			"aoColumns": [
-                    					{
-                						cssclass:"required"
-                    					},
-                    					{
-                						cssclass:"email"
-                    					},
-                    					{
-                						cssclass:"date"
-                    					},
-                    					{
-                    					},
-                    					{
-								type: 'select',
-                        					onblur: 'submit',
-                        					data: "{'':'Please select', 'A':'A','B':'B'}",
-                						cssclass:"required"
-                    					}
-							]									
 
-						});
-}
-	</pre>
 
 			<h1>Other examples</h1>
 			<ul>
