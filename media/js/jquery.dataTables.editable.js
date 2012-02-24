@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.1.2.
+* Version:     2.1.3.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2012 Jovan Popovic, all rights reserved.
@@ -516,7 +516,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                     sCellValue = this.value;
                             }
 
-                            sCellValue = sCellValue.replace(properties.sIDToken, data);
+							var re = new RegExp(properties.sIDToken, "gm");
+                            sCellValue = sCellValue.replace(re, data);
                             if (oSettings.aoColumns != null
                                 && oSettings.aoColumns[rel] != null
                                 && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
@@ -841,7 +842,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
                             sCellValue = this.value;
                     }
 
-                    sCellValue = sCellValue.replace(properties.sIDToken, iDataRowID);
+					var re = new RegExp(properties.sIDToken, "gm");
+                    sCellValue = sCellValue.replace(re, iDataRowID);
                     //values[rel] = sCellValue;
                     oTable.fnUpdate(sCellValue, iRowID, rel);
                 }
