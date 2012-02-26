@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.1.3.
+* Version:     2.1.4.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2012 Jovan Popovic, all rights reserved.
@@ -56,7 +56,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 * @sEditorWidth                     String      Default width of the cell editors
 * @oDeleteParameters                Object      Additonal objects added to the DELETE Ajax request
 * @oUpdateParameters                Object      Additonal objects added to the UPDATE Ajax request
-* @sIDToken                         String      Token in the add new row dialog that will be replaced with a returned id of the record that is created
+* @sIDToken                         String      Token in the add new row dialog that will be replaced with a returned id of the record that is created eg DT_RowId
 * @sSuccessResponse                 String        Text returned from the server if record is successfully deleted or edited. Default "ok" 
 * @sFailureResponsePrefix			String		Prefix of the error message returned form the server during edit action
 */
@@ -895,7 +895,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             bDisableEditing: false,
             oDeleteParameters: {},
             oUpdateParameters: {},
-            sIDToken: "DATAROWID",
+            sIDToken: "DATAROWID|DT_RowId",
             aoTableActions: null,
             fnOnBeforeAction: _fnOnBeforeAction,
             bUseFormsPlugin: false,
@@ -1202,7 +1202,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                                     $(sActionFormId).validate().resetForm();
                                     jQuery.data($(sActionFormId)[0], 'DATARECORDID', id);
-                                    $("input.DATARECORDID", $(sActionFormId)).val(id);
+                                    $("input.DT_RowId", $(sActionFormId)).val(id);
                                     jQuery.data($(sActionFormId)[0], 'ROWID', iRowID);
                                     $("input.ROWID", $(sActionFormId)).val(iRowID);
 
