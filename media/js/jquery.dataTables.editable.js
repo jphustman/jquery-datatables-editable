@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.1.4.
+* Version:     2.1.5.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2012 Jovan Popovic, all rights reserved.
@@ -203,6 +203,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     sOldValue = original.revert;
                     sNewCellValue = null;
                     sNewCellDisplayValue = null;
+                    iDisplayStart = fnGetDisplayStart();
+
                     if(settings.type == "text" || settings.type == "select" || settings.type == "textarea" )
                     {
                         var input = $("input,select,textarea", this);
@@ -237,7 +239,6 @@ returns true if plugin should continue with sending AJAX request, false will abo
                         
                     }
                     
-                    iDisplayStart = fnGetDisplayStart();
                     properties.fnStartProcessingMode();
                 },
                 "submitdata": function (value, settings) {
@@ -799,6 +800,141 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 }
             }
         }
+
+        function fnPopulateFormWithRowCells(oForm, oTR) {
+            ///<summary>Populates forms with row data</summary>
+            ///<param name="oForm" type="DOM">Form used to enter data</param>
+            ///<param name="oTR" type="DOM">Table Row that will populate data</param>
+
+            var iRowID = oTable.fnGetPosition(oTR);
+
+            var id = properties.fnGetRowID($(oTR));
+
+            $(oForm).validate().resetForm();
+            jQuery.data($(oForm)[0], 'DT_RowId', id);
+            $("input.DT_RowId", $(oForm)).val(id);
+            jQuery.data($(oForm)[0], 'ROWID', iRowID);
+            $("input.ROWID", $(oForm)).val(iRowID);
+
+
+            var oSettings = oTable.fnSettings();
+            var iColumnCount = oSettings.aoColumns.length;
+
+
+            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],input:checkbox[rel]",
+                                    $(oForm)).each(function () {
+                                        var rel = $(this).attr("rel");
+
+                                        if (rel >= iColumnCount)
+                                            properties.fnShowError("In the form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "action");
+                                        else {
+                                            var sCellValue = oTable.fnGetData(oTR)[rel];
+                                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
+
+                                                if (this.multiple == true) {
+                                                    var aoSelectedValue = new Array();
+                                                    aoCellValues = sCellValue.split(",");
+                                                    for (i = 0; i <= this.options.length - 1; i++) {
+                                                        if (jQuery.inArray(this.options[i].text.toLowerCase().trim(), aoCellValues) != -1) {
+                                                             aoSelectedValue.push(this.options[i].value);
+                                                        }
+                                                     }
+                                                     $(this).val(aoSelectedValue);
+                                                } else {
+                                                    for (i = 0; i <= this.options.length - 1; i++) {
+                                                        if (this.options[i].text.toLowerCase() == sCellValue.toLowerCase()) {
+                                                                $(this).val(this.options[i].value);
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                            else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
+                                                $(this).html(sCellValue);
+                                            else {
+                                                if (this.type == "checkbox") {
+                                                    if (sCellValue == "true") {
+                                                        $(this).attr("checked", true);
+                                                    }
+                                                } else {
+                                                    if (this.type == "radio") {
+                                                        if (this.value == sCellValue) {
+                                                            this.checked = true;
+                                                        }
+                                                    } else {
+                                                        this.value = sCellValue;
+                                                    }
+                                                }
+                                            }
+
+                                            //sCellValue = sCellValue.replace(properties.sIDToken, data);
+                                            //values[rel] = sCellValue;
+                                            //oTable.fnUpdate(sCellValue, iRowID, rel);
+                                        }
+                                    });
+
+
+
+        } //End function fnPopulateFormWithRowCells
+
+        function fnTakeRowDataFromFormElements(oForm) {
+            ///<summary>Populates row with form elements</summary>
+            ///<param name="iRowID" type="DOM">DatabaseRowID</param>
+            ///<param name="oForm" type="DOM">Form used to enter data</param>
+            ///<returns>Object or array</returns>
+
+            var iDT_RowId = jQuery.data(oForm, 'DT_RowId');
+            var iColumnCount = oSettings.aoColumns.length;
+
+            var values = new Array();
+            var rowData = new Object();
+
+            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oForm).each(function () {
+                var rel = $(this).attr("rel");
+                var sCellValue = "";
+                if (rel >= iColumnCount)
+                    properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
+                else {
+                    if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
+                        //sCellValue = $("option:selected", this).text();
+                        sCellValue = $.map(
+                                             $.makeArray($("option:selected", this)),
+                                             function (n, i) {
+                                                 return $(n).text();
+                                             }).join(",");
+                    }
+                    else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
+                        sCellValue = $(this).html();
+                    else {
+                        if (this.type == "checkbox") {
+                            if (this.checked)
+                                sCellValue = (this.value != "on") ? this.value : "true";
+                            else
+                                sCellValue = (this.value != "on") ? "" : "false";
+                        } else
+                            sCellValue = this.value;
+                    }
+
+                    sCellValue = sCellValue.replace(properties.sIDToken, iDT_RowId);
+                    if (oSettings.aoColumns != null
+                                && oSettings.aoColumns[rel] != null
+                                && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
+                        rowData[oSettings.aoColumns[rel].mDataProp] = sCellValue;
+                    } else {
+                        values[rel] = sCellValue;
+                    }
+                }
+            });
+
+            if (oSettings.aoColumns != null && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
+                return rowData;
+            }
+            else {
+                return values;
+            }
+
+
+        } //End function fnPopulateRowWithFormElements
 
         function fnUpdateRowOnSuccess(oActionForm) {
             ///<summary>Updates table row using  form fields after the ajax success callback is executed</summary>
