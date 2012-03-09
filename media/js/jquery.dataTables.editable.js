@@ -992,9 +992,15 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 //Add button click handler on the "Add new row" button
                 oAddNewRowButton = $("#" + properties.sAddNewRowButtonId);
                 if (oAddNewRowButton.length != 0) {
-                    oAddNewRowButton.click(function () {
-                        oAddNewRowForm.dialog('open');
-                    });
+				
+						if(oAddNewRowButton.data("add-event-attached")!="true")
+						{
+							oAddNewRowButton.click(function () {
+								oAddNewRowForm.dialog('open');
+							});
+							oAddNewRowButton.data("add-event-attached", "true");
+						}
+
                 } else {
                     if ($(properties.sAddDeleteToolbarSelector).length == 0) {
                         throw "Cannot find a button with an id '" + properties.sAddNewRowButtonId + "', or placeholder with an id '" + properties.sAddDeleteToolbarSelector + "' that should be used for adding new row although form for adding new record is specified";
@@ -1070,7 +1076,13 @@ returns true if plugin should continue with sending AJAX request, false will abo
             //Set the click handler on the "Delete selected row" button
             oDeleteRowButton = $('#' + properties.sDeleteRowButtonId);
             if (oDeleteRowButton.length != 0)
-                oDeleteRowButton.click(_fnOnRowDelete);
+			{
+				if(oDeleteRowButton.data("delete-event-attached")!="true")
+				{
+					oDeleteRowButton.click(_fnOnRowDelete);
+					oDeleteRowButton.data("delete-event-attached", "true");
+				}
+			}
             else {
                 oDeleteRowButton = null;
             }
