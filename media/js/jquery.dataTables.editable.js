@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.1.5.
+* Version:     2.2.0.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2012 Jovan Popovic, all rights reserved.
@@ -179,6 +179,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
         function _fnEndProcessingMode() {
             ///<summary>
             ///Function that ends the "Processing" mode and returns the table in the normal state(Default function)
+			///It shows processing message only if bProcessing setting is set to true
             ///</summary>
 
             if (oTable.fnSettings().oFeatures.bProcessing) {
@@ -231,11 +232,11 @@ returns true if plugin should continue with sending AJAX request, false will abo
 						if(settings.cssclass == null && settings.oValidationOptions == null){
 							return true;
 						}else{
-						if (!input.valid() || 0 == input.valid())
-							return false;
-						else
-							return true;
-							}
+							if (!input.valid() || 0 == input.valid())
+								return false;
+							else
+								return true;
+						}
                         
                     }
                     
@@ -282,9 +283,13 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     var status = "";
                     var aPos = oTable.fnGetPosition(this);
 					
+					var bRefreshTable = !oSettings.oFeatures.bServerSide;
+					
 					if(sValue.indexOf(properties.sFailureResponsePrefix)>-1)
 					{
-					    oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
+					    oTable.fnUpdate(sOldValue, aPos[0], aPos[2], bRefreshTable);
+						$("td.last-updated-cell", oTable).removeClass("last-updated-cell");
+						$(this).addClass("last-updated-cell");
                         properties.fnShowError(sValue.replace(properties.sFailureResponsePrefix, "").trim(), "update");
                         status = "failure";
 					} else {
@@ -298,15 +303,15 @@ returns true if plugin should continue with sending AJAX request, false will abo
 							if(sNewCellDisplayValue == null)
 							{
 								//sNewCellDisplayValue = sValue;
-								oTable.fnUpdate(sValue, aPos[0], aPos[2]);
+								oTable.fnUpdate(sValue, aPos[0], aPos[2], bRefreshTable);
 							}else{
-								oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2]);
+								oTable.fnUpdate(sNewCellDisplayValue, aPos[0], aPos[2], bRefreshTable);
 							}
 							$("td.last-updated-cell", oTable).removeClass("last-updated-cell");
 							$(this).addClass("last-updated-cell");
 							status = "success";
 						} else {
-							oTable.fnUpdate(sOldValue, aPos[0], aPos[2]);
+							oTable.fnUpdate(sOldValue, aPos[0], aPos[2], bRefreshTable);
 							properties.fnShowError(sValue, "update");
 							status = "failure";
 						}
@@ -427,57 +432,11 @@ returns true if plugin should continue with sending AJAX request, false will abo
             return true;
         }
 
-        function fnAddRowFromForm(oForm) {
-            ///<summary>
-            ///Adding a row in the table from the action form
-            ///</summary>
-            ///<param name="oForm" type="JQuery">Form that contains data to be copied into the row</param>
-
-            var oSettings = oTable.fnSettings();
-            var iColumnCount = oSettings.aoColumns.length;
-            var values = new Array();
-
-            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oForm).each(function () {
-                var rel = $(this).attr("rel");
-                var sCellValue = "";
-                if (rel >= iColumnCount)
-                    properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
-                else {
-                    if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
-                        //sCellValue = $("option:selected", this).text();
-                        sCellValue = $.map(
-                                             $.makeArray($("option:selected", this)),
-                                             function (n, i) {
-                                                 return $(n).text();
-                                             }).join(",");
-                    }
-                    else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
-                        sCellValue = $(this).html();
-                    else {
-                        if (this.type == "checkbox") {
-                            if (this.checked)
-                                sCellValue = (this.value != "on") ? this.value : "true";
-                            else
-                                sCellValue = (this.value != "on") ? "" : "false";
-                        } else
-                            sCellValue = this.value;
-                    }
-                    sCellValue = sCellValue.replace(properties.sIDToken, data);//@BUG What is data?????
-                    values[rel] = sCellValue;
-                }
-            });
-
-            //Add values from the form into the table
-            var rtn = oTable.fnAddData(values);
-            var oTRAdded = oTable.fnGetNodes(rtn);
-            //Apply editable plugin on the cells of the table
-            fnApplyEditable(oTRAdded);
-
-        }
-
+		
         function fnOnRowAdded(data) {
             ///<summary>
-            ///Function that is called when  a new row is added, and Ajax response is returned from server
+            ///Function that is called when a new row is added, and Ajax response is returned from server
+			/// This function takes data from the add form and adds them into the table.
             ///</summary>
             ///<param name="data" type="int">Id of the new row that is returned from the server</param>
 
@@ -487,47 +446,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                 var oSettings = oTable.fnSettings();
                 if (!oSettings.oFeatures.bServerSide) {
-                    var iColumnCount = oSettings.aoColumns.length;
-                    var values = new Array();
-                    var rowData = new Object();
-
-                    $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oAddNewRowForm).each(function () {
-                        var rel = $(this).attr("rel");
-                        var sCellValue = "";
-                        if (rel >= iColumnCount)
-                            properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
-                        else {
-                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
-                                //sCellValue = $("option:selected", this).text();
-                                sCellValue = $.map(
-                                             $.makeArray($("option:selected", this)),
-                                             function (n, i) {
-                                                 return $(n).text();
-                                             }).join(",");
-                            }
-                            else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
-                                sCellValue = $(this).html();
-                            else {
-                                if (this.type == "checkbox") {
-                                    if (this.checked)
-                                        sCellValue = (this.value != "on") ? this.value : "true";
-                                    else
-                                        sCellValue = (this.value != "on") ? "" : "false";
-                                } else
-                                    sCellValue = this.value;
-                            }
-
-							var re = new RegExp(properties.sIDToken, "gm");
-                            sCellValue = sCellValue.replace(re, data);
-                            if (oSettings.aoColumns != null
-                                && oSettings.aoColumns[rel] != null
-                                && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
-                                rowData[oSettings.aoColumns[rel].mDataProp] = sCellValue;
-                            } else {
-                                values[rel] = sCellValue;
-                            }
-                        }
-                    });
+					var values = fnTakeRowDataFromFormElements(oAddNewRowForm);
+                   
 
                     var rtn;
                     //Add values from the form into the table
@@ -546,9 +466,9 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                     $("tr.last-added-row", oTable).removeClass("last-added-row");
                     $(oTRAdded).addClass("last-added-row");
-                } else {
+                } /*else {
                     oTable.fnDraw(false);
-                }
+                }*/
                 //Close the dialog
                 oAddNewRowForm.dialog('close');
                 $(oAddNewRowForm)[0].reset();
@@ -562,6 +482,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
         function fnOnCancelRowAdding(event) {
             ///<summary>
             ///Event handler function that is executed when a user press cancel button in the add new row form
+			///This function clean the add form and error messages if some of them are shown
             ///</summary>
             ///<param name="event" type="int">DOM event that caused an error</param>
 
@@ -710,12 +631,13 @@ returns true if plugin should continue with sending AJAX request, false will abo
             ///Set the pagination position(do nothing in the server-side mode)
             ///</summary>
 
-            if (oSettings.oFeatures.bServerSide === false) {
+			//To refresh table with preserver pagination on cell edit
+            //if (oSettings.oFeatures.bServerSide === false) {
                 oSettings._iDisplayStart = iDisplayStart;
                 oSettings.oApi._fnCalculateEnd(oSettings);
                 //draw the 'current' page
                 oSettings.oApi._fnDraw(oSettings);
-            }
+            //}
         }
 
         function _fnOnBeforeAction(sAction) {
@@ -742,64 +664,6 @@ returns true if plugin should continue with sending AJAX request, false will abo
             properties.fnShowError("Cannot find action configuration settings", sAction);
         }
 
-
-        function fnUpdateRow(oActionForm) {
-            ///<summary>Updates table row using  form fields</summary>
-            ///<param name="oActionForm" type="DOM">Form used to enter data</param>
-
-            var sAction = $(oActionForm).attr("id");
-            sAction = sAction.replace("form", "");
-            var sActionURL = $(oActionForm).attr("action");
-            if (properties.fnOnBeforeAction(sAction)) {
-                if ($(oActionForm).valid()) {
-                    iDisplayStart = fnGetDisplayStart();
-                    properties.fnStartProcessingMode();
-                    if (properties.bUseFormsPlugin) {
-
-                        //Still in beta(development)
-                        var oAjaxSubmitOptions = {
-                            success: function (response, statusString, xhr) {
-                                properties.fnEndProcessingMode();
-                                if (response.toLowerCase().indexOf("error") != -1 || statusString != "success") {
-                                    properties.fnShowError(response, sAction);
-                                    properties.fnOnActionCompleted("failure");
-                                } else {
-                                    fnUpdateRowOnSuccess(oActionForm);
-                                    properties.fnOnActionCompleted("success");
-                                }
-
-                            },
-                            error: function (response) {
-                                properties.fnEndProcessingMode();
-                                properties.fnShowError(response.responseText, sAction);
-                                properties.fnOnActionCompleted("failure");
-                            }
-                        };
-                        var oActionSettings = fnGetActionSettings(sAction);
-                        oAjaxSubmitOptions = $.extend({}, properties.oAjaxSubmitOptions, oAjaxSubmitOptions);
-                        $(oActionForm).ajaxSubmit(oAjaxSubmitOptions);
-
-                    } else {
-                        var params = $(oActionForm).serialize();
-                        $.ajax({ 'url': sActionURL,
-                            'data': params,
-                            'type': properties.sAddHttpMethod,
-                            'dataType': properties.sAddDataType,
-                            success: function (response) {
-                                properties.fnEndProcessingMode();
-                                fnUpdateRowOnSuccess(oActionForm);
-                                properties.fnOnActionCompleted("success");
-                            },
-                            error: function (response) {
-                                properties.fnEndProcessingMode();
-                                properties.fnShowError(response.responseText, sAction);
-                                properties.fnOnActionCompleted("failure");
-                            }
-                        });
-                    }
-                }
-            }
-        }
 
         function fnPopulateFormWithRowCells(oForm, oTR) {
             ///<summary>Populates forms with row data</summary>
@@ -878,7 +742,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
         } //End function fnPopulateFormWithRowCells
 
         function fnTakeRowDataFromFormElements(oForm) {
-            ///<summary>Populates row with form elements</summary>
+            ///<summary>Populates row with form elements(This should be nly function that read fom elements from form)</summary>
             ///<param name="iRowID" type="DOM">DatabaseRowID</param>
             ///<param name="oForm" type="DOM">Form used to enter data</param>
             ///<returns>Object or array</returns>
@@ -936,59 +800,97 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
         } //End function fnPopulateRowWithFormElements
 
-        function fnUpdateRowOnSuccess(oActionForm) {
-            ///<summary>Updates table row using  form fields after the ajax success callback is executed</summary>
-            ///<param name="oActionForm" type="DOM">Form used to enter data</param>
 
-            var iRowID = jQuery.data(oActionForm, 'ROWID');
-            var iDataRowID = jQuery.data(oActionForm, 'DATARECORDID');
-            var oSettings = oTable.fnSettings();
-            var iColumnCount = oSettings.aoColumns.length;
-            var values = new Array();
 
-            var sAction = $(oActionForm).attr("id");
+		
+        function fnSendFormUpdateRequest(nActionForm) {
+            ///<summary>Updates table row using  form fields</summary>
+            ///<param name="nActionForm" type="DOM">Form used to enter data</param>
+
+			var jActionForm = $(nActionForm);
+            var sAction = jActionForm.attr("id");
+			
             sAction = sAction.replace("form", "");
+            var sActionURL = jActionForm.attr("action");
+            if (properties.fnOnBeforeAction(sAction)) {
+                if (jActionForm.valid()) {
+                    iDisplayStart = fnGetDisplayStart();
+                    properties.fnStartProcessingMode();
+                    if (properties.bUseFormsPlugin) {
 
-            //$("input.ROWID").val(iRowID);
-            //$("input.DATAROWID").val(iDataRowID);
+                        //Still in beta(development)
+                        var oAjaxSubmitOptions = {
+                            success: function (response, statusString, xhr) {
+                                properties.fnEndProcessingMode();
+                                if (response.toLowerCase().indexOf("error") != -1 || statusString != "success") {
+                                    properties.fnShowError(response, sAction);
+                                    properties.fnOnActionCompleted("failure");
+                                } else {
+                                    fnUpdateRowOnSuccess(nActionForm);
+                                    properties.fnOnActionCompleted("success");
+                                }
 
-            $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],span.datafield[rel],input:checkbox[rel]", oActionForm).each(function () {
-                var rel = $(this).attr("rel");
-                var sCellValue = "";
-                if (rel >= iColumnCount)
-                    properties.fnShowError("In the add form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
-                else {
-                    if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
-                        //sCellValue = $("option:selected", this).text();
-                        sCellValue = $.map(
-                                             $.makeArray($("option:selected", this)),
-                                             function (n, i) {
-                                                 return $(n).text();
-                                             }).join(",");
+                            },
+                            error: function (response) {
+                                properties.fnEndProcessingMode();
+                                properties.fnShowError(response.responseText, sAction);
+                                properties.fnOnActionCompleted("failure");
+                            }
+                        };
+                        var oActionSettings = fnGetActionSettings(sAction);
+                        oAjaxSubmitOptions = $.extend({}, properties.oAjaxSubmitOptions, oAjaxSubmitOptions);
+                        $(oActionForm).ajaxSubmit(oAjaxSubmitOptions);
+
+                    } else {
+                        var params = jActionForm.serialize();
+                        $.ajax({ 'url': sActionURL,
+                            'data': params,
+                            'type': properties.sAddHttpMethod,
+                            'dataType': properties.sAddDataType,
+                            success: function (response) {
+                                properties.fnEndProcessingMode();
+                                fnUpdateRowOnSuccess(nActionForm);
+                                properties.fnOnActionCompleted("success");
+                            },
+                            error: function (response) {
+                                properties.fnEndProcessingMode();
+                                properties.fnShowError(response.responseText, sAction);
+                                properties.fnOnActionCompleted("failure");
+                            }
+                        });
                     }
-                    else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
-                        sCellValue = $(this).html();
-                    else {
-                        if (this.type == "checkbox") {
-                            if (this.checked)
-                                sCellValue = (this.value != "on") ? this.value : "true";
-                            else
-                                sCellValue = (this.value != "on") ? "" : "false";
-                        } else
-                            sCellValue = this.value;
-                    }
-
-					var re = new RegExp(properties.sIDToken, "gm");
-                    sCellValue = sCellValue.replace(re, iDataRowID);
-                    //values[rel] = sCellValue;
-                    oTable.fnUpdate(sCellValue, iRowID, rel);
                 }
-            });
-            $(oActionForm).dialog('close');
-
-
+            }
         }
 
+		function fnUpdateRowOnSuccess(nActionForm) {
+            ///<summary>Updates table row using  form fields after the ajax success callback is executed</summary>
+            ///<param name="nActionForm" type="DOM">Form used to enter data</param>
+
+            var values = fnTakeRowDataFromFormElements(nActionForm);
+
+            var iRowID = jQuery.data(nActionForm, 'ROWID');
+            var oSettings = oTable.fnSettings();
+            var iColumnCount = oSettings.aoColumns.length;
+            for (var rel = 0; rel < iColumnCount; rel++) {
+                if (oSettings.aoColumns != null
+                                && oSettings.aoColumns[rel] != null
+                                && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
+                    sCellValue = rowData[oSettings.aoColumns[rel].mDataProp];
+                } else {
+                    sCellValue = values[rel];
+                }
+                if (sCellValue != undefined)
+                    oTable.fnUpdate(sCellValue, iRowID, rel);
+            }
+
+			fnSetDisplayStart();
+            $(nActionForm).dialog('close');
+            return;       
+
+        }
+		
+		
         oTable = this;
 
         var defaults = {
@@ -1245,31 +1147,6 @@ returns true if plugin should continue with sending AJAX request, false will abo
             }
             );
 
-            //Add handler to the inline delete buttons
-            $(".table-action-editlink", oTable).live("click", function (e) {
-
-                e.preventDefault();
-                e.stopPropagation();
-                var sURL = $(this).attr("href");
-
-                if (sURL == null || sURL == "")
-                    sURL = properties.sDeleteURL;
-
-                iDisplayStart = fnGetDisplayStart();
-                var oTD = ($(this).parents('td'))[0];
-                var oTR = ($(this).parents('tr'))[0];
-
-                $(oTR).addClass(properties.sSelectedRowClass);
-
-                var id = fnGetCellID(oTD);
-                if (properties.fnOnDeleting(oTD, id, fnDeleteRow)) {
-                    fnDeleteRow(id, sURL);
-                }
-
-
-            }
-            );
-
             //Set selected class on row that is clicked
             //Enable delete button if row is selected, disable delete button if selected class is removed
             $("tbody", oTable).click(function (event) {
@@ -1327,98 +1204,19 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                                 if (oTableAction.sType == "edit") {
 
-                                    var oTD = ($(this).parents('td'))[0];
+                                    //var oTD = ($(this).parents('td'))[0];
                                     var oTR = ($(this).parents('tr'))[0];
-
-                                    $(oTR).addClass(properties.sSelectedRowClass);
-
-                                    var iRowID = oTable.fnGetPosition(oTR);
-
-                                    var id = fnGetCellID(oTD);
-
-                                    $(sActionFormId).validate().resetForm();
-                                    jQuery.data($(sActionFormId)[0], 'DATARECORDID', id);
-                                    $("input.DT_RowId", $(sActionFormId)).val(id);
-                                    jQuery.data($(sActionFormId)[0], 'ROWID', iRowID);
-                                    $("input.ROWID", $(sActionFormId)).val(iRowID);
-
-
-                                    var oSettings = oTable.fnSettings();
-                                    var iColumnCount = oSettings.aoColumns.length;
-
-
-                                    $("input:text[rel],input:radio[rel][checked],input:hidden[rel],select[rel],textarea[rel],input:checkbox[rel]",
-                                    $(sActionFormId)).each(function () {
-                                        var rel = $(this).attr("rel");
-
-
-                                        if (rel >= iColumnCount)
-                                            properties.fnShowError("In the action form is placed input element with the name '" + $(this).attr("name") + "' with the 'rel' attribute that must be less than a column count - " + iColumnCount, "add");
-                                        else {
-                                            var sCellValue = oTable.fnGetData(oTR)[rel];
-                                            if (this.nodeName.toLowerCase() == "select" || this.tagName.toLowerCase() == "select") {
-
-                                                if (this.multiple == true) {
-                                                    var aoSelectedValue = new Array();
-                                                    aoCellValues = sCellValue.split(",");
-                                                    for (i = 0; i <= this.options.length - 1; i++) {
-                                                        if (jQuery.inArray(this.options[i].text.toLowerCase().trim(), aoCellValues) != -1) {
-                                                            aoSelectedValue.push(this.options[i].value);
-                                                        }
-                                                    }
-                                                    $(this).val(aoSelectedValue);
-                                                } else {
-                                                    for (i = 0; i <= this.options.length - 1; i++) {
-                                                        if (this.options[i].text.toLowerCase() == sCellValue.toLowerCase()) {
-                                                            $(this).val(this.options[i].value);
-                                                        }
-                                                    }
-                                                }
-
-                                            }
-                                            else if (this.nodeName.toLowerCase() == "span" || this.tagName.toLowerCase() == "span")
-                                                $(this).html(sCellValue);
-                                            else {
-                                                if (this.type == "checkbox") {
-                                                    if (sCellValue == "true") {
-                                                        $(this).attr("checked", true);
-                                                    }
-                                                } else
-                                                {
-                                                    if(this.type == "radio"){
-                                                        if(this.value == sCellValue){
-                                                            this.checked = true;
-                                                        }
-                                                    }else{
-                                                        this.value = sCellValue;
-                                                    }
-                                                }
-                                            }
-
-                                            //sCellValue = sCellValue.replace(properties.sIDToken, data);
-                                            //values[rel] = sCellValue;
-                                            //oTable.fnUpdate(sCellValue, iRowID, rel);
-                                        }
-                                    });
-
-
+                                    fnPopulateFormWithRowCells(oActionForm, oTR);
                                 }
-                                $(sActionFormId).dialog('open');
+                                $(oActionForm).dialog('open');
                             });
                         }
 
                         oActionForm.submit(function (event) {
 
-                            var oTableAction = $(this).data("action-options");
-
-                            if (oTableAction.sType == "edit") {
-                                ///Start function fnUpdateRow
-                                fnUpdateRow(this);
-                                ///end function fnUpdateRow
-                            } else {
-                                fnAddRowFromForm(this);
-                            }
+                            fnSendFormUpdateRequest(this);
                             return false;
+							
                         });
 
 
