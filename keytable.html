@@ -28,7 +28,9 @@
 															oKeyTable: {},
 															sUpdateURL: function(value, settings){ return value; },
 															sDeleteURL: "DeleteData.php",
-															sDeleteHttpMethod: "GET"
+															sDeleteHttpMethod: "GET",
+															sAddURL: "AddData.php",
+															sAddHttpMethod: "GET", //Used only on google.code live example because google.code server do not support POST request
 															});
 
 			} );
@@ -72,6 +74,30 @@
 
 			<div id="demo">
 <div class="add_delete_toolbar"></div>
+
+ <form id="formAddNewRow" title="Add new record">
+        <label for="engine">Rendering engine</label><br />
+	<input type="text" name="engine" id="name" class="required" rel="0" />
+        <br />
+        <label for="browser">Browser</label><br />
+	<input type="text" name="browser" id="browser" rel="1" />
+        <br />
+        <label for="platforms">Platform(s)</label><br />
+	<textarea name="platforms" id="platforms" rel="2"></textarea>
+        <br />
+        <label for="version">Engine version</label><br />
+	<select name="version" id="version" rel="3" multiple="multiple">
+                <option>1.5</option>
+                <option>1.7</option>
+                <option>1.8</option>
+        </select>
+        <br />
+        <label for="grade">CSS grade</label><br />
+		<input type="radio" name="grade" value="A" rel="4"> First<br>
+		<input type="radio" name="grade" value="B" rel="4"> Second<br>
+		<input type="radio" name="grade" value="C" checked rel="4"> Third
+        <br />
+</form>
 
 <table cellpadding="0" cellspacing="0" border="0" class="display KeyTable" id="example">
 	<thead>

@@ -494,6 +494,13 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                 fnSetDisplayStart();
                 properties.fnOnAdded("success");
+				                    if (properties.bUseKeyTable) {
+                                var keys = oTable.keys;
+                                /* Unblock KeyTable, but only after this 'esc' key event has finished. Otherwise
+                                * it will 'esc' KeyTable as well
+                                */
+                                setTimeout(function () { keys.block = false; }, 0);
+                            }
             }
         }
 
@@ -548,6 +555,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
         }
 
         var nSelectedRow, nSelectedCell;
+		var oKeyTablePosition;
         function _fnOnRowDelete(event) {
             ///<summary>
             ///Event handler for the delete button
@@ -574,7 +582,9 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 fnDisableDeleteButton();
                 return;
             }
-            
+            if (properties.bUseKeyTable) {
+				oKeyTablePosition = oTable.keys.fnGetCurrentPosition();
+			}
             var id = fnGetCellID(nSelectedCell);
             var jSelectedRow = $(nSelectedCell).parent("tr");
             nSelectedRow = jSelectedRow[0];
@@ -645,6 +655,9 @@ returns true if plugin should continue with sending AJAX request, false will abo
                 oTable.fnDeleteRow(oTRSelected);
                 fnDisableDeleteButton();
                 fnSetDisplayStart();
+				if (properties.bUseKeyTable) {
+					oTable.keys.fnSetPosition( oKeyTablePosition[0], oKeyTablePosition[1] ); 
+				}
                 properties.fnOnDeleted("success");
             }
             else {
@@ -1010,6 +1023,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                 /* Apply a return key event to each cell in the table */
                 keys.event.action(null, null, function (nCell) {
+					if( $(nCell).hasClass(properties.sReadOnlyCellClass))
+						return;
                     /* Block KeyTable from performing any events while jEditable is in edit mode */
                     keys.block = true;
                     /* Dispatch click event to go into edit mode - Saf 4 needs a timeout... */
