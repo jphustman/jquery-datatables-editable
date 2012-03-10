@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.2.0.
+* Version:     2.3.0.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2012 Jovan Popovic, all rights reserved.
@@ -284,7 +284,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     var aPos = oTable.fnGetPosition(this);
 					
 					var bRefreshTable = !oSettings.oFeatures.bServerSide;
-					
+					$("td.last-updated-cell", oTable.fnGetNodes( )).removeClass("last-updated-cell");
 					if(sValue.indexOf(properties.sFailureResponsePrefix)>-1)
 					{
 					    oTable.fnUpdate(sOldValue, aPos[0], aPos[2], bRefreshTable);
@@ -323,12 +323,30 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     }
                     
                     fnSetDisplayStart();
+					if (properties.bUseKeyTable) {
+								var keys = oTable.keys;
+								/* Unblock KeyTable, but only after this 'esc' key event has finished. Otherwise
+								* it will 'esc' KeyTable as well
+								*/
+								setTimeout(function () { keys.block = false; }, 0);
+							}
                 },
                 "onerror": function () {
                     properties.fnEndProcessingMode();
                     properties.fnShowError("Cell cannot be updated", "update");
                     properties.fnOnEdited("failure");
                 },
+				
+				"onreset": function(){ 
+						if (properties.bUseKeyTable) {
+								var keys = oTable.keys;
+								/* Unblock KeyTable, but only after this 'esc' key event has finished. Otherwise
+								* it will 'esc' KeyTable as well
+								*/
+								setTimeout(function () { keys.block = false; }, 0);
+							}
+
+				},
                 "height": properties.sEditorHeight,
                 "width": properties.sEditorWidth
             };
@@ -505,6 +523,9 @@ returns true if plugin should continue with sending AJAX request, false will abo
             ///Function that disables delete button
             ///</summary>
 
+           if (properties.bUseKeyTable) {
+                return;
+            }
             if (properties.oDeleteRowButtonOptions != null) {
                 //oDeleteRowButton.disable();
                 oDeleteRowButton.button("option", "disabled", true);
@@ -561,11 +582,25 @@ returns true if plugin should continue with sending AJAX request, false will abo
             ///<param name="event" type="Event">DOM event</param>
 
             iDisplayStart = fnGetDisplayStart();
-            if ($('tr.' + properties.sSelectedRowClass + ' td', oTable).length == 0) {
-                fnDisableDeleteButton();
+			
+			var oSelectedCell = null;
+            if (!properties.bUseKeyTable) {
+                if ($('tr.' + properties.sSelectedRowClass + ' td', oTable).length == 0) {
+                    //oDeleteRowButton.attr("disabled", "true");
+                    _fnDisableDeleteButton();
+                    return;
+                }
+                oSelectedCell = $('tr.' + properties.sSelectedRowClass + ' td', oTable)[0];
+            } else {
+                oSelectedCell = $('td.focus', oTable)[0];
+
+            }
+            if (oSelectedCell == null) {
+				fnDisableDeleteButton();
                 return;
             }
-            var id = fnGetCellID($('tr.' + properties.sSelectedRowClass + ' td', oTable)[0]);
+			
+			var id = fnGetCellID(oSelectedCell);
             if (properties.fnOnDeleting($('tr.' + properties.sSelectedRowClass, oTable), id, fnDeleteRow)) {
                 fnDeleteRow(id);
             }
@@ -578,7 +613,13 @@ returns true if plugin should continue with sending AJAX request, false will abo
             ///<param name="response" type="String">Response text eturned from the server-side page</param>
 
             properties.fnEndProcessingMode();
-            var oTRSelected = $('tr.' + properties.sSelectedRowClass, oTable)[0];
+            var oTRSelected = null;
+
+            if (!properties.bUseKeyTable) {
+                oTRSelected = $('tr.' + properties.sSelectedRowClass, oTable)[0];
+            } else {
+                oTRSelected = $("td.focus", oTable)[0].parents("tr")[0];
+            }
             if (response == properties.sSuccessResponse || response == "") {
                 oTable.fnDeleteRow(oTRSelected);
                 fnDisableDeleteButton();
@@ -863,7 +904,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             }
         }
 
-		function fnUpdateRowOnSuccess(nActionForm) {
+	function fnUpdateRowOnSuccess(nActionForm) {
             ///<summary>Updates table row using  form fields after the ajax success callback is executed</summary>
             ///<param name="nActionForm" type="DOM">Form used to enter data</param>
 
@@ -939,15 +980,41 @@ returns true if plugin should continue with sending AJAX request, false will abo
             bUseFormsPlugin: false,
             fnOnActionCompleted: _fnOnActionCompleted,
             sSuccessResponse: "ok",
-			sFailureResponsePrefix: "ERROR"
-
+	    sFailureResponsePrefix: "ERROR",
+            oKeyTable: null		//KEYTABLE
 
         };
 
         properties = $.extend(defaults, options);
         oSettings = oTable.fnSettings();
+        properties.bUseKeyTable = (properties.oKeyTable != null);
 
         return this.each(function () {
+            var sTableId = oTable.dataTableSettings[0].sTableId;
+            //KEYTABLE
+            if (properties.bUseKeyTable) {
+                var keys = new KeyTable({
+                    "table": document.getElementById(sTableId),
+                    "datatable": oTable
+                });
+                oTable.keys = keys;
+
+                /* Apply a return key event to each cell in the table */
+                keys.event.action(null, null, function (nCell) {
+                    /* Block KeyTable from performing any events while jEditable is in edit mode */
+                    keys.block = true;
+                    /* Dispatch click event to go into edit mode - Saf 4 needs a timeout... */
+                    setTimeout(function () { $(nCell).dblclick(); }, 0);
+                    //properties.bDisableEditing = true;
+                });
+            }
+
+
+
+
+
+
+            //KEYTABLE
 
             if (oTable.fnSettings().sAjaxSource != null) {
                 oTable.fnSettings().aoDrawCallback.push({
@@ -1159,6 +1226,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             }
             );
 
+            if (!properties.bUseKeyTable) {
             //Set selected class on row that is clicked
             //Enable delete button if row is selected, disable delete button if selected class is removed
             $("tbody", oTable).click(function (event) {
@@ -1177,7 +1245,11 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     }
                 }
             });
+            } else {
+                oTable.keys.event.focus(null, null, function (nNode, x, y) {
 
+                });
+            }
 
             if (properties.aoTableActions != null) {
                 for (var i = 0; i < properties.aoTableActions.length; i++) {
