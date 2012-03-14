@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
@@ -45,12 +45,12 @@
 											{ 	
 												$("#trace").append("<br/>Add action finished. Status - " + status);
 											},
-            								fnOnEditing: function(input)
-											{ 	
-												$("#trace").append("<br/>Updating cell with value " + input.val());
-												return true;
-											},
-            								fnOnEdited: function(status)
+            							fnOnEditing: function(jInput, oEditableSettings, sOriginalText, id)
+                                 {     
+                                       $("#trace").append("<br/>Updating cell (id="+ id + ") with original value " + sOriginalText + " to value " + jInput.val() + ". Sending request to " + oEditableSettings.target);
+                                       return true;
+                                 },
+            							fnOnEdited: function(status)
 											{ 	
 												$("#trace").append("<br/>Edit action finished. Status - " + status);
 											},
