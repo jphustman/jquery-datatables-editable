@@ -218,7 +218,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                                 sNewCellDisplayValue = sNewCellValue;
                         }
 
-                        if (!properties.fnOnEditing(input, settings, original, fnGetCellID(original)))
+                        if (!properties.fnOnEditing(input, settings, original.revert, fnGetCellID(original)))
                             return false;
                         var x = settings;
                         
