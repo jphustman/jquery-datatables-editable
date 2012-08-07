@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.3.1.
+* Version:     2.3.2.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2012 Jovan Popovic, all rights reserved.
@@ -556,11 +556,40 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
         var nSelectedRow, nSelectedCell;
         var oKeyTablePosition;
+
+
+        function _fnOnRowDeleteInline(e) {
+
+            var sURL = $(this).attr("href");
+            if (sURL == null || sURL == "")
+                sURL = properties.sDeleteURL;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            iDisplayStart = fnGetDisplayStart();
+
+            nSelectedCell = ($(this).parents('td'))[0];
+            jSelectedRow = ($(this).parents('tr'));
+            nSelectedRow = jSelectedRow[0];
+
+            jSelectedRow.addClass(properties.sSelectedRowClass);
+
+            var id = fnGetCellID(nSelectedCell);
+            if (properties.fnOnDeleting(jSelectedRow, id, fnDeleteRow)) {
+                fnDeleteRow(id, sURL);
+            }
+        }
+
+
         function _fnOnRowDelete(event) {
             ///<summary>
             ///Event handler for the delete button
             ///</summary>
             ///<param name="event" type="Event">DOM event</param>
+
+            event.preventDefault();
+            event.stopPropagation();
 
             iDisplayStart = fnGetDisplayStart();
             
@@ -1226,29 +1255,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             }
 
             //Add handler to the inline delete buttons
-            $(".table-action-deletelink", oTable).live("click", function (e) {
-
-                e.preventDefault();
-                e.stopPropagation();
-                var sURL = $(this).attr("href");
-
-                if (sURL == null || sURL == "")
-                    sURL = properties.sDeleteURL;
-
-                iDisplayStart = fnGetDisplayStart();
-                var oTD = ($(this).parents('td'))[0];
-                var oTR = ($(this).parents('tr'))[0];
-
-                $(oTR).addClass(properties.sSelectedRowClass);
-
-                var id = fnGetCellID(oTD);
-                if (properties.fnOnDeleting(oTD, id, fnDeleteRow)) {
-                    fnDeleteRow(id, sURL);
-                }
-
-
-            }
-            );
+            $(".table-action-deletelink", oTable).live("click", _fnOnRowDeleteInline);
 
             if (!properties.bUseKeyTable) {
             //Set selected class on row that is clicked
