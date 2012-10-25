@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.editable.js
-* Version:     2.3.2.
+* Version:     2.3.3.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2010-2012 Jovan Popovic, all rights reserved.
@@ -464,6 +464,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                 var oSettings = oTable.fnSettings();
                 if (!oSettings.oFeatures.bServerSide) {
+                    jQuery.data(oAddNewRowForm, 'DT_RowId', data);
                     var values = fnTakeRowDataFromFormElements(oAddNewRowForm);
                    
 
@@ -870,7 +871,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
                         } else
                             sCellValue = this.value;
                     }
-
+                    //Deprecated
+                    sCellValue = sCellValue.replace("DATAROWID", iDT_RowId);
                     sCellValue = sCellValue.replace(properties.sIDToken, iDT_RowId);
                     if (oSettings.aoColumns != null
                                 && oSettings.aoColumns[rel] != null
@@ -1025,7 +1027,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             bDisableEditing: false,
             oDeleteParameters: {},
             oUpdateParameters: {},
-            sIDToken: "DATAROWID|DT_RowId",
+            sIDToken: "DT_RowId",
             aoTableActions: null,
             fnOnBeforeAction: _fnOnBeforeAction,
             bUseFormsPlugin: false,
