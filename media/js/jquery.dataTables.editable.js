@@ -1257,7 +1257,9 @@ returns true if plugin should continue with sending AJAX request, false will abo
             }
 
             //Add handler to the inline delete buttons
-            $(".table-action-deletelink", oTable).live("click", _fnOnRowDeleteInline);
+            // live depricated
+            // $(".table-action-deletelink", oTable).live("click", _fnOnRowDeleteInline);
+            oTable.on("click", $(".table-action-deletelink", oTable), _fnOnRowDeleteInline);
 
             if (!properties.bUseKeyTable) {
             //Set selected class on row that is clicked
@@ -1300,7 +1302,9 @@ returns true if plugin should continue with sending AJAX request, false will abo
                         var oActionFormLink = $(".table-action-" + sAction);
                         if (oActionFormLink.length !== 0) {
 
-                            oActionFormLink.live("click", function () {
+                            // live depricated
+                            // oActionFormLink.live("click", function () {
+                            $(oActionFormLink.parent()[0]).on("click", oActionFormLink, function () {
 
 
                                 var sClass = this.className;
