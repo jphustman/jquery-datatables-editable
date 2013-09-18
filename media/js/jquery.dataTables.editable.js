@@ -471,7 +471,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
                     var rtn;
                     //Add values from the form into the table
                     if (oSettings.aoColumns !== null && isNaN(parseInt(oSettings.aoColumns[0].mDataProp, 10))) {
-                        rtn = oTable.fnAddData(rowData);
+                        rtn = oTable.fnAddData(data);
                     }
                     else {
                         rtn = oTable.fnAddData(values);
