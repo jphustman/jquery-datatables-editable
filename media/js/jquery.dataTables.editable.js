@@ -1120,7 +1120,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
                 //Add button click handler on the "Add new row" button
                 oAddNewRowButton = $("#" + properties.sAddNewRowButtonId);
-                if (oAddNewRowButton.length != 0) {
+                if (oAddNewRowButton.length !== 0) {
 
                         if(oAddNewRowButton.data("add-event-attached")!="true")
                         {
@@ -1131,8 +1131,10 @@ returns true if plugin should continue with sending AJAX request, false will abo
                         }
 
                 } else {
-                    if ($(properties.sAddDeleteToolbarSelector).length == 0) {
-                        throw "Cannot find a button with an id '" + properties.sAddNewRowButtonId + "', or placeholder with an id '" + properties.sAddDeleteToolbarSelector + "' that should be used for adding new row although form for adding new record is specified";
+                    if ($(properties.sAddDeleteToolbarSelector).length === 0) {
+                        throw "Cannot find a button with an id '" + properties.sAddNewRowButtonId +
+                            "', or placeholder with an id '" + properties.sAddDeleteToolbarSelector +
+                            "' that should be used for adding new row although form for adding new record is specified";
                     } else {
                         oAddNewRowButton = null; //It will be auto-generated later
                     }
