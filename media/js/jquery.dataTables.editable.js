@@ -647,8 +647,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
             ///<param name="sDeleteURL" type="String">Server URL where delete request will be posted</param>
 
             var sURL = sDeleteURL;
-            if (sDeleteURL === null)
-                sURL = properties.sDeleteURL;
+            if (!sDeleteURL) sURL = properties.sDeleteURL;
             properties.fnStartProcessingMode();
             var data = $.extend(properties.oDeleteParameters, { "id": id });
             $.ajax({ 'url': sURL,
