@@ -1,9 +1,10 @@
-/*global jQuery, alert, confirm */
+/*global jQuery, $, alert, confirm */
 /*jslint browser: true, unparam: true */
 /**
  * @project DataTables Editable
- * @author Jovan Popovic
- * @version 2.3.3
+ * @maintainer Jeremey Hustman <jeremeyhustman at gmail dot com>
+ * @version 3.0.0
+ * @contributor Jovan Popovic
  * @file jquery.dataTables.editable.js
  * @copyright Copyright 2010-2012 Jovan Popovic, all rights reserved.
  *
@@ -17,95 +18,47 @@
 
 /**
  * @function external:"jQuery.fn".makeeditable
- * @param {string} sUpdateURL - URL of the server-side page used for updating
- * cell. Default value is "UpdateData".
- * @param {string} sAddURL - URL of the server-side page used for adding new
- * row. Default value is "AddData".
- * @param {string} sDeleteURL - URL of the server-side page used to delete row
- * by id. Default value is "DeleteData".
- * @param {function} fnShowError - function(message, action){...}  used to show
- * error message. Action value can be "update", "add" or "delete".
- * @param {string} sAddNewRowFormId - Id of the form for adding new row.
- * Default id is "formAddNewRow".
- * @param {object} oAddNewRowFormOptions - Options that will be set to the "Add
- * new row" dialog
- * @param {string} sAddNewRowButtonId - Id of the button for adding new row.
- * Default id is "btnAddNewRow".
- * @param {object} oAddNewRowButtonOptions - Options that will be set to the
- * "Add new" button
- * @param {string} sAddNewRowOkButtonId - Id of the OK button placed in add new
- * row dialog. Default value is "btnAddNewRowOk".
- * @param {object} oAddNewRowOkButtonOptions - Options that will be set to the
- * Ok button in the "Add new row" form
- * @param {string} sAddNewRowCancelButtonId- Id of the Cancel button placed in
- * add new row dialog. Default value is "btnAddNewRowCancel".
- * @param {object} oAddNewRowCancelButtonOptions - Options that will be set to
- * the Cancel button in the "Add new row" form
- * @param {string} sDeleteRowButtonId - Id of the button for adding new row.
- * Default id is "btnDeleteRow".
- * @param {object} oDeleteRowButtonOptions - Options that will be set to the
- * Delete button
- * @param {string} sSelectedRowClass - Class that will be associated to the
- * selected row. Default class is "row_selected".
- * @param {string} sReadOnlyCellClass - Class of the cells that should not be
- * editable. Default value is "read_only".
- * @param {string} sAddDeleteToolbarSelector - Selector used to identify place
- * where add and delete buttons should be placed. Default value is
- * ".add_delete_toolbar".
- * @param {function} fnStartProcessingMode - function(){...} called when AJAX
- * call is started. Use this function to add "Please wait..." message  when
- * some button is pressed.
- * @param {function} fnEndProcessingMode - function(){...} called when AJAX
- * call is ended. Use this function to close "Please wait..." message.
- * @param {array} aoColumns - Array of the JEditable settings that will be
- * applied on the columns
- * @param {string} sAddHttpMethod - Method used for the Add AJAX request
- * (default is 'POST')
- * @param {string} sAddDataType - Data type expected from the server when
- * adding a row; allowed values are the same as those accepted by JQuery's
- * "datatype" parameter, e.g. 'text' and 'json'. The default is 'text'.
- * @param {string} sDeleteHttpMethod - Method used for the Delete AJAX request
- * (default is 'POST')
- * @param {string} sDeleteDataType - Data type expected from the server when
- * deleting a row; allowed values are the same as those accepted by JQuery's
- * "datatype" parameter, e.g. 'text' and 'json'. The default is 'text'.
- * @param {function} fnOnDeleting - function(tr, id, fnDeleteRow){...} Function
- * called before row is deleted, tr isJQuery object encapsulating row that will
- * be deleted, id is an id of the record that will be deleted. fnDeleteRow(id)
- * callback function that should be called to delete row with id returns true
- * if plugin should continue with deleting row, false will abort delete.
- * @param {function} fnOnDeleted - function(status){...} Function called after
- * delete action. Status can be "success" or "failure"
- * @param {function} fnOnAdding - function(){...} Function called before row is
- * added. returns true if plugin should continue with adding row, false will
- * abort add.
- * @param {function} fnOnNewRowPosted - function(data) Function that can
- * override default function that is called when server-side sAddURL returns
- * resultYou can use this function to add different behaviour when server-side
- * page returns result
- * @param {function} fnOnAdded - function(status){...} Function called after
- * add action. Status can be "success" or "failure"
- * @param {function} fnOnEditing - function(input){...} Function called before
-* cell is updated.input JQuery object wrapping the input element used for
-* editing value in the cell.returns true if plugin should continue with sending
-* AJAX request, false will abort update.
-* @param {function} fnOnEdited - function(status){...} Function called after
-* edit action. Status can be "success" or "failure"
+ * @param {string} sUpdateURL - URL of the server-side page used for updating cell. Default value is "UpdateData".
+ * @param {string} sAddURL - URL of the server-side page used for adding new row. Default value is "AddData".
+ * @param {string} sDeleteURL - URL of the server-side page used to delete row by id. Default value is "DeleteData".
+ * @param {function} fnShowError - function(message, action){...}  used to show error message. Action value can be "update", "add" or "delete".
+ * @param {string} sAddNewRowFormId - Id of the form for adding new row. Default id is "formAddNewRow".
+ * @param {object} oAddNewRowFormOptions - Options that will be set to the "Add new row" dialog
+ * @param {string} sAddNewRowButtonId - Id of the button for adding new row. Default id is "btnAddNewRow".
+ * @param {object} oAddNewRowButtonOptions - Options that will be set to the "Add new" button
+ * @param {string} sAddNewRowOkButtonId - Id of the OK button placed in add new row dialog. Default value is "btnAddNewRowOk".
+ * @param {object} oAddNewRowOkButtonOptions - Options that will be set to the Ok button in the "Add new row" form
+ * @param {string} sAddNewRowCancelButtonId- Id of the Cancel button placed in add new row dialog. Default value is "btnAddNewRowCancel".
+ * @param {object} oAddNewRowCancelButtonOptions - Options that will be set to the Cancel button in the "Add new row" form
+ * @param {string} sDeleteRowButtonId - Id of the button for adding new row. Default id is "btnDeleteRow".
+ * @param {object} oDeleteRowButtonOptions - Options that will be set to the Delete button
+ * @param {string} sSelectedRowClass - Class that will be associated to the selected row. Default class is "row_selected".
+ * @param {string} sReadOnlyCellClass - Class of the cells that should not be editable. Default value is "read_only".
+ * @param {string} sAddDeleteToolbarSelector - Selector used to identify place where add and delete buttons should be placed. Default value is ".add_delete_toolbar".
+ * @param {function} fnStartProcessingMode - function(){...} called when AJAX call is started. Use this function to add "Please wait..." message  when some button is pressed.
+ * @param {function} fnEndProcessingMode - function(){...} called when AJAX call is ended. Use this function to close "Please wait..." message.
+ * @param {array} aoColumns - Array of the JEditable settings that will be applied on the columns
+ * @param {string} sAddHttpMethod - Method used for the Add AJAX request (default is 'POST')
+ * @param {string} sAddDataType - Data type expected from the server when adding a row; allowed values are the same as those accepted by JQuery's "datatype" parameter, e.g. 'text' and 'json'. The default is 'text'.
+ * @param {string} sDeleteHttpMethod - Method used for the Delete AJAX request (default is 'POST')
+ * @param {string} sDeleteDataType - Data type expected from the server when deleting a row; allowed values are the same as those accepted by JQuery's "datatype" parameter, e.g. 'text' and 'json'. The default is 'text'.
+ * @param {function} fnOnDeleting - function(tr, id, fnDeleteRow){...} Function called before row is deleted, tr isJQuery object encapsulating row that will be deleted, id is an id of the record that will be deleted. fnDeleteRow(id) callback function that should be called to delete row with id returns true if plugin should continue with deleting row, false will abort delete.
+ * @param {function} fnOnDeleted - function(status){...} Function called after delete action. Status can be "success" or "failure"
+ * @param {function} fnOnAdding - function(){...} Function called before row is added. returns true if plugin should continue with adding row, false will abort add.
+ * @param {function} fnOnNewRowPosted - function(data) Function that can override default function that is called when server-side sAddURL returns resultYou can use this function to add different behaviour when server-side page returns result
+ * @param {function} fnOnAdded - function(status){...} Function called after add action. Status can be "success" or "failure"
+ * @param {function} fnOnEditing - function(input){...} Function called before cell is updated.input JQuery object wrapping the input element used for editing value in the cell.returns true if plugin should continue with sending AJAX request, false will abort update.
+* @param {function} fnOnEdited - function(status){...} Function called after edit action. Status can be "success" or "failure"
 * @param {string} sEditorHeight - Default height of the cell editors
 * @param {string} sEditorWidth - Default width of the cell editors
-* @param {object} oDeleteParameters - Additonal objects added to the DELETE
-* Ajax request
-* @param {object} oUpdateParameters - Additonal objects added to the UPDATE
-* Ajax request
-* @param {string} sIDToken - Token in the add new row dialog that will be
-* replaced with a returned id of the record that is created eg DT_RowId
-* @param {string} sSuccessResponse - Text returned from the server if record
-* is successfully deleted or edited. Default "ok"
-* @param {string} sFailureResponsePrefix - Prefix of the error message
-* returned from the server during edit action
+* @param {object} oDeleteParameters - Additonal objects added to the DELETE Ajax request
+* @param {object} oUpdateParameters - Additonal objects added to the UPDATE Ajax request
+* @param {string} sIDToken - Token in the add new row dialog that will be replaced with a returned id of the record that is created eg DT_RowId
+* @param {string} sSuccessResponse - Text returned from the server if record is successfully deleted or edited. Default "ok"
+* @param {string} sFailureResponsePrefix - Prefix of the error message returned from the server during edit action
 */
 
-(function ($) {
+$(function () {
     "use strict";
     $.fn.makeEditable = function (options) {
 
@@ -181,15 +134,15 @@
             * @param {string} result - "success" if row is actually deleted "failure" if delete failed
             * @returns void
             */
-            fnOnDeleted = function (result) { },
+            fnOnDeleted = function (result) { return; },
 
             fnOnEditing = function (input) { return true; },
             fnOnEdited = function (result, sOldValue, sNewValue, iRowIndex, iColumnIndex, iRealColumnIndex) {
-
+                return;
             },
 
             fnOnAdding = function () { return true; },
-            fnOnAdded = function (result) { },
+            fnOnAdded = function (result) { return; },
 
             /**
             * Callback function called BEFORE a new record is posted to the server.
@@ -258,7 +211,7 @@
             },
 
             fnOnActionCompleted = function (sStatus) {
-
+                return;
             },
 
             /**
@@ -460,6 +413,7 @@
                         "callback": function (sValue, settings) {
                             properties.fnEndProcessingMode();
                             var status = "",
+                                keys,
                                 aPos = oTable.fnGetPosition(this),
                                 bRefreshTable = !oSettings.oFeatures.bServerSide;
 
@@ -501,7 +455,7 @@
 
                             fnSetDisplayStart();
                             if (properties.bUseKeyTable) {
-                                var keys = oTable.keys;
+                                keys = oTable.keys;
                                 /* Unblock KeyTable, but only after this 'esc' key event has finished. Otherwise
                                 * it will 'esc' KeyTable as well
                                 */
@@ -1444,8 +1398,6 @@
 
         }
 
-
-
     };
-}(jQuery));
+});
 /*vim: foldmethod=marker foldmarker={,}: */
